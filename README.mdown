@@ -1,0 +1,15 @@
+# About
+
+Stash the changes in an svn working copy away for later - based on git's stash command.
+
+# Requirements
+
+This was developed on Mac OS X, and aims to only require built-in tools. It should run fine on Linux, too. Windows users may need to install some additional tools.
+
+* Subversion
+* PHP5
+* diff / patch binaries on your PATH.
+
+# Known Issues
+
+Binary files are *not* supported nor detected at present. If you attempt to stash changes to a binary file, or stash an untracked binary, you *will* lose its contents.

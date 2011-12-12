@@ -1,0 +1,21 @@
+<?php
+
+class Command_List extends Command
+{
+	public function run()
+	{
+		$path = getcwd();
+		$stash = new Stash($path);
+		$path = $stash->getPath();
+		$stashes = $stash->getStashes();
+		
+		if (! $stashes) {
+			echo 'There are no stashed changes in ', $path, PHP_EOL;
+			exit(1);
+		}
+		
+		foreach ($stashes as $key => $stashName) {
+			echo $key, ': ', $stashName, PHP_EOL;
+		}
+	}
+}
