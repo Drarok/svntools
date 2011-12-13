@@ -1,10 +1,26 @@
 <?php
+/**
+ * Save command.
+ *
+ * @category Commands
+ * @package  svnstash
+ */
 
+/**
+ * Save command.
+ *
+ * Save modifications (and optionally untracked files) to a new stash.
+ */
 class Command_Save extends Command
 {
+	/**
+	 * Run the save command.
+	 *
+	 * @return void
+	 */
 	public function run()
 	{
-		$stashName = Cli::getUnnamedArgument(1);
+		$stashName = CLI::getUnnamedArgument(1);
 		
 		if (! (bool) $stashName) {
 			echo 'You must supply a stash name.', PHP_EOL;
@@ -14,7 +30,7 @@ class Command_Save extends Command
 		$path = getcwd();
 		$stash = new Stash($path);
 		
-		$includeUntracked = (bool) Cli::getNamedArgument('untracked-files');
+		$includeUntracked = (bool) CLI::getNamedArgument('untracked-files');
 		
 		$stash->addStash($stashName, $includeUntracked);
 		

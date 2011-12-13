@@ -37,6 +37,7 @@ class Svn
 	 */
 	public function add($path)
 	{
+		echo 'Adding: ', $path, PHP_EOL;
 		$this->_runCommand('add', $path);
 	}
 	

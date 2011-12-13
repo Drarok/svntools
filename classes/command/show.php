@@ -1,14 +1,28 @@
 <?php
+/**
+ * Show command.
+ *
+ * @category Commands
+ * @package  svnstash
+ */
 
+/**
+ * Show command - show the changes stored in a stash.
+ */
 class Command_Show extends Command
 {
+	/**
+	 * Run the show command.
+	 *
+	 * @return void
+	 */
 	public function run()
 	{
 		$path = getcwd();
 		$stash = new Stash($path);
 		
 		// Grab the id from the command line.
-		$id = Cli::getUnnamedArgument(1, null);
+		$id = CLI::getUnnamedArgument(1, null);
 		
 		// Find its path.
 		$path = $stash->getStashPath($id);

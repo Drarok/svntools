@@ -1,7 +1,23 @@
 <?php
+/**
+ * Apply command.
+ *
+ * @category Commands
+ * @package  svnstash
+ */
 
+/**
+ * Apply command - apply a stashed set of change to the working copy.
+ */
 class Command_Apply extends Command
 {
+	/**
+	 * Run the apply command.
+	 *
+	 * @return void
+	 *
+	 * @throws Exception When application of the changes failed.
+	 */
 	public function run()
 	{
 		// Get the current path.
@@ -11,7 +27,7 @@ class Command_Apply extends Command
 		$stash = new Stash($path);
 		
 		// Grab the id from the command line.
-		$id = Cli::getUnnamedArgument(1, null);
+		$id = CLI::getUnnamedArgument(1, null);
 		
 		// Get the stash file path and name.
 		$path = $stash->getStashPath($id);

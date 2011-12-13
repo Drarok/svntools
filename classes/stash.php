@@ -1,8 +1,31 @@
 <?php
+/**
+ * Stash management.
+ *
+ * @category Models
+ * @package  svnstash
+ */
 
+/**
+ * Stash management class.
+ *
+ * This class is a sort-of model, which aims to abstract the management of
+ * stashes.
+ */
 class Stash
 {
+	/**
+	 * Directory to store stashes in at the root of the svn working copy.
+	 *
+	 * @const string
+	 */
 	const STASHDIR = '.svnstash';
+	
+	/**
+	 * File to store the stashes list in, inside the STASHDIR.
+	 *
+	 * @const string
+	 */
 	const STASHFILE = 'svnstash.txt';
 	
 	/**
@@ -21,17 +44,35 @@ class Stash
 		}
 		
 		if (! preg_match('/^[a-z0-9_-]+$/i', $name)) {
-			throw new Exception('Invalid stash name. Only a-z, 0-9, underscore and dash are allowed.');
+			throw new Exception('Invalid stash name. '
+				. 'Only a-z, 0-9, underscore and dash are allowed.');
 		}
 	}
 	
+	
+	
+	/**
+	 * Path to the root of the working copy.
+	 *
+	 * @var string
+	 */
 	protected $_path;
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param string $path Path to a directory within the working copy.
+	 */
 	public function __construct($path)
 	{
 		$this->_setPath($path);
 	}
 	
+	/**
+	 * Getter for the $_path ivar.
+	 *
+	 * @return string
+	 */
 	public function getPath()
 	{
 		return $this->_path;
@@ -50,7 +91,8 @@ class Stash
 			$file = fopen($this->_getStashFilePath(), 'r');
 			
 			if (! $file) {
-				throw new Exception('Failed to open ' . $this->_getStashFilePath());
+				throw new Exception('Failed to open '
+					. $this->_getStashFilePath());
 			}
 			
 			while ($stash = trim(fgets($file))) {
@@ -82,8 +124,7 @@ class Stash
 			$index = array_search($id, $stashes);
 		}
 		
-		if (
-			$index === -1
+		if ($index === -1
 			|| $index === false
 			|| ! array_key_exists($index, $stashes)
 		) {
@@ -96,6 +137,11 @@ class Stash
 	
 	/**
 	 * Create and store a new stash.
+	 *
+	 * @param string $name             Name of the stash to create.
+	 * @param bool   $includeUntracked Include 'untracked' files in the stash.
+	 *
+	 * @return void
 	 */
 	public function addStash($name, $includeUntracked)
 	{
@@ -115,7 +161,7 @@ class Stash
 		// Create a new subversion wrapper instance.
 		$svn = new Svn($this->_path);
 		
-		if (! $includeUntracked) {;
+		if (! $includeUntracked) {
 			$untrackedFiles = array();
 		} else {
 			$untrackedFiles = $this->_getUntrackedFiles();
@@ -197,6 +243,10 @@ class Stash
 	
 	/**
 	 * Remove all stashed changes.
+	 *
+	 * @return void
+	 *
+	 * @throws Exception Failing to delete a file throws an Exception.
 	 */
 	public function removeAllStashes()
 	{
@@ -220,12 +270,16 @@ class Stash
 		}
 	}
 	
-	//
-	// Protected Methods
-	//
+	
 	
 	/**
 	 * Set the path where we will save and load stashes.
+	 *
+	 * This method will traverse up from the passed path, attempting to find 
+	 * the root of the working copy. Note that this isn't 100% reliable, but
+	 * there doesn't appear to be a reliable way prior to subversion v1.7.
+	 *
+	 * @param string $path Path to a directory within the working copy.
 	 *
 	 * @return void
 	 */

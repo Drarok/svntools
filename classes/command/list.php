@@ -1,7 +1,21 @@
 <?php
+/**
+ * List command.
+ *
+ * @category Commands
+ * @package  svnstash
+ */
 
+/**
+ * List command - list all stashes.
+ */
 class Command_List extends Command
 {
+	/**
+	 * Run the list command.
+	 *
+	 * @return void
+	 */
 	public function run()
 	{
 		$path = getcwd();

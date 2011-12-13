@@ -1,5 +1,18 @@
 <?php
+/**
+ * View rendering class.
+ *
+ * @category Views
+ * @package  svnstash
+ */
 
+/**
+ * Simple view class, for rendering output.
+ *
+ * This class basically just isolates view files into their own context by
+ * wrapping them into a method and extracting only the view variables into said
+ * context.
+ */
 class View
 {
 	/**
@@ -8,7 +21,7 @@ class View
 	 * @param string $filename File name to load.
 	 * @param string $ext      File extension to load, defaults to '.php'.
 	 *
-	 * @return object New instance.
+	 * @return View
 	 */
 	public static function factory($filename, $ext = 'php')
 	{
@@ -59,10 +72,10 @@ class View
 	}
 	
 	/**
-	 * Magic setter, passes to ->set()
+	 * Magic setter, passes to ->set().
 	 *
-	 * @param string $key Key to store the value as.
-	 * @param mixed $value Value to store.
+	 * @param string $key   Key to store the value as.
+	 * @param mixed  $value Value to store.
 	 *
 	 * @return void
 	 */

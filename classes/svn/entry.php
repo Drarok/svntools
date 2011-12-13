@@ -1,20 +1,56 @@
 <?php
+/**
+ * Subversion entry model.
+ *
+ * @category Models
+ * @package  svnstash
+ */
 
+/**
+ * Subversion file entry wrapper class.
+ */
 class Svn_Entry
 {
+	/**
+	 * Unversioned status constant.
+	 *
+	 * @const string
+	 */
 	const UNVERSIONED = 'unversioned';
+	
+	/**
+	 * Modified status constant.
+	 *
+	 * @const string
+	 */
 	const MODIFIED = 'modified';
+	
+	/**
+	 * Missing status constant.
+	 *
+	 * @const string
+	 */
 	const MISSING = 'missing';
 	
+	/**
+	 * SimpleXMLElement representing the file entry.
+	 *
+	 * @var SimpleXMLElement
+	 */
 	protected $_xml;
 	
+	/**
+	 * Relative path to the file entry.
+	 *
+	 * @var string
+	 */
 	protected $_path;
 	
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
-	 * @param SimpleXMLElement $xml  Element parsed from Subversion's XML output.
-	 * @param string           $path Relative path to the entry from the wc root.
+	 * @param SimpleXMLElement $xml  Element parsed from Subversion's output.
+	 * @param string           $path Relative path to the entry.
 	 */
 	public function __construct(SimpleXMLElement $xml, $path)
 	{
@@ -22,11 +58,23 @@ class Svn_Entry
 		$this->_path = $path;
 	}
 	
+	/**
+	 * Path getter.
+	 *
+	 * @return string
+	 */
 	public function getPath()
 	{
 		return $this->_path;
 	}
 	
+	/**
+	 * State getter.
+	 *
+	 * @return string
+	 *
+	 * @throws Exception When state is unknown.
+	 */
 	public function getState()
 	{
 		static $validStates = array(

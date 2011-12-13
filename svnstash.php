@@ -1,5 +1,8 @@
 #!/usr/bin/env php
 <?php
+/**
+ * Svnstash project entrypoint.
+ */
 
 // Define some project-wide constants.
 define('DS', DIRECTORY_SEPARATOR);
@@ -11,10 +14,17 @@ require_once SVNSTASH_ROOT . 'classes' . DS . 'autoloader.php';
 // Set up the exception handler.
 set_exception_handler('Handler::exceptionHandler');
 
-// Use the 1st argument as the command, if there is any.
-$command = Cli::getUnnamedArgument(0, 'list');
+// Initialise the command-line helper.
+CLI::init(array(
+	'v' => 'verbose',
+	'u' => 'untracked-files',
+	'f' => 'force',
+));
 
-if (Cli::getNamedArgument('help')) {
+// Use the 1st argument as the command, if there is any.
+$command = CLI::getUnnamedArgument(0, 'list');
+
+if (CLI::getNamedArgument('help')) {
 	// Override the command if --help is passed.
 	$command = 'help';
 }
