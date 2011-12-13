@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 // Define some project-wide constants.
