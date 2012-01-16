@@ -13,3 +13,34 @@ This was developed on Mac OS X, and aims to only require built-in tools. It shou
 # Known Issues
 
 Binary files are *not* supported nor detected at present. If you attempt to stash changes to a binary file, or stash an untracked binary, you *will* lose its contents.
+
+# Usage
+
+Personally, I just create a symlink named `svnstash` somewhere on my path, pointed to svnstash.php. Assuming you got the code from Github, the main entrypoint should already marked as executable.
+
+Running `svnstash --help` will give a manpage-like help sheet explaining the parameters you can use.
+
+# Contributing
+
+If you feel you could add something to svnstash, please do. Patches welcome! Fork on Github and send me a pull request.
+
+# Q&A
+
+## Why not just use git-svn?
+
+Because it doesn't support Subversion's mergeinfo, which is vital at work for tracking branches, releases, hotfixes, etc.
+
+## Why doesn't it support &lt;x&gt;?
+
+Unless &lt;x&gt; is "binary files", then it's probably because I've not thought of it. Why not file an issue on the Github tracker?
+
+If it's binary file support you're after, I'm afraid that's not a high priority for me. Binary files aren't handled very well by Subversion anyway, so I'm at a bit of a loss for a good way to handle them. If you have any bright ideas, please drop me a line.
+
+## Who made this?
+
+I'm Mat "Drarok" Gadd. You can find me on [Twitter][twitter], here on [Github][github], [Bitbucket][bitbucket], [StackOverflow][stackoverflow], and probably elsewhere I've not thought of. Drop by and say hi if you find any of my stuff useful.
+
+[twitter]: http://twitter.com/Drarok
+[github]: http://github.com/Drarok
+[bitbucket]: http://bitbucket.org/drarok
+[stackoverflow]: http://stackoverflow.com/users/86093/drarok
