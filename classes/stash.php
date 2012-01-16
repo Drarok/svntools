@@ -212,12 +212,12 @@ class Stash
 	 */
 	public function removeStash($id = null)
 	{
+		echo 'removeStash(', var_export($id, true), ')', PHP_EOL;
 		$path = $this->getStashPath($id);
 		$name = basename($path, '.diff');
 		
-		if (! unlink($path)) {
-			throw new Exception('Failed to delete stash file: ' . $path);
-		}
+		// Trash the stash.
+		$this->_trashStash($path);
 		
 		// Now remove the stash from the list file.
 		$file = fopen($this->_getStashFilePath(), 'w');
@@ -257,16 +257,20 @@ class Stash
 		$files = array();
 		while ($entry = readdir($dir)) {
 			if ($entry[0] == '.') {
+				// Ignore dotfiles.
 				continue;
 			}
 			
-			$files[] = $path . $entry;
-		}
-		
-		foreach ($files as $file) {
-			if (! unlink($file)) {
-				throw new Exception('Failed to delete ' . $file);
+			$ext = substr($entry, strrpos($entry, '.'));
+			if ($ext != '.diff') {
+				// Only include diff files.
+				continue;
 			}
+			
+			
+			// This is slightly inefficient, but it allows us to keep the code
+			// for trashing a stash in one place.
+			$this->removeStash(basename($entry, '.diff'));
 		}
 	}
 	
@@ -380,5 +384,36 @@ class Stash
 		}
 		
 		return $result;
+	}
+	
+	/**
+	 * Move a stashed change into the trash folder inside our stash directory.
+	 *
+	 * @param string $path Path to the stash to move.
+	 *
+	 * @return void
+	 */
+	protected function _trashStash($path)
+	{
+		$trashDir = dirname($path) . DS . 'trash';
+		
+		if (! is_dir($trashDir)) {
+			if (! mkdir($trashDir, 0755, true)) {
+				throw new Exception('Cannot create trash directory: ' . $trashDir);
+			}
+		}
+		
+		// Create a new date-based filename.
+		$trashFile = basename($path, '.diff');
+		$trashFile .= '-' . date('YmdHis') . '.diff';
+		
+		// We actually copy to avoid PHP's `rename` bugs.
+		if (! copy($path, $trashDir . DS . $trashFile)) {
+			throw new Exception('Failed to create trash file.');
+		}
+		
+		if (! unlink($path)) {
+			throw new Exception('Failed to delete stash file: ' . $path);
+		}
 	}
 }
