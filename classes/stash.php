@@ -295,7 +295,12 @@ class Stash
 			$grandparent = dirname($parent);
 		}
 		
+		if (! is_dir($parent . DS . '.svn')) {
+			throw new Exception('Failed to find a subversion working copy.');
+		}
+		
 		$this->_path = $parent;
+		
 		chdir($this->_path);
 	}
 	
