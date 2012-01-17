@@ -29,6 +29,13 @@ class Stash
 	const STASHFILE = 'svnstash.txt';
 	
 	/**
+	 * Directory within STASHDIR to store trash files.
+	 *
+	 * @const string
+	 */
+	const TRASHDIR = 'trash';
+	
+	/**
 	 * Validate a stash name.
 	 *
 	 * @param string $name Name to validate.
@@ -212,7 +219,6 @@ class Stash
 	 */
 	public function removeStash($id = null)
 	{
-		echo 'removeStash(', var_export($id, true), ')', PHP_EOL;
 		$path = $this->getStashPath($id);
 		$name = basename($path, '.diff');
 		
@@ -274,7 +280,112 @@ class Stash
 		}
 	}
 	
+	/**
+	 * Get the file listing from the trash.
+	 *
+	 * Note that this method only returns the *filenames*.
+	 *
+	 * @return array
+	 */
+	public function getTrash()
+	{
+		$result = array();
+		
+		foreach (glob($this->_getTrashDirPath() . '*.diff') as $entry) {
+			$result[] = basename($entry, '.diff');
+		}
+		
+		// Make sure they're in order.'
+		sort($result);
+		
+		return $result;
+	}
 	
+	/**
+	 * Get the file path for a trash item bu id or name.
+	 *
+	 * @param mixed $id Numeric index from getTrash, or the stash name.
+	 *
+	 * @return string
+	 */
+	protected function _getTrashItemPath($id)
+	{
+		if (is_numeric($id)) {
+			$id = (int) $id;
+			$trash = $this->getTrash();
+			if (! array_key_exists($id, $trash)) {
+				throw new Exception('No such item in the trash: ' . $id);
+			}
+			
+			$name = $trash[$id];
+		} else {
+			$name = $id;
+		}
+		
+		// Build the full path and return.
+		$fullPath = $this->_getTrashDirPath() . $name . '.diff';
+		
+		if (! file_exists($fullPath)) {
+			throw new Exception('No such stash in trash: ' . $name);
+		}
+		
+		return $fullPath;
+	}
+	
+	/**
+	 * Restore an item from the trash, using its numeric id, or name.
+	 *
+	 * @param mixed $id Numeric index from getTrash(), or the filename.
+	 *
+	 * @return void
+	 */
+	public function restoreFromTrash($id)
+	{
+		$fullTrashedPath = $this->_getTrashItemPath($id);
+		
+		// Work out the original filename.
+		$originalFilename = basename($fullTrashedPath);
+		$originalFilename = substr($originalFilename, strpos($originalFilename, '-') + 1);
+		
+		// Make sure there's not already a stash with that name.
+		if (file_exists($stashFullPath = $this->_getStashDirPath() . $originalFilename)) {
+			throw new Exception('A stash named ' . $originalFilename . ' already exists!');
+		}
+		
+		if (! rename($fullTrashedPath, $stashFullPath)) {
+			throw new Exception('Failed to restore ' . $filename);
+		}
+		
+		// Append the new stash name to the stash file.
+		$file = fopen($this->_getStashFilePath(), 'a');
+		if (! $file) {
+			throw new Exception('Failed to open ' . $this->_getStashFilePath());
+		}
+		fwrite($file, basename($originalFilename, '.diff'). PHP_EOL);
+		fclose($file);
+		
+		return basename($originalFilename, '.diff');
+	}
+	
+	/**
+	 * Permanently erase a stash from the trash.
+	 *
+	 * @param mixed $id Numeric index from getTrash, or the trashed filename.
+	 *
+	 * @return void
+	 */
+	public function eraseFromTrash($id)
+	{
+		$fullTrashedPath = $this->_getTrashItemPath($id);
+		$name = basename($fullTrashedPath, '.diff');
+		$name = substr($name, strpos($name, '-') + 1);
+		
+		if (! unlink($fullTrashedPath)) {
+			throw new Exception('Failed to erase trashed stash: ' . $name);
+		}
+		
+		return $name;
+	}
 	
 	/**
 	 * Set the path where we will save and load stashes.
@@ -327,6 +438,17 @@ class Stash
 	{
 		return $this->_getStashDirPath() . self::STASHFILE;
 	}
+	
+	/**
+	 * Get the fll path to the trash directory.
+	 *
+	 * @return string
+	 */
+	protected function _getTrashDirPath()
+	{
+		return $this->_getStashDirPath() . static::TRASHDIR . DS;
+	}
+	
 	
 	/**
 	 * Set up the stash directory ready for use.
@@ -395,7 +517,8 @@ class Stash
 	 */
 	protected function _trashStash($path)
 	{
-		$trashDir = dirname($path) . DS . 'trash';
+		
+		$trashDir = $this->_getTrashDirPath();
 		
 		if (! is_dir($trashDir)) {
 			if (! mkdir($trashDir, 0755, true)) {
@@ -404,16 +527,16 @@ class Stash
 		}
 		
 		// Create a new date-based filename.
-		$trashFile = basename($path, '.diff');
-		$trashFile .= '-' . date('YmdHis') . '.diff';
+		$trashFile = date('YmdHis') . '-' . basename($path);
 		
-		// We actually copy to avoid PHP's `rename` bugs.
-		if (! copy($path, $trashDir . DS . $trashFile)) {
-			throw new Exception('Failed to create trash file.');
+		// Don't overwrite any existing files.
+		if (file_exists($trashDir . $trashFile)) {
+			throw new Exception('A trash file already exists! Please try again.');
 		}
 		
-		if (! unlink($path)) {
-			throw new Exception('Failed to delete stash file: ' . $path);
+		// Alright, do the move.
+		if (! rename($path, $trashDir . $trashFile)) {
+			throw new Exception('Failed to trash file.');
 		}
 	}
 }
