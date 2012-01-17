@@ -22,7 +22,7 @@ class Command_Clear extends Command
 		$stash = new Stash($path);
 		
 		if (! CLI::getNamedArgument('force', false)) {
-			echo 'Are you sure you want to remove all stashes [y/N]? ';;
+			echo 'Are you sure you want to remove all stashes [y/N]? ';
 			
 			$input = strtolower(trim(fgets(STDIN)));
 			
