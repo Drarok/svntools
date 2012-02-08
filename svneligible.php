@@ -137,7 +137,10 @@ if ($commands['show']) {
 					echo '    r', $revision, PHP_EOL;
 				if ($info) {
 					echo '        ', str_pad($info->author, 10), ' | ', $info->date, PHP_EOL;
-					echo '        ', $info->msg, PHP_EOL;
+					foreach (explode(PHP_EOL, trim($info->msg)) as $line) {
+						echo '        ', $line, PHP_EOL;
+					}
+					echo PHP_EOL;
 				}
 			}
 		}
