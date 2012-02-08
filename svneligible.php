@@ -91,7 +91,7 @@ if ($commands['branches']) {
 
 		$twigs = explode(PHP_EOL, $svn);
 		foreach ($twigs as $twig) {
-			echo '^/branches/', $root, $twig, PHP_EOL;
+			echo '^/branches/', $root, rtrim($twig, '/'), PHP_EOL;
 		}
 	}
 }
@@ -100,7 +100,7 @@ if ($commands['releases']) {
 	$releases = explode(PHP_EOL, trim(shell_exec('svn ls ^/releases')));
 
 	foreach ($releases as $release) {
-		echo '^/releases/', $release, PHP_EOL;
+		echo '^/releases/', rtrim($release, '/'), PHP_EOL;
 	}
 }
 
