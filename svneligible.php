@@ -123,7 +123,7 @@ if ($commands['show']) {
 				}
 				$cmd .= ' ^/';
 
-				$xml = new Svn_Xml(shell_exec($cmd));
+				$xml = new Svn_Log(shell_exec($cmd));
 				$logs = $xml->revisions();
 			} else {
 				$logs = array();
