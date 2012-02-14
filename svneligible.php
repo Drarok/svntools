@@ -10,8 +10,9 @@ require_once __DIR__ . '/bootstrap.php';
 $commands = array(
 	'branches' => false,
 	'releases' => false,
-	'show' => false,
-	'help' => false,
+	'tags'     => false,
+	'show'     => false,
+	'help'     => false,
 );
 
 // Set up default options.
@@ -46,7 +47,7 @@ foreach (array_slice($argv, 1) as $arg) {
 }
 
 // If no command specified, run the 'help' command.
-if (! $commands['branches'] && ! $commands['releases'] && ! $commands['show']) {
+if (! $commands['branches'] && ! $commands['releases'] && ! $commands['tags'] && ! $commands['show']) {
 	$commands['help'] = true;
 }
 
@@ -56,6 +57,7 @@ if ($options['help'] || $commands['help']) {
 	$commands_help = array(
 		'branches' => '- List the contents of ^/branches (up to 2 levels deep).',
 		'releases' => '- List the contents of ^/releases.',
+		'tags'     => '- List the contents of ^/tags.',
 		'show' => '    - Show the eligible revisions from the given branch/release.',
 		'help' => '    - This help text.',
 	);
@@ -101,6 +103,14 @@ if ($commands['releases']) {
 
 	foreach ($releases as $release) {
 		echo '^/releases/', rtrim($release, '/'), PHP_EOL;
+	}
+}
+
+if ($commands['tags']) {
+	$tags = explode(PHP_EOL, trim(shell_exec('svn ls ^/tags')));
+
+	foreach ($tags as $tag) {
+		echo '^/tags/', rtrim($tag, '/'), PHP_EOL;
 	}
 }
 
