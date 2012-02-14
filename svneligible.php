@@ -1,84 +1,38 @@
 #!/usr/bin/env php
 <?php
 /**
- * Svneligible command entrypoint.
+ * Svneligible tool entrypoint.
  */
 
 require_once __DIR__ . '/bootstrap.php';
 
-// Set up valid commands.
-$commands = array(
-	'branches' => false,
-	'releases' => false,
-	'tags'     => false,
-	'show'     => false,
-	'help'     => false,
-);
-
-// Set up default options.
-$options = array(
-	'show-log' => false,
-	'help' => false,
-);
+// Initialise the command-line helper.
+CLI::init();
 
 // Set up parameters.
 $parameters = array();
 
-foreach (array_slice($argv, 1) as $arg) {
-	if (substr($arg, 0, 2) == '--') {
-		$key = substr($arg, 2);
-		$value = true;
+// Override the command if there are none, or --help passed.
+if (! (bool) $commands = CLI::getUnnamedArguments()) {
+	$commands = array('help');
+} elseif (CLI::getNamedArgument('help')) {
+	$commands = array('help');
+}
 
-		// If there's an equals sign, split on it.
-		if (strpos($key, '=') !== false) {
-			list($key, $value) = explode('=', $key, 2);
-		}
+// Despatch the commands.
+foreach ($commands as $command) {
+	$command = Command_Svneligible::factory(strtolower($command));
 
-		if (array_key_exists($key, $options)) {
-			$options[$key] = $value;
-		}
-	} else {
-		if (array_key_exists($arg, $commands)) {
-			$commands[$arg] = true;
-		} else {
-			$parameters[] = $arg;
-		}
+	if ($command instanceof Command_Svneligible) {
+		$command->run();
 	}
 }
+
+die('Finished!' . PHP_EOL);
 
 // If no command specified, run the 'help' command.
 if (! $commands['branches'] && ! $commands['releases'] && ! $commands['tags'] && ! $commands['show']) {
 	$commands['help'] = true;
-}
-
-if ($options['help'] || $commands['help']) {
-	echo 'Usage: svneligible [<options>] [...] [<command>]', PHP_EOL, PHP_EOL;
-
-	$commands_help = array(
-		'branches' => '- List the contents of ^/branches (up to 2 levels deep).',
-		'releases' => '- List the contents of ^/releases.',
-		'tags'     => '- List the contents of ^/tags.',
-		'show' => '    - Show the eligible revisions from the given branch/release.',
-		'help' => '    - This help text.',
-	);
-
-	echo 'Available commands:', PHP_EOL;
-	foreach ($commands_help as $command => $help) {
-		echo '    ', $command, ' ', $help, PHP_EOL;
-	}
-	echo PHP_EOL;
-
-	$options_help = array(
-		'show-log' => '- Display the commit log for eligible revisions.',
-	);
-
-	echo 'Available options:', PHP_EOL;
-	foreach ($options_help as $option => $help) {
-		echo '    --', $option, ' ', $help, PHP_EOL;
-	}
-	echo PHP_EOL;
-
-	exit(0);
 }
 
 if ($commands['branches']) {
