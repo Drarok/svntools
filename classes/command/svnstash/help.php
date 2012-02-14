@@ -18,6 +18,6 @@ class Command_Svnstash_Help extends Command
 	 */
 	public function run()
 	{
-		View::factory('help')->render();
+		View::factory('svnstash/help')->render();
 	}
 }
