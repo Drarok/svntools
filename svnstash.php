@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * Svnstash command entrypoint.
+ * Svnstash tool entrypoint.
  */
 
 require_once __DIR__ . '/bootstrap.php';
