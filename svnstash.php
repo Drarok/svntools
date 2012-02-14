@@ -21,13 +21,11 @@ if (CLI::getNamedArgument('help')) {
 	$command = 'help';
 }
 
-$commandClass = 'Command_' . ucfirst($command);
-
 try {
-	$commandInstance = new $commandClass();
+	$commandInstance = Command_Svnstash::factory($command);
 	
 	if (! $commandInstance instanceof Command) {
-		throw new Exception('Invalid command class: ' . $commandClass);
+		throw new Exception('Invalid command: ' . $command);
 	}
 } catch (Exception $e) {
 	echo $e->getMessage(), PHP_EOL;

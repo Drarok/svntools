@@ -9,7 +9,7 @@
 /**
  * Show command - show the changes stored in a stash.
  */
-class Command_Show extends Command
+class Command_Svnstash_Show extends Command
 {
 	/**
 	 * Run the show command.

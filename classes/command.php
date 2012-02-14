@@ -3,7 +3,7 @@
  * Commands.
  *
  * @category Commands
- * @package  svnstash
+ * @package  svntools
  */
 
 /**
@@ -18,14 +18,15 @@ abstract class Command
 	 *
 	 * @param string $name Name of the command to instantiate.
 	 *
-	 * @return Command
+	 * @return object
 	 */
 	public static function factory($name)
 	{
-		$className = 'Command_' . ucfirst($name);
+		$prefix = get_called_class() . '_';
+		$className = $prefix . ucfirst($name);
 		return new $className();
 	}
-	
+
 	/**
 	 * Abstract method that all commands must implement to do their work.
 	 *

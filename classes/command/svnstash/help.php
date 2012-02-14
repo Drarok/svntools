@@ -9,7 +9,7 @@
 /**
  * Help command - output the help view.
  */
-class Command_Help extends Command
+class Command_Svnstash_Help extends Command
 {
 	/**
 	 * Run the help command.

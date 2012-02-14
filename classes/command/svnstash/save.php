@@ -11,7 +11,7 @@
  *
  * Save modifications (and optionally untracked files) to a new stash.
  */
-class Command_Save extends Command
+class Command_Svnstash_Save extends Command
 {
 	/**
 	 * Run the save command.

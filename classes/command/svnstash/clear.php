@@ -9,7 +9,7 @@
 /**
  * Clear command - remove all stashed changes.
  */
-class Command_Clear extends Command
+class Command_Svnstash_Clear extends Command
 {
 	/**
 	 * Run the clear command.

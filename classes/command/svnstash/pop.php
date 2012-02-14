@@ -9,7 +9,7 @@
 /**
  * Pop command - apply, then drop a stash.
  */
-class Command_Pop extends Command
+class Command_Svnstash_Pop extends Command
 {
 	/**
 	 * Run the pop command.
@@ -18,7 +18,7 @@ class Command_Pop extends Command
 	 */
 	public function run()
 	{
-		Command::factory('apply')->run();
-		Command::factory('drop')->run();
+		Command_Svnstash::factory('apply')->run();
+		Command_Svnstash::factory('drop')->run();
 	}
 }

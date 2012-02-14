@@ -9,7 +9,7 @@
 /**
  * Trash command - show (or delete) the contents of the trash.
  */
-class Command_Trash extends Command
+class Command_Svnstash_Trash extends Command
 {
 	/**
 	 * Run the trash despatcher.
