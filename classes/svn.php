@@ -12,6 +12,34 @@
 class Svn
 {
 	/**
+	 * Attempt to traverse up the filesystem, looking for the working copy root.
+	 * 
+	 * @param string $path Path to start looking at.
+	 * 
+	 * @return string
+	 * 
+	 * @throws Exception Failing to find a .svn directory with throw.
+	 */
+	static public function getRoot($path)
+	{
+		// Attempt to find the root of the working copy.
+		// This isn't 100% reliable, though.
+		$parent = '';
+		$grandparent = $path;
+		
+		while (is_dir($grandparent . DS . '.svn')) {
+			$parent = $grandparent;
+			$grandparent = dirname($parent);
+		}
+		
+		if (! is_dir($parent . DS . '.svn')) {
+			throw new Exception('Failed to find a subversion working copy.');
+		}
+		
+		return $parent;
+	}
+	
+	/**
 	 * Stores the path to the working copy we're working on.
 	 *
 	 * @var string
