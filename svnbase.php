@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /**
  * This command ensures that commits are run from the working copy root.
