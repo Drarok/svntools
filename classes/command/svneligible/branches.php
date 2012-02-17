@@ -22,9 +22,14 @@ class Command_Svneligible_Branches extends Command_Svneligible
 	public function run()
 	{
 		$svn = new Svn('.');
+		$branches = $svn->ls(static::PREFIX);
+		natsort($branches);
 
-		foreach ($svn->ls(static::PREFIX) as $root) {
-			foreach ($svn->ls(static::PREFIX . '/' . $root) as $twig) {
+		foreach ($branches as $root) {
+			$kindling = $svn->ls(static::PREFIX . '/' . $root);
+			natsort($kindling);
+
+			foreach ($kindling as $twig) {
 				echo static::PREFIX, '/', $root, rtrim($twig, '/'), PHP_EOL;
 			}
 		}

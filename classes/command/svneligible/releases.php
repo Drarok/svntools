@@ -22,8 +22,10 @@ class Command_Svneligible_Releases extends Command_Svneligible
 	public function run()
 	{
 		$svn = new Svn('.');
+		$releases = $svn->ls(static::PREFIX);
+		natsort($releases);
 
-		foreach ($svn->ls(static::PREFIX) as $release) {
+		foreach ($releases as $release) {
 			echo static::PREFIX, '/', rtrim($release, '/'), PHP_EOL;
 		}
 	}
