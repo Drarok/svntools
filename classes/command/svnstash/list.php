@@ -9,7 +9,7 @@
 /**
  * List command - list all stashes.
  */
-class Command_List extends Command
+class Command_Svnstash_List extends Command
 {
 	/**
 	 * Run the list command.

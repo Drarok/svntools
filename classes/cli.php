@@ -77,6 +77,26 @@ abstract class CLI
 			? self::$_unnamedArguments[$index]
 			: $default;
 	}
+
+	/**
+	 * Get the full array of named arguments.
+	 * 
+	 * @return array
+	 */
+	public static function getNamedArguments()
+	{
+		return self::$_namedArguments;
+	}
+
+	/**
+	 * Fetch the full array of unnamed arguments.
+	 * 
+	 * @return array
+	 */
+	public static function getUnnamedArguments()
+	{
+		return self::$_unnamedArguments;
+	}
 	
 	/**
 	 * Parse the command-line arguments into the cache arrays.

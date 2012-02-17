@@ -400,22 +400,7 @@ class Stash
 	 */
 	protected function _setPath($path)
 	{
-		// Attempt to find the root of the working copy.
-		// This isn't 100% reliable, though.
-		$parent = '';
-		$grandparent = $path;
-		
-		while (is_dir($grandparent . DS . '.svn')) {
-			$parent = $grandparent;
-			$grandparent = dirname($parent);
-		}
-		
-		if (! is_dir($parent . DS . '.svn')) {
-			throw new Exception('Failed to find a subversion working copy.');
-		}
-		
-		$this->_path = $parent;
-		
+		$this->_path = Svn::getRoot($path);
 		chdir($this->_path);
 	}
 	

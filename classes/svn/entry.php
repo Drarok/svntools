@@ -3,7 +3,7 @@
  * Subversion entry model.
  *
  * @category Models
- * @package  svnstash
+ * @package  Subversion
  */
 
 /**

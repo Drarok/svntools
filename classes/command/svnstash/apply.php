@@ -9,7 +9,7 @@
 /**
  * Apply command - apply a stashed set of change to the working copy.
  */
-class Command_Apply extends Command
+class Command_Svnstash_Apply extends Command
 {
 	/**
 	 * Run the apply command.

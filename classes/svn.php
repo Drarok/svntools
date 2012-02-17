@@ -12,6 +12,34 @@
 class Svn
 {
 	/**
+	 * Attempt to traverse up the filesystem, looking for the working copy root.
+	 * 
+	 * @param string $path Path to start looking at.
+	 * 
+	 * @return string
+	 * 
+	 * @throws Exception Failing to find a .svn directory with throw.
+	 */
+	static public function getRoot($path)
+	{
+		// Attempt to find the root of the working copy.
+		// This isn't 100% reliable, though.
+		$parent = '';
+		$grandparent = $path;
+		
+		while (is_dir($grandparent . DS . '.svn')) {
+			$parent = $grandparent;
+			$grandparent = dirname($parent);
+		}
+		
+		if (! is_dir($parent . DS . '.svn')) {
+			throw new Exception('Failed to find a subversion working copy.');
+		}
+		
+		return $parent;
+	}
+	
+	/**
 	 * Stores the path to the working copy we're working on.
 	 *
 	 * @var string
@@ -48,7 +76,7 @@ class Svn
 	 */
 	public function diff()
 	{
-		return $this->_runCommand('diff');
+		return implode(PHP_EOL, $this->_runCommand('diff'));
 	}
 	
 	/**
@@ -75,7 +103,7 @@ class Svn
 	 */
 	public function status()
 	{
-		$status = $this->_runCommand('status', '--xml', $this->_path);
+		$status = implode(PHP_EOL, $this->_runCommand('status', '--xml', $this->_path));
 		
 		$xml = simplexml_load_string($status);
 		
@@ -101,6 +129,72 @@ class Svn
 	}
 	
 	/**
+	 * Get the commit log for the given path.
+	 * 
+	 * @param string $path Path to get the commit log for, or current directory if nothing passed.
+	 * @param array  $revs Only fetch the log for specific revisions if this is passed.
+	 * 
+	 * @return array
+	 */
+	public function log($path = null, array $revs = array())
+	{
+		$args = array('log', '--xml');
+		if ($path === null) {
+			$path = '.';
+		}
+		
+		$args[] = $path;
+		
+		foreach ($revs as $rev) {
+			$args[] = '-r' . $rev;
+		}
+		
+		$log = new Svn_Log(implode(PHP_EOL, call_user_func_array(array($this, '_runCommand'), $args)));
+		return $log->revisions();
+	}
+	
+	/**
+	 * List the contents of a working copy (or repo-relative path).
+	 * 
+	 * Returns an array of filenames.
+	 * 
+	 * @param string $path Path to list, or current directory if nothing passed.
+	 * 
+	 * @return array
+	 */
+	public function ls($path = null)
+	{
+		if ($path === null) {
+			$path = '.';
+		}
+
+		return $this->_runCommand('list', $path);
+	}
+	
+	/**
+	 * Subversion mergeinfo wrapper command.
+	 * 
+	 * Returns an array of ints  representing the revisions eligble for merging.
+	 * 
+	 * @param string $path Path to use as reference.
+	 * 
+	 * @return array
+	 */
+	public function eligible($path)
+	{
+		$revs = $this->_runCommand('mergeinfo', '--show-revs', 'eligible', $path);
+
+		$result = array();
+
+		foreach ($revs as $rev) {
+			// Trim off the leading 'r', and cast to int.
+			$result[] = (int) substr($rev, 1);
+		}
+
+		return $result;
+	}
+	
+	/**
 	 * Run a subversion command, and return the result as a string.
 	 *
 	 * @param string $args Variable number of arguments to pass to subversion.
@@ -116,14 +210,15 @@ class Svn
 		foreach ($args as $arg) {
 			$cmd .= ' ' . escapeshellarg($arg);
 		}
-		
+
+		// echo 'Running: ', $cmd, PHP_EOL;
+
 		$output = array();
 		$exitCode = null;
 		exec($cmd, $output, $exitCode);
-		$output = implode(PHP_EOL, $output);
 		
 		if ($exitCode !== 0) {
-			throw new Exception('Command \'' . $cmd . '\' failed: ' . $output);
+			throw new Exception('Command "' . $cmd . '" failed: ' . $output);
 		}
 		
 		return $output;

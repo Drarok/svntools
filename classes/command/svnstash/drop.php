@@ -9,7 +9,7 @@
 /**
  * Drop command - remove a single stash.
  */
-class Command_Drop extends Command
+class Command_Svnstash_Drop extends Command
 {
 	/**
 	 * Run the drop command.
