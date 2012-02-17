@@ -1,6 +1,26 @@
 # About
 
+This repository was originally for my 'svnstash' tool. Over time, however, I started adding other tools into the same repository to reuse some of the code, so now I think of these as 'svntools'.
+
+## svnstash
+
 Stash the changes in an svn working copy away for later - based on git's stash command.
+
+## svneligible
+
+This tool is basically to just save on typing, and having to remember the arcane `svn mergeinfo --show-revs eligible <path> | xargs -I{} svn log -{}` stupidity. It shows what revisions are eligible to merge from a branch or tag, with commands to list the repositories branches and tags.
+
+Note: This tool assumes you have roughly the same repository layout as me:
+
+```
+branches/username/feature1
+branches/username/feature2
+releases/release-0.1.1
+releases/release-0.1.2
+releases/release-0.2.0
+tags/release-0.1.1
+tags/release-0.1.2
+```
 
 # Requirements
 
@@ -18,13 +38,13 @@ Binary files are *not* supported nor detected at present. If you attempt to stas
 
 Personally, I just create a symlink named `svnstash` somewhere on my path, pointed to svnstash.php. Assuming you got the code from Github, the main entrypoint should already marked as executable.
 
-Running `svnstash --help` will give a manpage-like help sheet explaining the parameters you can use.
+Running `svnstash --help` or `svneligible --help` will give a manpage-like help sheet explaining the parameters you can use.
 
 # Contributing
 
 If you feel you could add something to svnstash, please do. Patches welcome! Fork on Github and send me a pull request.
 
-# Q&A
+# Q&A about svnstash
 
 ## Why not just use git-svn?
 
