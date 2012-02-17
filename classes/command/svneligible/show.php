@@ -14,8 +14,16 @@ class Command_Svneligible_Show extends Command_Svneligible
 	 */
 	public function run()
 	{
-		// Don't forget that argument 0 is the command.
-		$path = CLI::getUnnamedArgument(1);
+		if (CLI::getNamedArgument('stable')) {
+			// The --stable flag means to check against the 'newest' release branch.
+			$svn = new Svn('.');
+			$releases = $svn->ls('^/releases');
+			natsort($releases);
+			$path = '^/releases/' . array_pop($releases);
+		} else {
+			// Don't forget that argument 0 is the command.
+			$path = CLI::getUnnamedArgument(1);
+		}
 
 		if (! $path) {
 			echo 'You must specify a path to use the \'show\' command.', PHP_EOL;
