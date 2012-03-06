@@ -31,7 +31,7 @@ class Svn_Log
 	/**
 	 * Fetch revisions from the XML as an array of objects.
 	 * 
-	 * The revisions are keyed on the revision number.
+	 * The revisions are keyed on the revision number, and sorted as such.
 	 * 
 	 * @return array
 	 */
@@ -46,6 +46,8 @@ class Svn_Log
 				'msg' => (string) $entry->msg,
 			);
 		}
+
+		ksort($revisions);
 
 		return $revisions;
 	}
