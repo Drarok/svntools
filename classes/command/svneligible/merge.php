@@ -75,9 +75,8 @@ class Command_Svneligible_Merge extends Command_Svneligible
 
 		if (CLI::getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
-			$releases = $this->_svn->ls('^/releases');
-			natsort($releases);
-			$result->path = '^/releases/' . array_pop($releases);
+			$releases = Command_Svneligible::factory('releases')->run(false);
+			$result->path = array_pop($releases);
 		} else {
 			// Don't forget that argument 0 is the command.
 			$result->path = CLI::getUnnamedArgument(1);
