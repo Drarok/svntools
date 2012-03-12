@@ -20,7 +20,7 @@ class Cache
 	 */
 	static public function exists($name)
 	{
-		return file_exists(SVNSTASH_ROOT . 'cache' . DS . $name);
+		return file_exists(SVNTOOLS_ROOT . 'cache' . DS . $name);
 	}
 
 	/**
@@ -33,7 +33,7 @@ class Cache
 	static public function delete($name)
 	{
 		if (Cache::exists($name)) {
-			unlink(SVNSTASH_ROOT . 'cache' . DS . $name);
+			unlink(SVNTOOLS_ROOT . 'cache' . DS . $name);
 		}
 	}
 
@@ -81,7 +81,7 @@ class Cache
 	public function __construct($name, $lifetime)
 	{
 		$this->_name = $name;
-		$this->_path = SVNSTASH_ROOT . 'cache' . DS . $name;
+		$this->_path = SVNTOOLS_ROOT . 'cache' . DS . $name;
 
 		$this->_created = time();
 
