@@ -16,10 +16,8 @@ class Command_Svneligible_Show extends Command_Svneligible
 	{
 		if (CLI::getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
-			$svn = new Svn('.');
-			$releases = $svn->ls('^/releases');
-			natsort($releases);
-			$path = '^/releases/' . array_pop($releases);
+			$releases = Command_Svneligible::factory('releases')->run(false);
+			$path = array_pop($releases);
 		} else {
 			// Don't forget that argument 0 is the command.
 			$path = CLI::getUnnamedArgument(1);

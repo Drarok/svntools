@@ -15,18 +15,27 @@ class Command_Svneligible_Releases extends Command_Svneligible
 	const PREFIX = '^/releases';
 
 	/**
-	 * Command runner - does the actual work.
+	 * Fetch and filter the releases, returning the filtered array.
 	 * 
-	 * @return void
+	 * @param bool $output When true, output to stdout.
+	 * 
+	 * @return array
 	 */
-	public function run()
+	public function run($output = true)
 	{
 		$svn = new Svn('.');
 		$releases = $svn->ls(static::PREFIX);
+		$this->_filter($releases);
 		natsort($releases);
 
-		foreach ($releases as $release) {
-			echo static::PREFIX, '/', rtrim($release, '/'), PHP_EOL;
+		// Prefix the releases for display.
+		foreach ($releases as &$release) {
+			$release = static::PREFIX . '/' . rtrim($release, '/');
+			if ($output) {
+				echo $release, PHP_EOL;
+			}
 		}
+
+		return $releases;
 	}
 }

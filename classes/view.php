@@ -58,7 +58,7 @@ class View
 	public function __construct($filename, $ext = 'php')
 	{
 		$this->setFilename(
-			SVNSTASH_ROOT . 'views' . DS . $filename . '.' . $ext);
+			SVNTOOLS_ROOT . 'views' . DS . $filename . '.' . $ext);
 	}
 	
 	/**

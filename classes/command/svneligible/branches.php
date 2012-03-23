@@ -23,6 +23,7 @@ class Command_Svneligible_Branches extends Command_Svneligible
 	{
 		$svn = new Svn('.');
 		$branches = $svn->ls(static::PREFIX);
+		$this->_filter($branches);
 		natsort($branches);
 
 		foreach ($branches as $root) {

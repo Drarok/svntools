@@ -8,11 +8,23 @@ Stash the changes in an svn working copy away for later - based on git's stash c
 
 ## svneligible
 
-This tool is basically to just save on typing, and having to remember the arcane `svn mergeinfo --show-revs eligible <path> | xargs -I{} svn log -{}` stupidity. It shows what revisions are eligible to merge from a branch or tag, with commands to list the repositories branches and tags.
+This tool is eases the pain caused by Subversion's braindead merge command syntax. It shows what revisions are eligible to merge from a branch or tag, with commands to list the repository's releases, branches, and tags.
+
+Also, new in v0.4, there is a 'merge' subcommand, allowing filtering of the eligible revisions on author name, and/or revision range prior to passing to subversion to do the actual merge.
+
+These are all valid commands:
+
+<pre>
+svneligible merge --stable --author=drarok --range=15:23
+svneligible merge --stable --author=drarok --initial=15
+svneligible merge ^/releases/1.1 --final=23
+</pre>
+
+My primary reason for this addition is Subversion's braindead merge syntax. It interprets -r4:10 to mean "merge changes that occurred *after* revision 4, and up to (and including) revision 10". All ranges in svneligible are inclusive.
 
 Note: This tool assumes you have roughly the same repository layout as me:
 
-```
+<pre>
 branches/username/feature1
 branches/username/feature2
 releases/release-0.1.1
@@ -20,7 +32,7 @@ releases/release-0.1.2
 releases/release-0.2.0
 tags/release-0.1.1
 tags/release-0.1.2
-```
+</pre>
 
 # Requirements
 

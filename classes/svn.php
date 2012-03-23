@@ -131,6 +131,9 @@ class Svn
 	/**
 	 * Get the commit log for the given path.
 	 * 
+	 * Fetches the commit log, returning an associative array, keyed on the 
+	 * revision id (and sorted, too).
+	 * 
 	 * @param string $path Path to get the commit log for, or current directory if nothing passed.
 	 * @param array  $revs Only fetch the log for specific revisions if this is passed.
 	 * 
@@ -149,7 +152,9 @@ class Svn
 			$args[] = '-r' . $rev;
 		}
 		
-		$log = new Svn_Log(implode(PHP_EOL, call_user_func_array(array($this, '_runCommand'), $args)));
+		$method = array($this, '_runCommand');
+		$output = call_user_func_array($method, $args);
+		$log = new Svn_Log(implode(PHP_EOL, $output));
 		return $log->revisions();
 	}
 	
@@ -174,7 +179,7 @@ class Svn
 	/**
 	 * Subversion mergeinfo wrapper command.
 	 * 
-	 * Returns an array of ints  representing the revisions eligble for merging.
+	 * Returns an array of ints representing the revisions eligble for merging.
 	 * 
 	 * @param string $path Path to use as reference.
 	 * 
@@ -191,15 +196,39 @@ class Svn
 			$result[] = (int) substr($rev, 1);
 		}
 
+		sort($result);
+
 		return $result;
+	}
+
+	/**
+	 * Subversion merge wrapper command.
+	 * 
+	 * @param string $path Path to merge from.
+	 * @param mixed  $revs Array of revision ids to merge, or null for all.
+	 * 
+	 * @return void
+	 */
+	public function merge($path, $revs = null)
+	{
+		$args = array('merge');
+
+		if ((bool) $revs) {
+			$args[] = '-c' . implode(',', $revs);
+		}
+
+		$args[] = $path;
+
+		$method = array($this, '_runCommand');
+		call_user_func_array($method, $args);
 	}
 	
 	/**
-	 * Run a subversion command, and return the result as a string.
+	 * Run a subversion command, and return the result as an array of strings.
 	 *
 	 * @param string $args Variable number of arguments to pass to subversion.
 	 *
-	 * @return string
+	 * @return array
 	 */
 	protected function _runCommand($args)
 	{
@@ -211,7 +240,9 @@ class Svn
 			$cmd .= ' ' . escapeshellarg($arg);
 		}
 
-		// echo 'Running: ', $cmd, PHP_EOL;
+		if (CLI::getNamedArgument('verbose')) {
+			echo 'Running: ', $cmd, PHP_EOL;
+		}
 
 		$output = array();
 		$exitCode = null;

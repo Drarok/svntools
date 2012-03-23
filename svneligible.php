@@ -7,7 +7,9 @@
 require_once __DIR__ . '/bootstrap.php';
 
 // Initialise the command-line helper.
-CLI::init();
+CLI::init(array(
+	'v' => 'verbose',
+));
 
 // Override the command if there are none, or --help passed.
 if (! (bool) $command = CLI::getUnnamedArgument(0)) {

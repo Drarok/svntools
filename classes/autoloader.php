@@ -25,7 +25,7 @@ abstract class Autoloader
 	public static function autoload($className)
 	{
 		$classSuffix = str_replace('_', DS, strtolower($className));
-		$classPath = SVNSTASH_ROOT . 'classes' . DS . $classSuffix . '.php';
+		$classPath = SVNTOOLS_ROOT . 'classes' . DS . $classSuffix . '.php';
 		
 		if (file_exists($classPath)) {
 			include_once $classPath;
