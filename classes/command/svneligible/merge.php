@@ -51,6 +51,17 @@ class Command_Svneligible_Merge extends Command_Svneligible
 			exit(1);
 		}
 
+		if (CLI::getNamedArgument('dry-run')) {
+			$noun = count($eligible) == 1
+				? 'revision'
+				: 'revisions';
+
+			echo sprintf('Would merge %s %s from %s',
+				$noun, implode(', ', $eligible), $options->path), PHP_EOL;
+
+			exit(0);
+		}
+
 		$this->_svn->merge($options->path, $eligible);
 	}
 
