@@ -6,7 +6,7 @@ SYNOPSIS
 	svneligible releases [-v|--verbose]
 	svneligible tags [-v|--verbose]
 	svneligible show (<path>|--stable) [--show-log] [-v|--verbose]
-	svneligible merge (<path>|--stable) [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
+	svneligible merge (<path>|--stable) [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
 	svneligible help
 
 OPTIONS
@@ -30,6 +30,9 @@ OPTIONS
 		Tell Subversion to merge the eligible revs from <path>. You must pass either a path, or --stable.
 
 		The --stable option will look up the "latest" release (the last item in the releases list).
+
+		If you pass --dry-run, then no merge will actually take place, the revisions will just be output.
+		This is useful if you want to try out some filters and ensure they match correctly.
 
 		Passing --author=<name> will only merge revisions committed by the specified author.
 		This is useful for merging only commits that you have made.
