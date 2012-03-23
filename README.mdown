@@ -4,7 +4,7 @@ This repository was originally for my 'svnstash' tool. Over time, however, I sta
 
 ## svnstash
 
-Stash the changes in an svn working copy away for later - based on git's stash command.
+Stash the changes in an svn working copy away for later - based on git's stash command. Limited to text files only, as it's using `svn diff` internally.
 
 ## svneligible
 
@@ -18,6 +18,7 @@ These are all valid commands:
 svneligible merge --stable --author=drarok --range=15:23
 svneligible merge --stable --author=drarok --initial=15
 svneligible merge ^/releases/1.1 --final=23
+svneligible merge ^/releases/1.1 --dry-run
 </pre>
 
 My primary reason for this addition is Subversion's braindead merge syntax. It interprets -r4:10 to mean "merge changes that occurred *after* revision 4, and up to (and including) revision 10". All ranges in svneligible are inclusive.
@@ -54,7 +55,7 @@ Running `svnstash --help` or `svneligible --help` will give a manpage-like help 
 
 # Contributing
 
-If you feel you could add something to svnstash, please do. Patches welcome! Fork on Github and send me a pull request.
+If you feel you could add something to svnstash, please do. Patches welcome! Fork on Github and send me a pull request (preferably on the develop branch).
 
 # Q&A about svnstash
 
