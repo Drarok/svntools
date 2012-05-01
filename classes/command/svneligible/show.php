@@ -30,9 +30,6 @@ class Command_Svneligible_Show extends Command_Svneligible
 
 		echo $path, PHP_EOL;
 
-		// Is the user after the log messages?
-		$showLog = CLI::getNamedArgument('show-log', false);
-
 		$svn = new Svn('.');
 
 		$eligible = $svn->eligible($path);
@@ -40,24 +37,18 @@ class Command_Svneligible_Show extends Command_Svneligible
 		if (! (bool) $eligible) {
 			echo '    No eligible revisions.', PHP_EOL;
 		} else {
-			// There are revs, grab the log messages if required.
-			if ($showLog) {
-				$logs = $svn->log('^/', $eligible);
-			} else {
-				$logs = array_fill_keys($eligible, null);
-			}
+			// There are revs, grab the log messages.
+			$logs = $svn->log('^/', $eligible);
 
 			ksort($logs);
 			foreach ($logs as $rev => $log) {
 				echo '    r', $rev, PHP_EOL;
 				
-				if ($log) {
-					echo '        ', str_pad($log->author, 10), ' | ', $log->date, PHP_EOL;
-					foreach (explode(PHP_EOL, trim($log->msg)) as $line) {
-						echo '        ', $line, PHP_EOL;
-					}
-					echo PHP_EOL;
+				echo '        ', str_pad($log->author, 10), ' | ', $log->date, PHP_EOL;
+				foreach (explode(PHP_EOL, trim($log->msg)) as $line) {
+					echo '        ', $line, PHP_EOL;
 				}
+				echo PHP_EOL;
 			}
 		}
 	}

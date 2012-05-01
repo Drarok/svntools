@@ -5,7 +5,7 @@ SYNOPSIS
 	svneligible branches [-v|--verbose]
 	svneligible releases [-v|--verbose]
 	svneligible tags [-v|--verbose]
-	svneligible show (<path>|--stable) [--show-log] [-v|--verbose]
+	svneligible show (<path>|--stable) [-v|--verbose]
 	svneligible merge (<path>|--stable) [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
 	svneligible help
 
@@ -19,12 +19,11 @@ OPTIONS
 	tags
 		List the contents of ^/tags.
 
-	show (<path>|--stable) [--show-log]
-		Show revisions that are eligible to merge from <path>. You must pass either a path, or --stable.
+	show (<path>|--stable)
+		Show revisions (and log messages) that are eligible to merge from <path>. You must pass either a path,
+		or --stable.
 
 		The --stable option will look up the "latest" release (the last item in the releases list) for you.
-
-		The --show-log option will fetch the commit messages and display those, too.
 
 	merge
 		Tell Subversion to merge the eligible revs from <path>. You must pass either a path, or --stable.
