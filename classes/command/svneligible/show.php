@@ -14,6 +14,9 @@ class Command_Svneligible_Show extends Command_Svneligible
 	 */
 	public function run()
 	{
+		// Always run from the repo root.
+		$svn = new Svn(Svn::getRoot('.'));
+
 		if (CLI::getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
 			$releases = Command_Svneligible::factory('releases')->run(false);
@@ -21,6 +24,13 @@ class Command_Svneligible_Show extends Command_Svneligible
 		} else {
 			// Don't forget that argument 0 is the command.
 			$path = CLI::getUnnamedArgument(1);
+		}
+
+		if (! $path) {
+			// Still no path. Is there an upstream set?
+			$repoPath = $svn->relativePath();
+			$stash = new Stash(Svn::getRoot('.'));
+			$path = $stash->getUpstream($repoPath);
 		}
 
 		if (! $path) {

@@ -21,7 +21,8 @@ class Command_Svneligible_Merge extends Command_Svneligible
 	 */
 	public function run()
 	{
-		$this->_svn = new Svn('.');
+		// Note that we *always* operate on the root of the working copy.
+		$this->_svn = new Svn(Svn::getRoot('.'));
 
 		$options = $this->_parseOptions();
 
@@ -91,6 +92,12 @@ class Command_Svneligible_Merge extends Command_Svneligible
 		} else {
 			// Don't forget that argument 0 is the command.
 			$result->path = CLI::getUnnamedArgument(1);
+		}
+
+		if (! $result->path) {
+			// There's still no path. Look for an upstream.
+			$stash = new Stash(Svn::getRoot('.'));
+			$result->path = $stash->getUpstream($this->_svn->relativePath());
 		}
 
 		if (! $result->path) {
