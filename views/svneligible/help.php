@@ -5,8 +5,9 @@ SYNOPSIS
 	svneligible branches [-v|--verbose]
 	svneligible releases [-v|--verbose]
 	svneligible tags [-v|--verbose]
-	svneligible show (<path>|--stable) [-v|--verbose]
-	svneligible merge (<path>|--stable) [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
+	svneligible upstream [--remove] [--path=<path>] [<upstream>]
+	svneligible show [<path>|--stable] [-v|--verbose]
+	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
 	svneligible help
 
 OPTIONS
@@ -18,6 +19,19 @@ OPTIONS
 
 	tags
 		List the contents of ^/tags.
+
+	upstream
+		Shows or changes the "upstream" configuration. "Upstream" branches are those used automatically by the
+		'show' and 'merge' commands when no <path> option is specified.
+
+		Running 'upstream' with no parameters will output all currently-configured upstreams.
+
+		Passing --path=<path> will perform operations on <path>, else the currently checked-out path is used.
+
+		The --remove option will remove any upstream setting for <path> (or current branch).
+
+		Specifiying <upstream> will record that path as the upstream branch. If you call 'show' or 'merge' with no <path>
+		option, the <upstream> will be checked for the currently-checked out path.
 
 	show (<path>|--stable)
 		Show revisions (and log messages) that are eligible to merge from <path>. You must pass either a path,
