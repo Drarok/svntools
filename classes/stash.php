@@ -92,22 +92,23 @@ class Stash
 	 */
 	public function getStashes()
 	{
+		// Make sure everything is set up.
+		$this->_setupPath();
+
 		$result = array();
 		
-		if ($this->_getIsSetup()) {
-			$file = fopen($this->_getStashFilePath(), 'r');
-			
-			if (! $file) {
-				throw new Exception('Failed to open '
-					. $this->_getStashFilePath());
-			}
-			
-			while ($stash = trim(fgets($file))) {
-				$result[] = $stash;
-			}
-			
-			fclose($file);
+		$file = fopen($this->_getStashFilePath(), 'r');
+		
+		if (! $file) {
+			throw new Exception('Failed to open '
+				. $this->_getStashFilePath());
 		}
+		
+		while ($stash = trim(fgets($file))) {
+			$result[] = $stash;
+		}
+		
+		fclose($file);
 		
 		return $result;
 	}
@@ -393,7 +394,105 @@ class Stash
 		
 		return $name;
 	}
-	
+
+	/**
+	 * Add an 'upstream' entry for the given path.
+	 * 
+	 * @param string $path     Path to add the upstream entry for.
+	 * @param string $upstream Upstream path to store.
+	 * 
+	 * @return void
+	 */
+	public function addUpstream($path, $upstream)
+	{
+		$upstreams = $this->getAllUpstreams();
+		$upstreams[$path] = $upstream;
+		$this->_saveUpstreams($upstreams);
+	}
+
+	/**
+	 * Get the upstream (if any) for the given path.
+	 * 
+	 * @param string $path Path to fetch the upstream setting for.
+	 * 
+	 * @return mixed
+	 */
+	public function getUpstream($path)
+	{
+		$upstreams = $this->getAllUpstreams();
+		return array_key_exists($path, $upstreams)
+			? $upstreams[$path]
+			: NULL;
+	}
+
+	/**
+	 * Public access to get all upstream configuration.
+	 * 
+	 * @return array
+	 */
+	public function getAllUpstreams()
+	{
+		$path = $this->_getUpstreamsFilePath();
+
+		if (! file_exists($path)) {
+			return array();
+		}
+
+		$contents = file_get_contents($path);
+
+		if (! $contents) {
+			return array();
+		}
+
+		$array = unserialize($contents);
+
+		if (! is_array($array)) {
+			return array();
+		}
+
+		return $array;
+	}
+
+	/**
+	 * Remove the upstream setting for the given path.
+	 * 
+	 * @param string $path Path to remove the upstream config for.
+	 * 
+	 * @return void
+	 */
+	public function removeUpstream($path)
+	{
+		$upstreams = $this->getAllUpstreams();
+		unset($upstreams[$path]);
+		$this->_saveUpstreams($upstreams);
+	}
+
+	/**
+	 * Store the passed-in config to disk.
+	 * 
+	 * @param array $upstreams Current config to save.
+	 * 
+	 * @return void
+	 */
+	protected function _saveUpstreams($upstreams)
+	{
+		// Ensure all the files exist.
+		$this->_setupPath();
+
+		$path = $this->_getUpstreamsFilePath();
+		file_put_contents($path, serialize($upstreams));
+	}
+
+	/**
+	 * Return the full path to the upstreams config file.
+	 * 
+	 * @return string
+	 */
+	protected function _getUpstreamsFilePath()
+	{
+		return $this->_getStashDirPath() . 'upstreams.txt';
+	}
+
 	/**
 	 * Set the path where we will save and load stashes.
 	 *
@@ -460,20 +559,14 @@ class Stash
 		if (! file_exists($stashFile) && ! touch($stashFile)) {
 			throw new Exception('Cannot create stash file: ' . $stashFile);
 		}
+
+		$upstreamsFile = $this->_getUpstreamsFilePath();
+
+		if (! file_exists($upstreamsFile) && ! touch($upstreamsFile)) {
+			throw new Exception('Cannot create upstreams file: ' . $upstreamsFile);
+		}
 	}
-	
-	/**
-	 * Get whether or not the path is set up.
-	 *
-	 * @return bool
-	 */
-	protected function _getIsSetup()
-	{
-		return (
-			is_dir($this->_getStashDirPath())
-			&& file_exists($this->_getStashFilePath()));
-	}
-	
+
 	/**
 	 * Fetch all untracked files from the working directory.
 	 *

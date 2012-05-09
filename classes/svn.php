@@ -25,7 +25,7 @@ class Svn
 		// Attempt to find the root of the working copy.
 		// This isn't 100% reliable, though.
 		$parent = '';
-		$grandparent = $path;
+		$grandparent = realpath($path);
 		
 		while (is_dir($grandparent . DS . '.svn')) {
 			$parent = $grandparent;
@@ -222,7 +222,32 @@ class Svn
 		$method = array($this, '_runCommand');
 		call_user_func_array($method, $args);
 	}
-	
+
+	/**
+	 * Get information about the working copy.
+	 * 
+	 * @return object
+	 */
+	public function info()
+	{
+		$xmlString = implode(PHP_EOL, $this->_runCommand('info', '--xml'));
+		return simplexml_load_string($xmlString);
+	}
+
+	/**
+	 * Get the current working directory's repo-relative path.
+	 * 
+	 * @return string
+	 */
+	public function relativePath()
+	{
+		$info = $this->info();
+
+		$repoRoot = $info->entry->repository->root;
+		$pathUrl = $info->entry->url;
+		return '^' . substr($pathUrl, strlen($repoRoot));
+	}
+
 	/**
 	 * Run a subversion command, and return the result as an array of strings.
 	 *
