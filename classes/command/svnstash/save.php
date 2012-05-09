@@ -9,7 +9,8 @@
 /**
  * Save command.
  *
- * Save modifications (and optionally untracked files) to a new stash.
+ * Save modifications (and optionally untracked files) to a new stash, optionally
+ * reverting the working copy in the process.
  */
 class Command_Svnstash_Save extends Command
 {
@@ -32,7 +33,7 @@ class Command_Svnstash_Save extends Command
 		
 		$includeUntracked = (bool) CLI::getNamedArgument('untracked-files');
 		
-		$stash->addStash($stashName, $includeUntracked);
+		$stash->addStash($stashName, $includeUntracked, CLI::getNamedArgument('revert', FALSE));
 		
 		echo 'Created new stash: ', $stashName, PHP_EOL;
 	}

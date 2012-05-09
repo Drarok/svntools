@@ -145,13 +145,18 @@ class Stash
 	/**
 	 * Create and store a new stash.
 	 *
-	 * @param string $name             Name of the stash to create.
-	 * @param bool   $includeUntracked Include 'untracked' files in the stash.
+	 * @param string $name              Name of the stash to create.
+	 * @param bool   $includeUntracked  Include 'untracked' files in the stash.
+	 * @param bool   $revertWorkingCopy Should we immediately run a 'revert' on the working copy?
 	 *
 	 * @return void
 	 */
-	public function addStash($name, $includeUntracked)
+	public function addStash($name, $includeUntracked, $revertWorkingCopy = NULL)
 	{
+		if (! is_bool($revertWorkingCopy)) {
+			throw new Exception('You *must* specify $revertWorkingCopy as a boolean.');
+		}
+
 		// Make sure the name is valid.
 		self::_validateStashName($name);
 		
@@ -199,8 +204,10 @@ class Stash
 		fwrite($file, $name . PHP_EOL);
 		fclose($file);
 		
-		// Revert the working copy.
-		$svn->revert('.', true);
+		if ($revertWorkingCopy) {
+			// Revert the working copy.
+			$svn->revert('.', true);
+		}
 		
 		// Remove the untracked files.
 		foreach ($untrackedFiles as $untracked) {
