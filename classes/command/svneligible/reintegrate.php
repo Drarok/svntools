@@ -61,6 +61,13 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 				// The 'remove' option was passed, so delete the now-reintegrated branch.
 				echo 'Automatically removing the reintegrated branch.', PHP_EOL;
 				$svn->rm($relativePath, 'Removing now-reintegrated branch');
+
+				// Also remove any upstream entries.
+				$upstream = new Upstream('.');
+				if ((bool) $upstreamPath = $upstream->getUpstream($relativePath)) {
+					echo 'Removing upstream for path ', $relativePath, ' (was ', $upstreamPath, ')', PHP_EOL;
+					$upstream->removeUpstream($relativePath);
+				}
 			}
 		}
 	}
