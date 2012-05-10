@@ -13,15 +13,25 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 	{
 		$svn = new Svn(Svn::getRoot('.'));
 
+		// Grab the relative path, as we need it in various places.
+		$relativePath = $svn->relativePath();
+
 		// Don't forget that argument 0 is the command.
 		if (! (bool) $upstreamPath = $this->_args->getUnnamedArgument(1)) {
 			// No upstreamPath specified on the command line, is there one stored?
 			$upstream = new Upstream('.');
-			$upstreamPath = $upstream->getUpstream($svn->relativePath());
+			$upstreamPath = $upstream->getUpstream($relativePath);
 		}
 
 		if (! (bool) $upstreamPath) {
 			throw new Exception('You must specify a parent branch to merge into.');
+		}
+
+		// Ensure there are no uncommitted changes.
+		foreach ($svn->status() as $item) {
+			if ($item->getState() == Svn_Entry::MODIFIED) {
+				throw new Exception('You have uncommitted changes. Aborting.');
+			}
 		}
 
 		// Check that there are no eligible revisions.
@@ -34,5 +44,24 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 		}
 
 		echo 'Reintegrating into ', $upstreamPath, PHP_EOL;
+
+		$svn->switchTo($upstreamPath);
+		$svn->merge($relativePath, null, null, true);
+
+		if ((bool) $commit = $this->_args->getNamedArgument('commit')) {
+			echo 'Committing...', PHP_EOL;
+
+			if ($commit !== true) {
+				$svn->commit($commit);
+			} else {
+				$svn->commit();
+			}
+
+			if ((bool) $remove = $this->_args->getNamedArgument('remove')) {
+				// The 'remove' option was passed, so delete the now-reintegrated branch.
+				echo 'Automatically removing the reintegrated branch.', PHP_EOL;
+				$svn->rm($relativePath, 'Removing now-reintegrated branch');
+			}
+		}
 	}
 }
