@@ -16,7 +16,6 @@ class Command_Svneligible_Show extends Command_Svneligible
 	{
 		// Always run from the repo root.
 		$svn = new Svn(Svn::getRoot('.'));
-		$svn->setVerbose($this->_args->getNamedArgument('verbose'));
 
 		if ($this->_args->getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
