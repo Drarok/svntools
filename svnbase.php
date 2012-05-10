@@ -6,7 +6,4 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-// Initialise the command-line helper.
-CLI::init();
-
 Command::factory('svnbase')->run();

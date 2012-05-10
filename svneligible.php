@@ -6,20 +6,21 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-// Initialise the command-line helper.
-CLI::init(array(
+// Set up command-line parsing.
+$mapping = array(
 	'v' => 'verbose',
-));
+);
+$args = new Arguments(array_slice($_SERVER['argv'], 1), $mapping);
 
 // Override the command if there are none, or --help passed.
-if (! (bool) $command = CLI::getUnnamedArgument(0)) {
+if (! (bool) $command = $args->getUnnamedArgument(0)) {
 	$command = 'help';
-} elseif (CLI::getNamedArgument('help')) {
+} elseif ($args->getNamedArgument('help')) {
 	$command = 'help';
 }
 
 // Despatch the command.
-$command = Command_Svneligible::factory(strtolower($command));
+$command = Command_Svneligible::factory(strtolower($command), $args);
 
 if ($command instanceof Command_Svneligible) {
 	$command->run();

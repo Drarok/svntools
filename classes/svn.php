@@ -45,6 +45,13 @@ class Svn
 	 * @var string
 	 */
 	protected $_path;
+
+	/**
+	 * Output verbose information when running?
+	 * 
+	 * @var bool
+	 */
+	protected $_verbose = FALSE;
 	
 	/**
 	 * Constructor.
@@ -54,6 +61,18 @@ class Svn
 	public function __construct($path)
 	{
 		$this->_path = $path;
+	}
+
+	/**
+	 * Setter for the _verbose property.
+	 * 
+	 * @param bool $verbose True to enable verbose mode, or false to disable.
+	 * 
+	 * @return void
+	 */
+	public function setVerbose($verbose)
+	{
+		$this->_verbose = (bool) $verbose;
 	}
 	
 	/**
@@ -284,7 +303,7 @@ class Svn
 			$cmd .= ' ' . escapeshellarg($arg);
 		}
 
-		if (CLI::getNamedArgument('verbose')) {
+		if ($this->_verbose) {
 			echo 'Running: ', $cmd, PHP_EOL;
 		}
 

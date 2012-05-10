@@ -21,7 +21,7 @@ class Command_Svnstash_Clear extends Command
 		$path = getcwd();
 		$stash = new Stash($path);
 		
-		if (! CLI::getNamedArgument('force', false)) {
+		if (! $this->_args->getNamedArgument('force', false)) {
 			echo 'Are you sure you want to remove all stashes [y/N]? ';
 			
 			$input = strtolower(trim(fgets(STDIN)));

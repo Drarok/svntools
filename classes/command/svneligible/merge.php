@@ -36,7 +36,7 @@ class Command_Svneligible_Merge extends Command_Svneligible
 		}
 
 		// There are revs, filter on author if required.
-		if ((bool) $author = CLI::getNamedArgument('author')) {
+		if ((bool) $author = $this->_args->getNamedArgument('author')) {
 			$eligible = $this->_filterAuthor($eligible, $author);
 
 			if (! count($eligible)) {
@@ -52,7 +52,7 @@ class Command_Svneligible_Merge extends Command_Svneligible
 			exit(1);
 		}
 
-		if (CLI::getNamedArgument('dry-run')) {
+		if ($this->_args->getNamedArgument('dry-run')) {
 			$noun = count($eligible) == 1
 				? 'revision'
 				: 'revisions';
@@ -85,13 +85,13 @@ class Command_Svneligible_Merge extends Command_Svneligible
 			'final'   => false,
 		);
 
-		if (CLI::getNamedArgument('stable')) {
+		if ($this->_args->getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
 			$releases = Command_Svneligible::factory('releases')->run(false);
 			$result->path = array_pop($releases);
 		} else {
 			// Don't forget that argument 0 is the command.
-			$result->path = CLI::getUnnamedArgument(1);
+			$result->path = $this->_args->getUnnamedArgument(1);
 		}
 
 		if (! $result->path) {
@@ -106,15 +106,15 @@ class Command_Svneligible_Merge extends Command_Svneligible
 		}
 
 		// Now parse out the range / limiting options.
-		if ((bool) $initial = (int) CLI::getNamedArgument('initial')) {
+		if ((bool) $initial = (int) $this->_args->getNamedArgument('initial')) {
 			$result->initial = $initial;
 		}
 
-		if ((bool) $final = (int) CLI::getNamedArgument('final')) {
+		if ((bool) $final = (int) $this->_args->getNamedArgument('final')) {
 			$result->final = $final;
 		}
 
-		if ((bool) $range = CLI::getNamedArgument('range')) {
+		if ((bool) $range = $this->_args->getNamedArgument('range')) {
 			if ($result->initial || $result->final) {
 				echo 'You cannot specify both a range and an initial or final revision.', PHP_EOL;
 				exit(1);

@@ -22,7 +22,7 @@ class Command_Svnstash_Show extends Command
 		$stash = new Stash($path);
 		
 		// Grab the id from the command line.
-		$id = CLI::getUnnamedArgument(1, null);
+		$id = $this->_args->getUnnamedArgument(1, null);
 		
 		// Find its path.
 		$path = $stash->getStashPath($id);
