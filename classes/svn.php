@@ -248,19 +248,24 @@ class Svn
 	/**
 	 * Subversion merge wrapper command.
 	 * 
-	 * @param string $path   Path to merge from.
-	 * @param mixed  $revs   Array of revision ids to merge, or null for all.
-	 * @param string $wcPath Working copy path to merge into (defaults to the instance path).
+	 * @param string $path        Path to merge from.
+	 * @param mixed  $revs        Array of revision ids to merge, or null for all.
+	 * @param string $wcPath      Working copy path to merge into (defaults to the instance path).
+	 * @param bool   $reintegrate Pass true to perform a 'reintegrate' merge.
 	 * 
 	 * @return void
 	 */
-	public function merge($path, $revs = null, $wcPath = NULL)
+	public function merge($path, $revs = null, $wcPath = null, $reintegrate = false)
 	{
 		if ($wcPath === NULL) {
 			$wcPath = $this->_path;
 		}
 
 		$args = array('merge');
+
+		if ($reintegrate) {
+			$args[] = '--reintegrate';
+		}
 
 		if ((bool) $revs) {
 			$args[] = '-c' . implode(',', $revs);
@@ -304,6 +309,61 @@ class Svn
 		$repoRoot = $info->entry->repository->root;
 		$pathUrl = $info->entry->url;
 		return '^' . substr($pathUrl, strlen($repoRoot));
+	}
+
+	/**
+	 * Switch the working copy to another URL.
+	 * 
+	 * Named switchTo because you can't have a method named 'switch' in PHP.
+	 * 
+	 * @param string $url URL to switch to.
+	 * 
+	 * @return void
+	 */
+	public function switchTo($url)
+	{
+		$this->_runCommand('switch', $url);
+	}
+
+	/**
+	 * Perform a Subversion commit.
+	 * 
+	 * @param mixed $message A string to use as the commit message, or null to show the editor.
+	 * 
+	 * @return void
+	 */
+	public function commit($message = null)
+	{
+		$args = array('commit');
+
+		if ((bool) $message) {
+			$args[] = '-m';
+			$args[] = $message;
+		}
+
+		$method = array($this, '_runCommand');
+		call_user_func_array($method, $args);
+	}
+
+	/**
+	 * Remove a file or directory, optionally with a commit message.
+	 * 
+	 * @param string $path    Path to remove.
+	 * @param mixed  $message Commit message to specify.
+	 * 
+	 * @return void
+	 */
+	public function rm($path, $message = null)
+	{
+		$args = array('rm', $path);
+
+		if ((bool) $message) {
+			$args[] = '-m';
+			$args[] = $message;
+		}
+
+		$method = array($this, '_runCommand');
+		call_user_func_array($method, $args);
 	}
 
 	/**
