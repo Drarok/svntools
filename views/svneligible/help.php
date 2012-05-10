@@ -8,6 +8,7 @@ SYNOPSIS
 	svneligible upstream [--remove] [--path=<path>] [<upstream>]
 	svneligible show [<path>|--stable] [-v|--verbose]
 	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
+	svneligible reintegrate [<path>] [--commit[=<message>] [--remove]]
 	svneligible help
 
 OPTIONS
@@ -62,6 +63,19 @@ OPTIONS
 
 		Note: Subversion's standard command expect you to make up the first revision, whereas svneligible accepts
 		non-braindead arguments. The options passed to --initial, --final, and --range are *inclusive*.
+
+	reintegrate
+		Perform a reintegration merge by switching the working copy, merging, committing (you may supply a message
+		on the command line, or allow your editor to show), and finally removing your reintegrated branch. Some of these
+		steps are optional.
+
+		You must either supply a path on the command line as <path>, or have previously set up an "upstream" branch.
+
+		Passing '--commit' will show your editor and allow you to enter a commit message, or you may specify it like so:
+		'--commit=Reintegrating my development branch'.
+
+		If you pass '--remove' in addition to '--commit[=<message>]', then the reintegrated branch will automatically
+		be removed.
 
 	help
 		This help text.
