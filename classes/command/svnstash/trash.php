@@ -20,7 +20,7 @@ class Command_Svnstash_Trash extends Command
 	{
 		$valid_subcommands = array('show', 'empty', 'restore');
 		
-		$subcommand = CLI::getUnnamedArgument(1, 'show');
+		$subcommand = $this->_args->getUnnamedArgument(1, 'show');
 		
 		if (! in_array($subcommand, $valid_subcommands)) {
 			throw new Exception('Invalid trash subcommand: ' . $subcommand);
@@ -51,7 +51,7 @@ class Command_Svnstash_Trash extends Command
 	protected function _empty()
 	{
 		// Allow the user to bail.
-		if (! CLI::getNamedArgument('force', false)) {
+		if (! $this->_args->getNamedArgument('force', false)) {
 			echo 'Are you sure you want to empty the trash [y/N]? ';
 			
 			$input = strtolower(trim(fgets(STDIN)));
@@ -77,7 +77,7 @@ class Command_Svnstash_Trash extends Command
 		
 		$stash = new Stash(getcwd());
 		
-		while (! is_null($id = CLI::getUnnamedArgument($index++))) {
+		while (! is_null($id = $this->_args->getUnnamedArgument($index++))) {
 			$name = $stash->restoreFromTrash($id);
 			echo 'Restored stash \'', $name, '\' from trash.', PHP_EOL;
 			$count++;

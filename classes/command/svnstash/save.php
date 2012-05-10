@@ -21,7 +21,7 @@ class Command_Svnstash_Save extends Command
 	 */
 	public function run()
 	{
-		$stashName = CLI::getUnnamedArgument(1);
+		$stashName = $this->_args->getUnnamedArgument(1);
 		
 		if (! (bool) $stashName) {
 			echo 'You must supply a stash name.', PHP_EOL;
@@ -31,9 +31,9 @@ class Command_Svnstash_Save extends Command
 		$path = getcwd();
 		$stash = new Stash($path);
 		
-		$includeUntracked = (bool) CLI::getNamedArgument('untracked-files');
+		$includeUntracked = (bool) $this->_args->getNamedArgument('untracked-files');
 		
-		$stash->addStash($stashName, $includeUntracked, CLI::getNamedArgument('revert', FALSE));
+		$stash->addStash($stashName, $includeUntracked, $this->_args->getNamedArgument('revert', FALSE));
 		
 		echo 'Created new stash: ', $stashName, PHP_EOL;
 	}

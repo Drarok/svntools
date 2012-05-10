@@ -27,7 +27,7 @@ class Command_Svnstash_Apply extends Command
 		$stash = new Stash($path);
 		
 		// Grab the id from the command line.
-		$id = CLI::getUnnamedArgument(1, null);
+		$id = $this->_args->getUnnamedArgument(1, null);
 		
 		// Get the stash file path and name.
 		$path = $stash->getStashPath($id);
