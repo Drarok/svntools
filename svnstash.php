@@ -15,6 +15,10 @@ $mapping = array(
 
 $args = new Arguments(array_slice($_SERVER['argv'], 1));
 
+if ($args->getNamedArgument('verbose')) {
+	Svn::setDefaultVerbose(true);
+}
+
 // Use the 1st argument as the command, if there is one.
 $command = $args->getUnnamedArgument(0, 'list');
 

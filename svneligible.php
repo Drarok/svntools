@@ -12,6 +12,10 @@ $mapping = array(
 );
 $args = new Arguments(array_slice($_SERVER['argv'], 1), $mapping);
 
+if ($args->getNamedArgument('verbose')) {
+	Svn::setDefaultVerbose(true);
+}
+
 // Override the command if there are none, or --help passed.
 if (! (bool) $command = $args->getUnnamedArgument(0)) {
 	$command = 'help';
