@@ -12,15 +12,15 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 	public function run()
 	{
 		 // Don't forget that argument 0 is the command).
-		$upstream = CLI::getUnnamedArgument(1);
+		$upstreamPath = CLI::getUnnamedArgument(1);
 		$path = CLI::getNamedArgument('path');
 
-		$stash = new Stash('.');
+		$upstream = new Upstream('.');
 
-		if (! $path && ! $upstream) {
+		if (! $path && ! $upstreamPath) {
 			// No options passed in, show current config.
-			foreach ($stash->getAllUpstreams() as $path => $upstream) {
-				echo $path, ' => ', $upstream, PHP_EOL;
+			foreach ($upstream->getAllUpstreams() as $path => $upstreamPath) {
+				echo $path, ' => ', $upstreamPath, PHP_EOL;
 			}
 			return;
 		}
@@ -36,12 +36,12 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		}
 
 		// Validate the new upstream branch.
-		if (! strlen($upstream) || $upstream[0] != '^') {
+		if (! strlen($upstreamPath) || $upstreamPath[0] != '^') {
 			throw new Exception('Please specify a valid repo-relative upstream path.');
 		}
 
 		if (CLI::getNamedArgument('remove')) {
-			$previousValue = $stash->getUpstream($path);
+			$previousValue = $upstream->getUpstream($path);
 
 			if ($previousValue === NULL) {
 				echo 'Nothing to do, no upstream set for ', $path, PHP_EOL;
@@ -49,11 +49,11 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 			}
 
 			echo 'Removing upstream for path ', $path, ' (was ', $previousValue, ')', PHP_EOL;
-			$stash->removeUpstream($path);
+			$upstream->removeUpstream($path);
 			return;
 		}
 
-		echo 'Setting upstream to ', $upstream, ' for path ', $path, PHP_EOL;
-		$stash->addUpstream($path, $upstream);
+		echo 'Setting upstream to ', $upstreamPath, ' for path ', $path, PHP_EOL;
+		$upstream->addUpstream($path, $upstreamPath);
 	}
 }

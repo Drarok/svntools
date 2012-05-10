@@ -29,8 +29,8 @@ class Command_Svneligible_Show extends Command_Svneligible
 		if (! $path) {
 			// Still no path. Is there an upstream set?
 			$repoPath = $svn->relativePath();
-			$stash = new Stash(Svn::getRoot('.'));
-			$path = $stash->getUpstream($repoPath);
+			$upstream = new Upstream('.');
+			$path = $upstream->getUpstream($repoPath);
 		}
 
 		if (! $path) {

@@ -84,7 +84,17 @@ class Stash
 	{
 		return $this->_path;
 	}
-	
+
+	/**
+	 * Get the full path to the stash directory.
+	 *
+	 * @return string
+	 */
+	public function getStashDirPath()
+	{
+		return $this->_path . DS . self::STASHDIR . DS;
+	}
+
 	/**
 	 * Get the name of every stashed change, in the order they were stashed.
 	 *
@@ -140,7 +150,7 @@ class Stash
 		}
 		
 		$name = $stashes[$index];
-		return $this->_getStashDirPath() . $name . '.diff';
+		return $this->getStashDirPath() . $name . '.diff';
 	}
 	
 	/**
@@ -192,7 +202,7 @@ class Stash
 			throw new Exception('No diff available from subversion.');
 		}
 		
-		$diffFile = $this->_getStashDirPath() . $name . '.diff';
+		$diffFile = $this->getStashDirPath() . $name . '.diff';
 		if (! file_put_contents($diffFile, $diff . PHP_EOL)) {
 			throw new Exception('Failed to store diff data to ' . $diffFile);
 		}
@@ -264,7 +274,7 @@ class Stash
 	 */
 	public function removeAllStashes()
 	{
-		$path = $this->_getStashDirPath();
+		$path = $this->getStashDirPath();
 		
 		$dir = opendir($path);
 		
@@ -356,7 +366,7 @@ class Stash
 		$originalFilename = substr($originalFilename, strpos($originalFilename, '-') + 1);
 		
 		// Make sure there's not already a stash with that name.
-		if (file_exists($stashFullPath = $this->_getStashDirPath() . $originalFilename)) {
+		if (file_exists($stashFullPath = $this->getStashDirPath() . $originalFilename)) {
 			throw new Exception('A stash named ' . $originalFilename . ' already exists!');
 		}
 		
@@ -396,104 +406,6 @@ class Stash
 	}
 
 	/**
-	 * Add an 'upstream' entry for the given path.
-	 * 
-	 * @param string $path     Path to add the upstream entry for.
-	 * @param string $upstream Upstream path to store.
-	 * 
-	 * @return void
-	 */
-	public function addUpstream($path, $upstream)
-	{
-		$upstreams = $this->getAllUpstreams();
-		$upstreams[$path] = $upstream;
-		$this->_saveUpstreams($upstreams);
-	}
-
-	/**
-	 * Get the upstream (if any) for the given path.
-	 * 
-	 * @param string $path Path to fetch the upstream setting for.
-	 * 
-	 * @return mixed
-	 */
-	public function getUpstream($path)
-	{
-		$upstreams = $this->getAllUpstreams();
-		return array_key_exists($path, $upstreams)
-			? $upstreams[$path]
-			: NULL;
-	}
-
-	/**
-	 * Public access to get all upstream configuration.
-	 * 
-	 * @return array
-	 */
-	public function getAllUpstreams()
-	{
-		$path = $this->_getUpstreamsFilePath();
-
-		if (! file_exists($path)) {
-			return array();
-		}
-
-		$contents = file_get_contents($path);
-
-		if (! $contents) {
-			return array();
-		}
-
-		$array = unserialize($contents);
-
-		if (! is_array($array)) {
-			return array();
-		}
-
-		return $array;
-	}
-
-	/**
-	 * Remove the upstream setting for the given path.
-	 * 
-	 * @param string $path Path to remove the upstream config for.
-	 * 
-	 * @return void
-	 */
-	public function removeUpstream($path)
-	{
-		$upstreams = $this->getAllUpstreams();
-		unset($upstreams[$path]);
-		$this->_saveUpstreams($upstreams);
-	}
-
-	/**
-	 * Store the passed-in config to disk.
-	 * 
-	 * @param array $upstreams Current config to save.
-	 * 
-	 * @return void
-	 */
-	protected function _saveUpstreams($upstreams)
-	{
-		// Ensure all the files exist.
-		$this->_setupPath();
-
-		$path = $this->_getUpstreamsFilePath();
-		file_put_contents($path, serialize($upstreams));
-	}
-
-	/**
-	 * Return the full path to the upstreams config file.
-	 * 
-	 * @return string
-	 */
-	protected function _getUpstreamsFilePath()
-	{
-		return $this->_getStashDirPath() . 'upstreams.txt';
-	}
-
-	/**
 	 * Set the path where we will save and load stashes.
 	 *
 	 * This method will traverse up from the passed path, attempting to find 
@@ -509,17 +421,7 @@ class Stash
 		$this->_path = Svn::getRoot($path);
 		chdir($this->_path);
 	}
-	
-	/**
-	 * Get the full path to the stash directory.
-	 *
-	 * @return string
-	 */
-	protected function _getStashDirPath()
-	{
-		return $this->_path . DS . self::STASHDIR . DS;
-	}
-	
+
 	/**
 	 * Get the full path to the stash file.
 	 *
@@ -527,7 +429,7 @@ class Stash
 	 */
 	protected function _getStashFilePath()
 	{
-		return $this->_getStashDirPath() . self::STASHFILE;
+		return $this->getStashDirPath() . self::STASHFILE;
 	}
 	
 	/**
@@ -537,7 +439,7 @@ class Stash
 	 */
 	protected function _getTrashDirPath()
 	{
-		return $this->_getStashDirPath() . static::TRASHDIR . DS;
+		return $this->getStashDirPath() . static::TRASHDIR . DS;
 	}
 	
 	
@@ -548,7 +450,7 @@ class Stash
 	 */
 	protected function _setupPath()
 	{
-		$stashDir = $this->_getStashDirPath();
+		$stashDir = $this->getStashDirPath();
 		
 		if (! is_dir($stashDir) && ! mkdir($stashDir, 0755, true)) {
 			throw new Exception('Cannot create stash directory: ' . $stashDir);
@@ -558,12 +460,6 @@ class Stash
 		
 		if (! file_exists($stashFile) && ! touch($stashFile)) {
 			throw new Exception('Cannot create stash file: ' . $stashFile);
-		}
-
-		$upstreamsFile = $this->_getUpstreamsFilePath();
-
-		if (! file_exists($upstreamsFile) && ! touch($upstreamsFile)) {
-			throw new Exception('Cannot create upstreams file: ' . $upstreamsFile);
 		}
 	}
 

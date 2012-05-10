@@ -96,8 +96,8 @@ class Command_Svneligible_Merge extends Command_Svneligible
 
 		if (! $result->path) {
 			// There's still no path. Look for an upstream.
-			$stash = new Stash(Svn::getRoot('.'));
-			$result->path = $stash->getUpstream($this->_svn->relativePath());
+			$upstream = new Upstream('.');
+			$result->path = $upstream->getUpstream($this->_svn->relativePath());
 		}
 
 		if (! $result->path) {
