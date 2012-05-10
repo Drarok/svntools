@@ -40,8 +40,6 @@ class Command_Svneligible_Show extends Command_Svneligible
 
 		echo $path, PHP_EOL;
 
-		$svn = new Svn('.');
-
 		$eligible = $svn->eligible($path);
 
 		if (! (bool) $eligible) {

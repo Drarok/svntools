@@ -181,13 +181,18 @@ class Svn
 	 * 
 	 * Returns an array of ints representing the revisions eligble for merging.
 	 * 
-	 * @param string $path Path to use as reference.
+	 * @param string $path   Path to use as reference.
+	 * @param string $wcPath Working copy path to check against (defaults to the instance path).
 	 * 
 	 * @return array
 	 */
-	public function eligible($path)
+	public function eligible($path, $wcPath = NULL)
 	{
-		$revs = $this->_runCommand('mergeinfo', '--show-revs', 'eligible', $path);
+		if ($wcPath === NULL) {
+			$wcPath = $this->_path;
+		}
+
+		$revs = $this->_runCommand('mergeinfo', '--show-revs', 'eligible', $path, $wcPath);
 
 		$result = array();
 
@@ -204,13 +209,18 @@ class Svn
 	/**
 	 * Subversion merge wrapper command.
 	 * 
-	 * @param string $path Path to merge from.
-	 * @param mixed  $revs Array of revision ids to merge, or null for all.
+	 * @param string $path   Path to merge from.
+	 * @param mixed  $revs   Array of revision ids to merge, or null for all.
+	 * @param string $wcPath Working copy path to merge into (defaults to the instance path).
 	 * 
 	 * @return void
 	 */
-	public function merge($path, $revs = null)
+	public function merge($path, $revs = null, $wcPath = NULL)
 	{
+		if ($wcPath === NULL) {
+			$wcPath = $this->_path;
+		}
+
 		$args = array('merge');
 
 		if ((bool) $revs) {
@@ -228,19 +238,28 @@ class Svn
 	 * 
 	 * @return object
 	 */
-	public function info()
+	public function info($path = NULL)
 	{
-		$xmlString = implode(PHP_EOL, $this->_runCommand('info', '--xml'));
+		if ($path === NULL) {
+			$path = $this->_path;
+		}
+		$xmlString = implode(PHP_EOL, $this->_runCommand('info', '--xml', $path));
 		return simplexml_load_string($xmlString);
 	}
 
 	/**
 	 * Get the current working directory's repo-relative path.
 	 * 
+	 * @param string $path Path to get repo-relative path for (defaults to instance path).
+	 * 
 	 * @return string
 	 */
-	public function relativePath()
+	public function relativePath($path = NULL)
 	{
+		if ($path === NULL) {
+			$path = $this->_path;
+		}
+
 		$info = $this->info();
 
 		$repoRoot = $info->entry->repository->root;
