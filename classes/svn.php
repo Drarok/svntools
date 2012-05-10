@@ -12,6 +12,13 @@
 class Svn
 {
 	/**
+	 * Instances will use this value in their constructor to set their own _verbose property.
+	 * 
+	 * @var bool
+	 */
+	static protected $_defaultVerbose = false;
+
+	/**
 	 * Attempt to traverse up the filesystem, looking for the working copy root.
 	 * 
 	 * @param string $path Path to start looking at.
@@ -38,6 +45,18 @@ class Svn
 		
 		return $parent;
 	}
+
+	/**
+	 * Setter for the static $_defaultVerbose property.
+	 * 
+	 * @param bool $verbose Pass true to enable verbose mode by default.
+	 * 
+	 * @return void
+	 */
+	static public function setDefaultVerbose($verbose)
+	{
+		static::$_defaultVerbose = (bool) $verbose;
+	}
 	
 	/**
 	 * Stores the path to the working copy we're working on.
@@ -47,11 +66,11 @@ class Svn
 	protected $_path;
 
 	/**
-	 * Output verbose information when running?
+	 * Output verbose information when running or not.
 	 * 
 	 * @var bool
 	 */
-	protected $_verbose = FALSE;
+	protected $_verbose;
 	
 	/**
 	 * Constructor.
@@ -61,6 +80,7 @@ class Svn
 	public function __construct($path)
 	{
 		$this->_path = $path;
+		$this->_verbose = static::$_defaultVerbose;
 	}
 
 	/**
