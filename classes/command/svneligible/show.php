@@ -16,14 +16,15 @@ class Command_Svneligible_Show extends Command_Svneligible
 	{
 		// Always run from the repo root.
 		$svn = new Svn(Svn::getRoot('.'));
+		$svn->setVerbose($this->_args->getNamedArgument('verbose'));
 
-		if (CLI::getNamedArgument('stable')) {
+		if ($this->_args->getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
 			$releases = Command_Svneligible::factory('releases')->run(false);
 			$path = array_pop($releases);
 		} else {
 			// Don't forget that argument 0 is the command.
-			$path = CLI::getUnnamedArgument(1);
+			$path = $this->_args->getUnnamedArgument(1);
 		}
 
 		if (! $path) {

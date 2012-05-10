@@ -53,6 +53,9 @@ class Arguments
 	 */
 	public function getNamedArgument($key, $default = null)
 	{
+		return array_key_exists($key, $this->_namedArguments)
+			? $this->_namedArguments[$key]
+			: $default;
 	}
 
 	/**
@@ -65,6 +68,9 @@ class Arguments
 	 */
 	public function getUnnamedArgument($index, $default = null)
 	{
+		return array_key_exists($index, $this->_unnamedArguments)
+			? $this->_unnamedArguments[$index]
+			: $default;
 	}
 
 	/**

@@ -10,7 +10,7 @@ require_once __DIR__ . '/bootstrap.php';
 $mapping = array(
 	'v' => 'verbose',
 );
-$args = new Arguments($_SERVER['argv'], $mapping);
+$args = new Arguments(array_slice($_SERVER['argv'], 1), $mapping);
 
 // Override the command if there are none, or --help passed.
 if (! (bool) $command = $args->getUnnamedArgument(0)) {
