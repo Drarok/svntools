@@ -12,12 +12,15 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 	public function run()
 	{
 		 // Don't forget that argument 0 is the command).
-		$upstreamPath = CLI::getUnnamedArgument(1);
-		$path = CLI::getNamedArgument('path');
+		$upstreamPath = $this->_args->getUnnamedArgument(1);
+		$path = $this->_args->getNamedArgument('path');
 
 		$upstream = new Upstream('.');
 
-		if (! $path && ! $upstreamPath) {
+		if (! $path
+			&& ! $upstreamPath
+			&& ! $this->_args->getNamedArgument('remove')
+		) {
 			// No options passed in, show current config.
 			foreach ($upstream->getAllUpstreams() as $path => $upstreamPath) {
 				echo $path, ' => ', $upstreamPath, PHP_EOL;
@@ -32,15 +35,10 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		}
 
 		if (! strlen($path) || $path[0] != '^') {
-			throw new Exception('Please specify a valid repo-relative path.');
+			throw new Exception('Please specify a valid repo-relative path (' . $path . ').');
 		}
 
-		// Validate the new upstream branch.
-		if (! strlen($upstreamPath) || $upstreamPath[0] != '^') {
-			throw new Exception('Please specify a valid repo-relative upstream path.');
-		}
-
-		if (CLI::getNamedArgument('remove')) {
+		if ($this->_args->getNamedArgument('remove')) {
 			$previousValue = $upstream->getUpstream($path);
 
 			if ($previousValue === NULL) {
@@ -51,6 +49,11 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 			echo 'Removing upstream for path ', $path, ' (was ', $previousValue, ')', PHP_EOL;
 			$upstream->removeUpstream($path);
 			return;
+		}
+
+		// Validate the new upstream branch.
+		if (! strlen($upstreamPath) || $upstreamPath[0] != '^') {
+			throw new Exception('Please specify a valid repo-relative upstream path.');
 		}
 
 		echo 'Setting upstream to ', $upstreamPath, ' for path ', $path, PHP_EOL;
