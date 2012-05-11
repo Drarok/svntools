@@ -6,4 +6,6 @@
 
 require_once __DIR__ . '/bootstrap.php';
 
-Command::factory('svnbase')->run();
+$args = new Arguments(array_slice($_SERVER['argv'], 1));
+
+Command::factory('svnbase', $args)->run();
