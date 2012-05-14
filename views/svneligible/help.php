@@ -6,8 +6,8 @@ AVAILABLE COMMANDS
 	svneligible releases
 	svneligible tags
 	svneligible upstream [--remove] [--path=<path>] [<upstream>]
-	svneligible show [<path>|--stable]
-	svneligible diff [<path>]
+	svneligible diff [<path>|--stable]
+	svneligible show [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	svneligible reintegrate [<path>] [--commit[=<message>] [--remove]]
 	svneligible help [<command>]
