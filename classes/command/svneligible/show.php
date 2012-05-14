@@ -8,56 +8,28 @@
 class Command_Svneligible_Show extends Command_Svneligible_Filter
 {
 	/**
-	 * Command runner - does the actual work.
+	 * Show the revisions in $revs.
+	 * 
+	 * @param array $revs Filtered revisions to show.
 	 * 
 	 * @return void
 	 */
-	public function run()
+	protected function _run($revs)
 	{
-		// Always run from the repo root.
-		$svn = new Svn(Svn::getRoot('.'));
+		// There are revs, grab the log messages.
+		$logs = $svn->log('^/', $revs);
 
-		if ($this->_args->getNamedArgument('stable')) {
-			// The --stable flag means to check against the 'newest' release branch.
-			$releases = Command_Svneligible::factory('releases')->run(false);
-			$path = array_pop($releases);
-		} else {
-			// Don't forget that argument 0 is the command.
-			$path = $this->_args->getUnnamedArgument(1);
-		}
+		ksort($logs);
 
-		if (! $path) {
-			// Still no path. Is there an upstream set?
-			$repoPath = $svn->relativePath();
-			$upstream = new Upstream('.');
-			$path = $upstream->getUpstream($repoPath);
-		}
+		foreach ($logs as $rev => $log) {
+			echo '    r', $rev, PHP_EOL;
 
-		if (! $path) {
-			echo 'You must specify a path to use the \'show\' command.', PHP_EOL;
-			exit(1);
-		}
-
-		echo $path, PHP_EOL;
-
-		$eligible = $svn->eligible($path);
-
-		if (! (bool) $eligible) {
-			echo '    No eligible revisions.', PHP_EOL;
-		} else {
-			// There are revs, grab the log messages.
-			$logs = $svn->log('^/', $eligible);
-
-			ksort($logs);
-			foreach ($logs as $rev => $log) {
-				echo '    r', $rev, PHP_EOL;
-				
-				echo '        ', str_pad($log->author, 10), ' | ', $log->date, PHP_EOL;
-				foreach (explode(PHP_EOL, trim($log->msg)) as $line) {
-					echo '        ', $line, PHP_EOL;
-				}
-				echo PHP_EOL;
+			echo '        ', str_pad($log->author, 10), ' | ', $log->date, PHP_EOL;
+			foreach (explode(PHP_EOL, trim($log->msg)) as $line) {
+				echo '        ', $line, PHP_EOL;
 			}
+			echo PHP_EOL;
 		}
+
 	}
 }
