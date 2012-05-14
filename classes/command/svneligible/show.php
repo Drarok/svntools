@@ -5,7 +5,7 @@
  * 
  * Shows all eligible revisions, and optionally their log messages.
  */
-class Command_Svneligible_Show extends Command_Svneligible
+class Command_Svneligible_Show extends Command_Svneligible_Filter
 {
 	/**
 	 * Command runner - does the actual work.
