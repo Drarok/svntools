@@ -17,8 +17,6 @@ class Command_Svneligible_Diff extends Command_Svneligible
 
 		$branchPath = $svn->relativePath();
 
-		$upstreamPath = false;
-
 		if ($this->_args->getNamedArgument('stable')) {
 			$releases = Command_Svneligible::factory('releases')->run(false);
 			$upstreamPath = array_pop($releases);
