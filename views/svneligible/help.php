@@ -7,6 +7,7 @@ SYNOPSIS
 	svneligible tags [-v|--verbose]
 	svneligible upstream [--remove] [--path=<path>] [<upstream>]
 	svneligible show [<path>|--stable] [-v|--verbose]
+	svneligible diff [<path>] [-v|--verbose]
 	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
 	svneligible reintegrate [<path>] [--commit[=<message>] [--remove]]
 	svneligible help
@@ -34,11 +35,15 @@ OPTIONS
 		Specifiying <upstream> will record that path as the upstream branch. If you call 'show' or 'merge' with no <path>
 		option, the <upstream> will be checked for the currently-checked out path.
 
-	show (<path>|--stable)
+	show
 		Show revisions (and log messages) that are eligible to merge from <path>. If no <path> or --stable option is passed,
 		the upstreams will be checked. If there is still no path, an error occurs.
 
 		The --stable option will look up the "latest" release (the last item in the releases list) for you.
+
+	diff
+		Perform a diff between the currently checked-out branch and the specified path. If no path is specified,
+		upstreams are checked.
 
 	merge
 		Tell Subversion to merge the eligible revs from <path>. If no <path> or --stable option is passed, the upstreams
