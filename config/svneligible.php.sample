@@ -6,12 +6,13 @@
 return array(
 	// Regular expressions to exclude from the paths.
 	'exclude' => array(
+		'branches' => array(),
+
 		'releases' => array(
 			// Exclude the 'current/' release.
 			'#^current/?$#',
 		),
 
 		'tags' => array(),
-		'branches' => array(),
 	),
 );
