@@ -376,6 +376,28 @@ class Svn
 	}
 
 	/**
+	 * Create a new branch in the repository.
+	 * 
+	 * @param string $existingPath  Path in the repository to branch from.
+	 * @param string $newPath       New path in the repository to copy to.
+	 * @param mixed  $commitMessage Optional commit message to set for the branch operation.
+	 * 
+	 * @return void
+	 */
+	public function branch($existingPath, $newPath, $commitMessage = null)
+	{
+		$method = array($this, '_runCommand');
+		$args = array('cp', $existingPath, $newPath);
+
+		if ((bool) $commitMessage) {
+			$args[] = '-m';
+			$args[] = $commitMessage;
+		}
+
+		call_user_func_array($method, $args);
+	}
+
+	/**
 	 * Run a subversion command, and return the result as an array of strings.
 	 *
 	 * @param string $args Variable number of arguments to pass to subversion.
