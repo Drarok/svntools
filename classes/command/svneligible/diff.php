@@ -17,7 +17,18 @@ class Command_Svneligible_Diff extends Command_Svneligible
 
 		$branchPath = $svn->relativePath();
 
-		if (! (bool) $upstreamPath = $this->_args->getUnnamedArgument(1)) {
+		$upstreamPath = false;
+
+		if ($this->_args->getNamedArgument('stable')) {
+			$releases = Command_Svneligible::factory('releases')->run(false);
+			$upstreamPath = array_pop($releases);
+		} else {
+			// Don't forget that argument 0 is the command.
+			$upstreamPath = $this->_args->getUnnamedArgument(1);
+		}
+
+		if (! (bool) $upstreamPath) {
+			// Still no path. Is there an upstream set?
 			$upstream = new Upstream('.');
 			$upstreamPath = $upstream->getUpstream($branchPath);
 		}
