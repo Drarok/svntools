@@ -18,7 +18,8 @@ class Command_Svnstash_Pop extends Command
 	 */
 	public function run()
 	{
-		Command_Svnstash::factory('apply')->run();
-		Command_Svnstash::factory('drop')->run();
+		// Note that this command passes its arguments instance directly into the other commands.
+		Command_Svnstash::factory('apply', $this->_args)->run();
+		Command_Svnstash::factory('drop', $this->_args)->run();
 	}
 }
