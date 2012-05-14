@@ -51,6 +51,17 @@ abstract class Command
 	}
 
 	/**
+	 * Get the display name of the current instance.
+	 * 
+	 * @return string
+	 */
+	public function getName()
+	{
+		$segments = explode('_', get_class($this));
+		return strtolower(array_pop($segments));
+	}
+
+	/**
 	 * Abstract method that all commands must implement to do their work.
 	 *
 	 * @return void
