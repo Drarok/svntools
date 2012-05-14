@@ -6,6 +6,7 @@ SYNOPSIS
 	svneligible releases [-v|--verbose]
 	svneligible tags [-v|--verbose]
 	svneligible upstream [--remove] [--path=<path>] [<upstream>]
+	svneligible branch <existing_path> <new_path> [--no-switch] [--commit=<message>]
 	svneligible show [<path>|--stable] [-v|--verbose]
 	svneligible diff [<path>] [-v|--verbose]
 	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [-v|--verbose]
@@ -34,6 +35,13 @@ OPTIONS
 
 		Specifiying <upstream> will record that path as the upstream branch. If you call 'show' or 'merge' with no <path>
 		option, the <upstream> will be checked for the currently-checked out path.
+
+	branch
+		Create a new branch in the repository, and configure the upstream automatically.
+
+		This command will automatically switch your working copy unless you pass --no-switch.
+
+		You may also specify a commit message on the command line instead of using your editor, using '--commit=<message>'.
 
 	show
 		Show revisions (and log messages) that are eligible to merge from <path>. If no <path> or --stable option is passed,
