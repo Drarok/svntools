@@ -1,4 +1,5 @@
-svneligible branches [-v|--verbose]
+svneligible branches
 	Display a two-level deep list from ^/branches, in natural sort order.
 
-	The --verbose option will output the svn commands before they are executed.
+	If you have configured any 'branches' exclusions in config/svneligible.php,
+	then those branches will be pruned from the list before being displayed.
