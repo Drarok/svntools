@@ -1,0 +1,4 @@
+svneligible branches [-v|--verbose]
+	Display a two-level deep list from ^/branches, in natural sort order.
+
+	The --verbose option will output the svn commands before they are executed.

@@ -1,0 +1,4 @@
+svneligible tags [-v|--verbose]
+	List the contents of ^/tags, in natural sort order.
+
+	The --verbose option will output the svn commands before they are executed.
