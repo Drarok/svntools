@@ -1,0 +1,4 @@
+svneligible releases [-v|--verbose]
+	List the contents of ^/releases, in natural sort order.
+
+	The --verbose option will output the svn commands before they are executed.

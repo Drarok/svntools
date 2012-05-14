@@ -1,0 +1,15 @@
+svneligible upstream [<upstream>|--remove] [--path=<path>]
+	Shows or changes the upstream configuration. Upstream branches are those used automatically by the
+	'show', 'diff', 'merge', and 'reintegrate' commands when no <path> option is specified.
+
+	Running 'upstream' with no parameters will output all currently-configured upstream branches.
+
+	By default, the currently-checked out path is used for the setting (for example, when on a branch,
+	you can run 'svneligible upstream ^/trunk', and the upstream command will infer the current branch
+	from your working copy). Passing '--path=<path>' will instead use that path, allowing you to set up
+	branches that are not currently checked out. For example, if you currently have ^/trunk checked out,
+	you can set the upstream for a branch using the command
+	'svneligible upstream ^/trunk --path=^/branches/feature'.
+
+	The --remove option will remove any upstream setting for the currently checked-out branch (or you may
+	specify a different branch using the --path option).
