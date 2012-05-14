@@ -17,11 +17,11 @@ abstract class Command
 	 * Factory method for command subclass instances.
 	 *
 	 * @param string $name Name of the command to instantiate.
-	 * @param object $args Arguments to pass to the Command instance.
+	 * @param mixed $args Arguments instance, or null.
 	 *
 	 * @return object
 	 */
-	public static function factory($name, Arguments $args)
+	public static function factory($name, $args = null)
 	{
 		$prefix = get_called_class() . '_';
 		$className = $prefix . ucfirst($name);
@@ -38,10 +38,15 @@ abstract class Command
 	/**
 	 * Constructor.
 	 * 
-	 * @param object $args Command arguments as an instance of Arguments.
+	 * @param mixed $args Arguments instance, or null.
 	 */
-	public function __construct(Arguments $args)
+	public function __construct($args = null)
 	{
+		if ($args === null) {
+			// If no arguments passed in, create an empty instance.
+			$args = new Arguments(array());
+		}
+
 		$this->_args = $args;
 	}
 
