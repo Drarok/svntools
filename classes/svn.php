@@ -107,17 +107,26 @@ class Svn
 		echo 'Adding: ', $path, PHP_EOL;
 		$this->_runCommand('add', $path);
 	}
-	
+
 	/**
 	 * Run and return the output from an svn `diff`.
+	 * 
+	 * @param mixed $upstreamPath Path of the upstream branch to diff against, or null to diff the working copy.
+	 * @param mixed $branchPath   Path to compare against the upstream, or null to diff the working copy.
 	 *
 	 * @return string
 	 */
-	public function diff()
+	public function diff($upstreamPath = null, $branchPath = null)
 	{
-		return implode(PHP_EOL, $this->_runCommand('diff'));
+		if ($upstreamPath === null && $branchPath === null) {
+			return implode(PHP_EOL, $this->_runCommand('diff'));
+		} elseif ($upstreamPath === null || $branchPath === null) {
+			throw new Exception('You must path both the upstream and branch you want to diff.');
+		} else {
+			return implode(PHP_EOL, $this->_runCommand('diff', $upstreamPath, $branchPath));
+		}
 	}
-	
+
 	/**
 	 * Revert pristine working copy file.
 	 *
