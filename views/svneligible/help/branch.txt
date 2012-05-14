@@ -1,0 +1,7 @@
+svneligible branch <existing_path> <new_path> [--no-switch] [--commit=<message>]
+	Create a new branch in the repository, and configure the upstream automatically.
+
+	This command will automatically switch your working copy unless you pass --no-switch.
+
+	You may also specify a commit message on the command line instead of using your editor,
+	using '--commit=<message>'. You will need to surround your commit message with quotes.
