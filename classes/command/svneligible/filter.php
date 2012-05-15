@@ -13,6 +13,13 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	protected $_svn;
 
 	/**
+	 * Parsed options from _parseOptions.
+	 * 
+	 * @var object
+	 */
+	protected $_options;
+
+	/**
 	 * This method sets up the object ready for the _run method in the concrete class to do the work.
 	 * 
 	 * @return void
@@ -23,13 +30,13 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 		$this->_svn = new Svn(Svn::getRoot('.'));
 
 		// This method will throw if there are invalid parameters.
-		$options = $this->_parseOptions();
+		$this->_parseOptions();
 
-		echo $options->path, PHP_EOL;
+		echo $this->_options->path, PHP_EOL;
 
 		// Get all valid revisions.
 		try {
-			$revs = $this->_getFilteredEligibleRevisions($options);
+			$revs = $this->_getFilteredEligibleRevisions();
 		} catch (Exception $e) {
 			echo '    ', $e->getMessage(), PHP_EOL;
 			exit(1);
@@ -39,20 +46,22 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	}
 
 	/**
-	 * Parse the command arguments, returning an object.
+	 * Parse the command arguments, storing them in $this->_options.
 	 * 
-	 * The object returned is guaranteed to have the following properties:
+	 * The object generated is guaranteed to have the following properties:
 	 *     - path
+	 *     - author
 	 *     - initial
 	 *     - final
 	 * 
-	 * @return object
+	 * @return void
 	 */
 	protected function _parseOptions()
 	{
 		// Initialise the defaults.
 		$result = (object) array(
 			'path'    => false,
+			'author'  => false,
 			'initial' => false,
 			'final'   => false,
 		);
@@ -74,6 +83,10 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 		if (! $result->path) {
 			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
+		}
+
+		if ((bool) $author = $this->_args->getNamedArgument('author')) {
+			$result->author = $author;
 		}
 
 		// Now parse out the range / limiting options.
@@ -99,32 +112,30 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 			$result->final = (int) $range[1];
 		}
 
-		return $result;
+		$this->_options = $result;
 	}
 
 	/**
 	 * Fetch all eiligible revisions for the given path, filter them and return.
 	 * 
-	 * @param string $path Path to get eligible revitions for.
-	 * 
 	 * @return array
 	 */
-	protected function _getFilteredEligibleRevisions($options)
+	protected function _getFilteredEligibleRevisions()
 	{
 		// Get all eligible revisions.
-		$revs = $this->_svn->eligible($options->path);
+		$revs = $this->_svn->eligible($this->_options->path);
 
 		if (! (bool) $revs) {
 			throw new Exception('No eligible revisions.');
 		}
 
 		// Filter on author.
-		if (! (bool) $revs = $this->_filterAuthor($revs, $options->author)) {
-			throw new Exception('There are no eligible revisions by author \'' . $options->author . '\'');
+		if (! (bool) $revs = $this->_filterAuthor($revs, $this->_options->author)) {
+			throw new Exception('There are no eligible revisions by author \'' . $this->_options->author . '\'');
 		}
 
 		// Filter on range.
-		if (! (bool) $revs = $this->_filterRange($revs, $initial, $final)) {
+		if (! (bool) $revs = $this->_filterRange($revs, $this->_options->initial, $this->_options->final)) {
 			throw new Exception('There are no eligible revisions within the range specified.');
 		}
 
