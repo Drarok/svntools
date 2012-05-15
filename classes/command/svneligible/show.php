@@ -17,7 +17,7 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	protected function _run($revs)
 	{
 		// There are revs, grab the log messages.
-		$logs = $svn->log('^/', $revs);
+		$logs = $this->_svn->log('^/', $revs);
 
 		ksort($logs);
 
