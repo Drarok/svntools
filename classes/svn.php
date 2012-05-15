@@ -407,9 +407,9 @@ class Svn
 	protected function _runCommand($args)
 	{
 		$args = func_get_args();
-		
+
 		$cmd = escapeshellcmd('svn');
-		
+
 		foreach ($args as $arg) {
 			$cmd .= ' ' . escapeshellarg($arg);
 		}
@@ -421,11 +421,12 @@ class Svn
 		$output = array();
 		$exitCode = null;
 		exec($cmd, $output, $exitCode);
-		
+
 		if ($exitCode !== 0) {
-			throw new Exception('Command "' . $cmd . '" failed: ' . $output);
+			$output = implode(PHP_EOL, $output);
+			throw new Exception('Command "' . $cmd . '" failed with exit code ' . $exitCode . ': ' . $output);
 		}
-		
+
 		return $output;
 	}
 }
