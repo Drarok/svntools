@@ -8,22 +8,47 @@ Stash the changes in an svn working copy away for later - based on git's stash c
 
 ## svneligible
 
-This tool is eases the pain caused by Subversion's braindead merge command syntax. It shows what revisions are eligible to merge from a branch or tag, with commands to list the repository's releases, branches, and tags.
+This tool is eases the pain caused by Subversion's braindead merge command syntax. It now sports a whole suite of useful tools for making branching and merging slightly more tolerable in Subversion. Using svneligible, you can create a branch and have it set up to easily check if there are revisions eligible to merge up from its parent branch. You can merge in those eligible revisions, optionally filtering out certain revisions that you don't want/need, then automatically reintegrate that branch back to its parent branch. There are also commands to easily list common branch locations.
 
-Also, new in v0.4, there is a 'merge' subcommand, allowing filtering of the eligible revisions on author name, and/or revision range prior to passing to subversion to do the actual merge.
+One of the primary differences of svneligible is that Subversion interprets -r4:10 to mean "merge changes that occurred *after* revision 4, and up to (and including) revision 10", whereas all ranges in svneligible are inclusive. This means that passing '--range=4:10' means "merge changes that happened in revision 4 up to and including 10".
 
-These are all valid commands:
+### Setting up a branch.
 
-<pre>
-svneligible merge --stable --author=drarok --range=15:23
-svneligible merge --stable --author=drarok --initial=15
-svneligible merge ^/releases/1.1 --final=23
-svneligible merge ^/releases/1.1 --dry-run
+<pre style="background: black; color: lightgreen">
+	➜  projectname svn:(trunk) svneligible branch ^/trunk ^/branches/drarok/feature
+	<span style="color: silver;">[editor opens for the commit message]</span>
+	Setting upstream to ^/trunk for path ^/branches/drarok/feature
+	Switching working copy to ^/branches/drarok/feature
 </pre>
 
-My primary reason for this addition is Subversion's braindead merge syntax. It interprets -r4:10 to mean "merge changes that occurred *after* revision 4, and up to (and including) revision 10". All ranges in svneligible are inclusive.
+### Updating your branch the 'upstream' branch has changes.
 
-Note: This tool assumes you have roughly the same repository layout as me:
+<pre style="background: black; color: lightgreen">
+	➜  projectname svn:(branches/drarok/feature) svneligible show <span style="color: silver;"># Show eligible revisions from the upstream branch.</span>
+	^/trunk
+	    r4
+	        colleague | 2012-05-14 09:28:05 +0100
+	        Changes to 'xyz' feature merged to trunk.
+	➜  projectname svn:(branches/drarok/feature) svneligible merge
+	^/trunk
+	➜  projectname svn:(branches/drarok/feature) ✘ svn ci -m 'Merging trunk changes to my branch to keep up updated.'
+	Committed revision 5.
+</pre>
+
+### Performing a 'reintegrate' merge when finished with your branch.
+
+<pre style="background: black; color: lightgreen">
+	➜  projectname svn:(branches/drarok/feature) svneligible reintegrate --commit='Reintegrating my awesome feature branch.' --remove
+	Reintegrating into ^/trunk
+	Committing...
+	Automatically removing the reintegrated branch.
+	Removing upstream for path ^/branches/drarok/feature (was ^/trunk)
+	➜  projectname svn:(trunk)
+</pre>
+
+Note that the working copy is automatically switched to the upstream branch. Check the help for further explanation of the options. For example, the --commit option can be specified without a message, and your editor will show as normal, allowing a long commit message to be entered easily. The branch will *not* be removed if the commit doesn't occur.
+
+Please be aware that sometimes this tool assumes you have roughly the same repository layout as me:
 
 <pre>
 branches/username/feature1
@@ -37,7 +62,7 @@ tags/release-0.1.2
 
 # Requirements
 
-This was developed on Mac OS X, and aims to only require built-in tools. It should run fine on Linux, too. Windows users may need to install some additional tools.
+These tools were developed on Mac OS X, and aims to only require built-in tools. It should run fine on Linux, too. Windows users may need to install some additional tools.
 
 * Subversion
 * PHP5
@@ -45,17 +70,17 @@ This was developed on Mac OS X, and aims to only require built-in tools. It shou
 
 # Known Issues
 
-Binary files are *not* supported nor detected at present. If you attempt to stash changes to a binary file, or stash an untracked binary, you *will* lose its contents.
+Binary files are *not* supported nor detected at present by svnstash. If you attempt to stash changes to a binary file, or stash an untracked binary, you *will* lose its contents.
 
 # Usage
 
-Personally, I just create a symlink named `svnstash` somewhere on my path, pointed to svnstash.php. Assuming you got the code from Github, the main entrypoint should already marked as executable.
+Personally, I just create symlinks named `svnstash` and `svneligible` somewhere on my path, pointed to the relevant php files. Assuming you got the code from Github, the main scripts should be marked as executable.
 
-Running `svnstash --help` or `svneligible --help` will give a manpage-like help sheet explaining the parameters you can use.
+Running `svnstash --help` or `svneligible --help` will give much more detailed information about the available commants.
 
 # Contributing
 
-If you feel you could add something to svnstash, please do. Patches welcome! Fork on Github and send me a pull request (preferably on the develop branch).
+If you feel you could add something to these tools, please do. Patches welcome! Fork on Github and send me a pull request (preferably on the develop branch).
 
 # Q&A about svnstash
 
