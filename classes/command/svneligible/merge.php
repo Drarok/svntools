@@ -16,6 +16,6 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 	 */
 	protected function _run($revs)
 	{
-		$this->_svn->merge($options->path, $revs);
+		$this->_svn->merge($this->_options->path, $revs);
 	}
 }
