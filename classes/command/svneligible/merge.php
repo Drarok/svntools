@@ -16,7 +16,7 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 	 */
 	protected function _run($revs)
 	{
-		if ($this->_getAllElibibleRevisions() == $revs) {
+		if ($this->_getAllEligibleRevisions() == $revs) {
 			// If nothing was filtered, then allow Subversion to handle the revisions.
 			$this->_svn->merge($this->_options->path);
 		} else {
