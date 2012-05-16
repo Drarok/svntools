@@ -20,6 +20,13 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	protected $_options;
 
 	/**
+	 * Cache of eligible revisions array to avoid calling Subversion more than once.
+	 * 
+	 * @var mixed
+	 */
+	protected $_allEligibleRevisions;
+
+	/**
 	 * This method sets up the object ready for the _run method in the concrete class to do the work.
 	 * 
 	 * @return void
@@ -116,14 +123,27 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	}
 
 	/**
-	 * Fetch all eiligible revisions for the given path, filter them and return.
+	 * Returns an array of integers representing all eligible revisions.
+	 * 
+	 * @return array
+	 */
+	protected function _getAllEligibleRevisions()
+	{
+		if ($this->_allEligibleRevisions !== NULL) {
+			return $this->_allEligibleRevisions;
+		}
+
+		return $this->_allEligibleRevisions = $this->_svn->eligible($this->_options->path);
+	}
+
+	/**
+	 * Fetch all eligible revisions for the given path, filter them and return.
 	 * 
 	 * @return array
 	 */
 	protected function _getFilteredEligibleRevisions()
 	{
-		// Get all eligible revisions.
-		$revs = $this->_svn->eligible($this->_options->path);
+		$revs = $this->_getAllEligibleRevisions();
 
 		if (! (bool) $revs) {
 			throw new Exception('No eligible revisions.');
