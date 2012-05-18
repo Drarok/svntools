@@ -1,5 +1,7 @@
-svneligible branch <existing_path> <new_path> [--no-switch] [--commit=<message>]
+svneligible branch <existing_path> <new_path> [--parents] [--no-switch] [--commit=<message>]
 	Create a new branch in the repository, and configure the upstream automatically.
+
+	Passing the --parents option will tell Subversion to create the parent direcories automatically.
 
 	This command will automatically switch your working copy unless you pass --no-switch.
 
