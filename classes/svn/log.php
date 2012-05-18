@@ -40,11 +40,25 @@ class Svn_Log
 		$revisions = array();
 
 		foreach ($this->_xml->logentry as $entry) {
-			$revisions[(int) $entry['revision']] = (object) array(
+			$result = (object) array(
 				'author' => (string) $entry->author,
 				'date' => date('Y-m-d H:i:s O', strtotime((string) $entry->date)),
 				'msg' => (string) $entry->msg,
 			);
+
+			if (isset($entry->paths)) {
+				$paths = array();
+				foreach ($entry->paths->path as $path) {
+					$paths[] = (object) array(
+						'kind'   => (string) $path['kind'],
+						'action' => (string) $path['action'],
+						'path'   => (string) $path,
+					);
+				}
+				$result->paths = $paths;
+			}
+
+			$revisions[(int) $entry['revision']] = $result;
 		}
 
 		ksort($revisions);
