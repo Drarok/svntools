@@ -16,11 +16,22 @@ if ($args->getNamedArgument('verbose')) {
 	Svn::setDefaultVerbose(true);
 }
 
-// Override the command if there are none, or --help passed.
-if (! (bool) $command = $args->getUnnamedArgument(0)) {
+// Get the command, if any.
+$command = $args->getUnnamedArgument(0);
+$originalCommand = false;
+
+// Override the command if --help passed, or no command.
+if ($args->getNamedArgument('help') || ! $command) {
+	$originalCommand = $command;
 	$command = 'help';
-} elseif ($args->getNamedArgument('help')) {
-	$command = 'help';
+
+	// Rebuild the arguments to force 'help [command]' format.
+	$argsArray = array($command);
+	if ((bool) $originalCommand) {
+		$argsArray[] = $originalCommand;
+	}
+
+	$args = new Arguments($argsArray, $mapping);
 }
 
 // Despatch the command.
