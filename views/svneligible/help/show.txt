@@ -1,4 +1,4 @@
-svneligible show [<branch>|--stable] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
+svneligible show [<branch>|--stable] [--paths] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	Show revisions (and log messages) that are eligible to merge from another branch.
 
 	The operation of the --author, --initial, --final, and --range options, are identical
@@ -8,6 +8,8 @@ svneligible show [<branch>|--stable] [--author=<name>] [--initial=<rev>] [--fina
 	look up the latest release branch (the bottom one returned from the 'releases' command),
 	or finally you may use the 'upstreams' feature to set a default branch. If none of these
 	options are found, an error occurs.
+
+	Use of the --paths option will list the paths affected by each commit.
 
 	Passing --author=<name> will only show revisions committed by the specified author (username).
 	This is useful for seeing only commits that you have made.
