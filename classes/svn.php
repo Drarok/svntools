@@ -178,34 +178,40 @@ class Svn
 	
 	/**
 	 * Get the commit log for the given path.
-	 * 
-	 * Fetches the commit log, returning an associative array, keyed on the 
+	 *
+	 * Fetches the commit log, returning an associative array, keyed on the
 	 * revision id (and sorted, too).
-	 * 
-	 * @param string $path Path to get the commit log for, or current directory if nothing passed.
-	 * @param array  $revs Only fetch the log for specific revisions if this is passed.
-	 * 
+	 *
+	 * @param string $path    Path to get the commit log for, or current directory if nothing passed.
+	 * @param array  $revs    Only fetch the log for specific revisions if this is passed.
+	 * @param bool   $verbose Pass the --verbose flag to Subversion.
+	 *
 	 * @return array
 	 */
-	public function log($path = null, array $revs = array())
+	public function log($path = null, array $revs = array(), $verbose = false)
 	{
 		$args = array('log', '--xml');
+
+		if ((bool) $verbose) {
+			$args[] = '--verbose';
+		}
+
 		if ($path === null) {
 			$path = '.';
 		}
-		
+
 		$args[] = $path;
-		
+
 		foreach ($revs as $rev) {
 			$args[] = '-r' . $rev;
 		}
-		
+
 		$method = array($this, '_runCommand');
 		$output = call_user_func_array($method, $args);
 		$log = new Svn_Log(implode(PHP_EOL, $output));
 		return $log->revisions();
 	}
-	
+
 	/**
 	 * List the contents of a working copy (or repo-relative path).
 	 * 
