@@ -20,11 +20,12 @@ class Command_Svneligible_Branch extends Command_Svneligible
 		}
 
 		$commitMessage = $this->_args->getNamedArgument('commit');
+		$createParents = $this->_args->getNamedArgument('parents');
 
 		$switch = ! $this->_args->getNamedArgument('no-switch', false);
 
 		$svn = new Svn(Svn::getRoot('.'));
-		$svn->branch($existingPath, $newPath, $commitMessage);
+		$svn->branch($existingPath, $newPath, $commitMessage, $createParents);
 
 		echo 'Setting upstream to ', $existingPath, ' for path ', $newPath, PHP_EOL;
 		$upstream = new Upstream('.');
