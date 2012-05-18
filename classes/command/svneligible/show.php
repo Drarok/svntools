@@ -16,8 +16,11 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	 */
 	protected function _run($revs)
 	{
+		// Should we list the affected paths?
+		$showPaths = $this->_args->getNamedArgument('paths', false);
+
 		// There are revs, grab the log messages.
-		$logs = $this->_svn->log('^/', $revs);
+		$logs = $this->_svn->log('^/', $revs, $showPaths);
 
 		ksort($logs);
 
@@ -28,6 +31,14 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 			foreach (explode(PHP_EOL, trim($log->msg)) as $line) {
 				echo '        ', $line, PHP_EOL;
 			}
+			echo PHP_EOL;
+
+			if ($showPaths) {
+				foreach ($log->paths as $path) {
+					echo '        ', $path->action, ' ', $path->path, PHP_EOL;
+				}
+			}
+
 			echo PHP_EOL;
 		}
 
