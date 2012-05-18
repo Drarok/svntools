@@ -387,10 +387,11 @@ class Svn
 	 * @param string $existingPath  Path in the repository to branch from.
 	 * @param string $newPath       New path in the repository to copy to.
 	 * @param mixed  $commitMessage Optional commit message to set for the branch operation.
+	 * @param mixed  $createParents Optional. Create parent directories if required?
 	 * 
 	 * @return void
 	 */
-	public function branch($existingPath, $newPath, $commitMessage = null)
+	public function branch($existingPath, $newPath, $commitMessage = null, $createParents = false)
 	{
 		$method = array($this, '_runCommand');
 		$args = array('cp', $existingPath, $newPath);
@@ -398,6 +399,10 @@ class Svn
 		if ((bool) $commitMessage) {
 			$args[] = '-m';
 			$args[] = $commitMessage;
+		}
+
+		if ((bool) $createParents) {
+			$args[] = '--parents';
 		}
 
 		call_user_func_array($method, $args);
