@@ -15,10 +15,12 @@ SYNOPSIS
 	svnstash help
 	
 OPTIONS
-	save <name> [-u|--include-untracked]
+	save <name> [-u|--include-untracked] [--revert]
 		Save the current working copy modifications to a new stash named <name>, and revert the working copy back to a pristine state.
 		
 		If the --include-untracked option is used, then untracked files are also stashed, and removed from the working copy.
+
+		Passing in --revert will automatically issue a recursive revert once the stash is saved.
 	
 	list
 		List all stashes in the current working directory, showing their name and id.
