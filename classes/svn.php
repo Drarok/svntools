@@ -267,10 +267,11 @@ class Svn
 	 * @param mixed  $revs        Array of revision ids to merge, or null for all.
 	 * @param string $wcPath      Working copy path to merge into (defaults to the instance path).
 	 * @param bool   $reintegrate Pass true to perform a 'reintegrate' merge.
+	 * @param bool   $recordOnly  Pass true to perform a 'record only' merge.
 	 * 
 	 * @return void
 	 */
-	public function merge($path, $revs = null, $wcPath = null, $reintegrate = false)
+	public function merge($path, $revs = null, $wcPath = null, $reintegrate = false, $recordOnly = false)
 	{
 		if ($wcPath === NULL) {
 			$wcPath = $this->_path;
@@ -280,6 +281,10 @@ class Svn
 
 		if ($reintegrate) {
 			$args[] = '--reintegrate';
+		}
+
+		if ($recordOnly) {
+			$args[] = '--record-only';
 		}
 
 		if ((bool) $revs) {

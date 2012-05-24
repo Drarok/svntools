@@ -16,12 +16,15 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 	 */
 	protected function _run($revs)
 	{
+		// Detect if the user specified a record-only merge.
+		$recordOnly = $this->_args->getNamedArgument('record-only', false);
+
 		if ($this->_getAllEligibleRevisions() == $revs) {
 			// If nothing was filtered, then allow Subversion to handle the revisions.
-			$this->_svn->merge($this->_options->path);
+			$this->_svn->merge($this->_options->path, null, null, false, $recordOnly);
 		} else {
 			// Pass the revisions to only merge those specific ones.
-			$this->_svn->merge($this->_options->path, $revs);
+			$this->_svn->merge($this->_options->path, $revs, null, false, $recordOnly);
 		}
 	}
 }

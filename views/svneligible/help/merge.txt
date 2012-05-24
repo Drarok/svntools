@@ -1,4 +1,4 @@
-svneligible merge [<branch>|--stable] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
+svneligible merge [<branch>|--stable] [--record-only] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	Merge all the eligible revs from another branch into the currently checked-out branch.
 
 	Note: to view the revisions before performing the actual merge, use the 'show' command.
@@ -10,6 +10,8 @@ svneligible merge [<branch>|--stable] [--author=<name>] [--initial=<rev>] [--fin
 	look up the latest release branch (the bottom one returned from the 'releases' command),
 	or finally you may use the 'upstreams' feature to set a default branch. If none of these
 	options are found, an error occurs.
+
+	The --record-only option simply passes through to Subversion that you want to perform a record-only merge.
 
 	Passing --author=<name> will only merge revisions committed by the specified author (username).
 	This is useful for merging only commits that you have made.
