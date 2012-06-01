@@ -1,7 +1,10 @@
-svneligible diff [<path>|--stable]
+svneligible diff [<path>|--stable] [-r|--reverse]
 	Perform a diff between the currently checked-out branch and another branch.
 
 	You may either pass a branch in directly, use the --stable option to automatically
 	look up the latest release branch (the bottom one returned from the 'releases' command),
 	or finally you may use the 'upstreams' feature to set a default branch. If none of these
 	options are found, an error occurs.
+
+	You may also invert the comparison using the --reverse option, which can be useful when
+	comparing, say, trunk with a downstream branch from within a trunk working copy.

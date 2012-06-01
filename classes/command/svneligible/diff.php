@@ -35,6 +35,10 @@ class Command_Svneligible_Diff extends Command_Svneligible
 			throw new Exception('You must specify a branch to compare with.');
 		}
 
-		echo $svn->diff($upstreamPath, $branchPath);
+		if ($this->_args->getNamedArgument('reverse')) {
+			echo $svn->diff($branchPath, $upstreamPath);
+		} else {
+			echo $svn->diff($upstreamPath, $branchPath);
+		}
 	}
 }
