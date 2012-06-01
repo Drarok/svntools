@@ -16,8 +16,15 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 		// Grab the relative path, as we need it in various places.
 		$relativePath = $svn->relativePath();
 
-		// Don't forget that argument 0 is the command.
-		if (! (bool) $upstreamPath = $this->_args->getUnnamedArgument(1)) {
+		if ($this->_args->getNamedArgument('stable')) {
+			$releases = Command_Svneligible::factory('releases')->run(false);
+			$upstreamPath = array_pop($releases);
+		} else {
+			// Don't forget that argument 0 is the command.
+			$upstreamPath = $this->_args->getUnnamedArgument(1);
+		}
+
+		if (! (bool) $upstreamPath) {
 			// No upstreamPath specified on the command line, is there one stored?
 			$upstream = new Upstream('.');
 			$upstreamPath = $upstream->getUpstream($relativePath);

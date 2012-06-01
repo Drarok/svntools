@@ -10,7 +10,7 @@ AVAILABLE COMMANDS
 	svneligible diff [<path>|--stable]
 	svneligible show [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
-	svneligible reintegrate [<path>] [--commit[=<message>] [--remove]]
+	svneligible reintegrate [<path>|--stable] [--commit[=<message>] [--remove]]
 	svneligible help [<command>]
 
 	Note: all commands also accept the [-v|--verbose] option, which causes all Subversion commands
