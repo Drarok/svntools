@@ -9,6 +9,7 @@ require_once __DIR__ . '/bootstrap.php';
 // Set up command-line parsing.
 $mapping = array(
 	'v' => 'verbose',
+	'r' => 'reverse',
 );
 $args = new Arguments(array_slice($_SERVER['argv'], 1), $mapping);
 
