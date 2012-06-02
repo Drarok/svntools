@@ -11,12 +11,20 @@ class Command_Svneligible_Branch extends Command_Svneligible
 	 */
 	public function run()
 	{
-		if (! (bool) $existingPath = $this->_args->getUnnamedArgument(1)) {
-			throw new Exception('You must specify an existing path.');
+		if (! (bool) $firstPath = $this->_args->getUnnamedArgument(1)) {
+			throw new Exception('You must specify at least one path.');
 		}
 
-		if (! (bool) $newPath = $this->_args->getUnnamedArgument(2)) {
-			throw new Exception('You must specify the new path.');
+		$svn = new Svn(Svn::getRoot('.'));
+
+		if ((bool) $secondPath = $this->_args->getUnnamedArgument(2)) {
+			// Got a second path, so first is source, second is destination.
+			$existingPath = $firstPath;
+			$newPath = $secondPath;
+		} else {
+			// No second path, so the first is the destination, not source.
+			$existingPath = $svn->relativePath();
+			$newPath = $firstPath;
 		}
 
 		$commitMessage = $this->_args->getNamedArgument('commit');
@@ -24,7 +32,6 @@ class Command_Svneligible_Branch extends Command_Svneligible
 
 		$switch = ! $this->_args->getNamedArgument('no-switch', false);
 
-		$svn = new Svn(Svn::getRoot('.'));
 		$svn->branch($existingPath, $newPath, $commitMessage, $createParents);
 
 		echo 'Setting upstream to ', $existingPath, ' for path ', $newPath, PHP_EOL;
