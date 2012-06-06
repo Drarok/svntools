@@ -146,11 +146,12 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 		$revs = $this->_getAllEligibleRevisions();
 
 		if (! (bool) $revs) {
-			throw new Exception('No eligible revisions.');
+			throw new Exception('There are no eligible revisions.');
 		}
 
 		// Filter on author.
 		if (! (bool) $revs = $this->_filterAuthor($revs, $this->_options->author)) {
+			// TODO: This could be a clearer message.
 			throw new Exception('There are no eligible revisions by author \'' . $this->_options->author . '\'');
 		}
 
@@ -163,10 +164,12 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	}
 
 	/**
-	 * Remove revisions not authored by the specified user.
+	 * Remove revisions based on the author.
+	 * 
+	 * Using a prefix of '!' will invert the standard filtering behaviour.
 	 * 
 	 * @param array $revs   Revisions to filter.
-	 * @param mixed $author Username to keep revisions for, or false to not filter.
+	 * @param mixed $author Username to filter on, or false to not filter.
 	 * 
 	 * @return array
 	 */
@@ -182,10 +185,24 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 		// Get all the eligible revs' log entries.
 		$logs = $this->_svn->log('^/', $revs);
 
-		// Loop over each, adding any where the author matches.
-		foreach ($logs as $rev => $log) {
-			if ($log->author == $author) {
-				$result[] = $rev;
+		if ($author[0] != '!') {
+			// Loop over each, adding any where the author matches.
+			foreach ($logs as $rev => $log) {
+				if ($log->author == $author) {
+					$result[] = $rev;
+				}
+			}
+		} else {
+			// Remove the leading '!'.
+			if (! (bool) $author = substr($author, 1)) {
+				throw new Exception('Invalid author filter specified.');
+			}
+
+			// Loop over each, adding only those not matching the author.
+			foreach ($logs as $rev => $log) {
+				if ($log->author != $author) {
+					$result[] = $rev;
+				}
 			}
 		}
 
