@@ -15,6 +15,8 @@ svneligible merge [<branch>|--stable] [--record-only] [--author=<name>] [--initi
 
 	Passing --author=<name> will only merge revisions committed by the specified author (username).
 	This is useful for merging only commits that you have made.
+	Additionally, if you prefix the author name with a '!', then the filter will be inverted,
+	allowing you to see all commits made by other users.
 
 	If you pass --initial=<rev>, then no revisions prior to <rev> will be merged.
 
