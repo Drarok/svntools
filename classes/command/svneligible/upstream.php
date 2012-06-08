@@ -6,7 +6,7 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 {
 	/**
 	 * This is the main entrypoint to the command.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()
