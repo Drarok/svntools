@@ -1,0 +1,8 @@
+svneligible switch [<path>|--stable]
+	Switch the working copy to another branch. Note that this command, even when
+	run in a subdirectory, will switch the *entire* working copy to the new branch.
+
+	You may either pass a branch in directly, use the --stable option to automatically
+	look up the latest release branch (the bottom one returned from the 'releases' command),
+	or finally you may use the 'upstreams' feature to set a default branch. If none of these
+	options are found, an error occurs.
