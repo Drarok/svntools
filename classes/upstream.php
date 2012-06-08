@@ -36,30 +36,30 @@ class Upstream
 	/**
 	 * Add an 'upstream' entry for the given path.
 	 *
-	 * @param string $path     Path to add the upstream entry for.
+	 * @param string $alias     Path to add the upstream entry for.
 	 * @param string $upstream Upstream path to store.
 	 *
 	 * @return void
 	 */
-	public function addUpstream($path, $upstream)
+	public function addUpstream($alias, $upstream)
 	{
 		$upstreams = $this->getAllUpstreams();
-		$upstreams[$path] = $upstream;
+		$upstreams[$alias] = $upstream;
 		$this->_saveUpstreams($upstreams);
 	}
 
 	/**
-	 * Get the upstream (if any) for the given path.
+	 * Get the upstream (if any) for the given alias.
 	 *
-	 * @param string $path Path to fetch the upstream setting for.
+	 * @param string $alias Path to fetch the upstream setting for.
 	 *
 	 * @return mixed
 	 */
-	public function getUpstream($path)
+	public function getUpstream($alias)
 	{
 		$upstreams = $this->getAllUpstreams();
-		return array_key_exists($path, $upstreams)
-			? $upstreams[$path]
+		return array_key_exists($alias, $upstreams)
+			? $upstreams[$alias]
 			: null;
 	}
 
@@ -90,16 +90,16 @@ class Upstream
 	}
 
 	/**
-	 * Remove the upstream setting for the given path.
+	 * Remove the upstream setting for the given alias.
 	 *
-	 * @param string $path Path to remove the upstream config for.
+	 * @param string $alias Path to remove the upstream config for.
 	 *
 	 * @return void
 	 */
-	public function removeUpstream($path)
+	public function removeUpstream($alias)
 	{
 		$upstreams = $this->getAllUpstreams();
-		unset($upstreams[$path]);
+		unset($upstreams[$alias]);
 		$this->_saveUpstreams($upstreams);
 	}
 
