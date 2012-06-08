@@ -5,7 +5,7 @@
  * Switches the working copy to another branch, always from the base of the
  * working copy, never allowing subtree switching.
  */
-class Command_Svneligible_Swith extends Command_Svneligible_Filter
+class Command_Svneligible_Switch extends Command_Svneligible
 {
 	public function run()
 	{
