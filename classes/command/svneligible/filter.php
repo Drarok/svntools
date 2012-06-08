@@ -73,24 +73,7 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 			'final'   => false,
 		);
 
-		if ($this->_args->getNamedArgument('stable')) {
-			// The --stable flag means to check against the 'newest' release branch.
-			$releases = Command_Svneligible::factory('releases')->run(false);
-			$result->path = array_pop($releases);
-		} else {
-			// Don't forget that argument 0 is the command.
-			$result->path = $this->_args->getUnnamedArgument(1);
-		}
-
-		if (! $result->path) {
-			// There's still no path. Look for an upstream.
-			$upstream = new Upstream('.');
-			$result->path = $upstream->getUpstream($this->_svn->relativePath());
-		}
-
-		if (! $result->path) {
-			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
-		}
+		$result->path = $this->_getPath();
 
 		if ((bool) $author = $this->_args->getNamedArgument('author')) {
 			$result->author = $author;
