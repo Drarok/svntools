@@ -14,10 +14,12 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		 // Don't forget that argument 0 is the command).
 		$upstreamPath = $this->_args->getUnnamedArgument(1);
 		$path = $this->_args->getNamedArgument('path');
+		$alias = $this->_args->getNamedArgument('alias');
 
 		$upstream = new Upstream('.');
 
 		if (! $path
+			&& ! $alias
 			&& ! $upstreamPath
 			&& ! $this->_args->getNamedArgument('remove')
 		) {
@@ -25,17 +27,16 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 			foreach ($upstream->getAllUpstreams() as $path => $upstreamPath) {
 				echo $path, ' => ', $upstreamPath, PHP_EOL;
 			}
+
 			return;
 		}
 
-		if (! (bool) $path) {
+		if ((bool) $alias) {
+			$path = $alias;
+		} elseif (! (bool) $path) {
 			// No path was passed in, so work out the current one.
 			$svn = new Svn(Svn::getRoot('.'));
 			$path = $svn->relativePath();
-		}
-
-		if (! strlen($path) || $path[0] != '^') {
-			throw new Exception('Please specify a valid repo-relative path (' . $path . ').');
 		}
 
 		if ($this->_args->getNamedArgument('remove')) {
@@ -56,7 +57,10 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 			throw new Exception('Please specify a valid repo-relative upstream path.');
 		}
 
-		echo 'Setting upstream to ', $upstreamPath, ' for path ', $path, PHP_EOL;
+		$type = (bool) $alias
+			? 'alias'
+			: 'path';
+		echo 'Setting upstream to ', $upstreamPath, ' for ', $type, ' \'', $path, '\'', PHP_EOL;
 		$upstream->addUpstream($path, $upstreamPath);
 	}
 }

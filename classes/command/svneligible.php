@@ -84,7 +84,7 @@ abstract class Command_Svneligible extends Command
 			// There's still no path (or it isn't a relative Subversion path). Look for an upstream/alias.
 			if (! $path) {
 				// Use the working copy checked-out path.
-				$upstreamName = $this->svn->relativePath();
+				$upstreamName = $this->_svn->relativePath();
 			} else {
 				// Use the passed-in name, and unset $path.
 				$upstreamName = $path;
