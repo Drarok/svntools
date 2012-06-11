@@ -61,7 +61,7 @@ abstract class Command_Svneligible extends Command
 	 * the current release branch, or may have configured upstreams/aliases. This
 	 * method will attempt to work out the path requested.
 	 *
-	 * @param  mixed $index Pass an int to specify the argument index, defaults to 1.
+	 * @param int $index Pass an int to specify the argument index, defaults to 1.
 	 *
 	 * @return string
 	 */
@@ -98,5 +98,7 @@ abstract class Command_Svneligible extends Command
 		if (! $path) {
 			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
 		}
+
+		return $path;
 	}
 }
