@@ -33,6 +33,13 @@ class Svn_Entry
 	const MISSING = 'missing';
 
 	/**
+	 * External status constant.
+	 *
+	 * @const string
+	 */
+	const EXTERNAL = 'external';
+
+	/**
 	 * SimpleXMLElement representing the file entry.
 	 *
 	 * @var SimpleXMLElement
@@ -81,6 +88,7 @@ class Svn_Entry
 			self::UNVERSIONED,
 			self::MODIFIED,
 			self::MISSING,
+			self::EXTERNAL,
 		);
 
 		$state = $this->_xml->{'wc-status'};
