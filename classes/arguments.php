@@ -13,28 +13,28 @@ class Arguments
 {
 	/**
 	 * Array of passed-in arguments.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_args;
 
 	/**
 	 * Parsed 'named' arguments.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_namedArguments = array();
 
 	/**
 	 * Parsed 'unnamed' arguments.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_unnamedArguments = array();
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param array $args    Arguments to parse.
 	 * @param array $mapping Short to long name option mapping.
 	 */
@@ -45,10 +45,10 @@ class Arguments
 
 	/**
 	 * Public access to named arguments.
-	 * 
+	 *
 	 * @param string $key     Name of the argument to fetch.
 	 * @param mixed  $default Default value to return if the argument was not passed.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function getNamedArgument($key, $default = null)
@@ -59,11 +59,21 @@ class Arguments
 	}
 
 	/**
+	 * Count the number of named arguments that were parsed.
+	 *
+	 * @return int
+	 */
+	public function countNamedArguments()
+	{
+		return count($this->_namedArguments);
+	}
+
+	/**
 	 * Public access to unnamed arguments.
-	 * 
+	 *
 	 * @param int   $index   Index of the argument to fetch the value of.
 	 * @param mixed $default Default value to return if the argument was not passed.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function getUnnamedArgument($index, $default = null)
@@ -74,11 +84,21 @@ class Arguments
 	}
 
 	/**
+	 * Count the number of unnamed arguments that were parsed.
+	 *
+	 * @return int
+	 */
+	public function countUnnamedArguments()
+	{
+		return count($this->_unnamedArguments);
+	}
+
+	/**
 	 * Parse the named and unnamed arguments out into the relevant arrays.
-	 * 
+	 *
 	 * @param array $args    Argument array to parse.
 	 * @param array $mapping Short to long name option mapping.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _parse($args, $mapping)
@@ -105,10 +125,10 @@ class Arguments
 	{
 		// Attempt to split on an equals sign.
 		$parts = explode('=', $arg, 2);
-		
+
 		// Use the first part as the argument name.
 		$name = $parts[0];
-		
+
 		if (count($parts) == 1) {
 			// Use a true value if there's no equals sign.
 			$value = true;
@@ -116,7 +136,7 @@ class Arguments
 			// Use the specified value otherwise.
 			$value = $parts[1];
 		}
-		
+
 		// Store the configured argument.
 		$this->_namedArguments[$name] = $value;
 	}
@@ -135,7 +155,7 @@ class Arguments
 			// Give up if we don't recognise the option.
 			return;
 		}
-		
+
 		// Pass to _addLongArgument for processing.
 		$this->_addLongArgument($mapping[$arg]);
 	}
