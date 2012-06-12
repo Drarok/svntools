@@ -5,7 +5,7 @@ AVAILABLE COMMANDS
 	svneligible branches
 	svneligible releases
 	svneligible tags
-	svneligible upstream [--path=<path>|--alias=<alias>|--remove] [<upstream>]
+	svneligible upstream [set|remove] [<upstream>] [<alias|path>]
 	svneligible branch <existing_path> <new_path> [--no-switch] [--commit=<message>]
 	svneligible switch [<path>|--stable]
 	svneligible diff [<path>|--stable] [-r|--reverse]
