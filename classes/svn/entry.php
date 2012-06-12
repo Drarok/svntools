@@ -17,35 +17,35 @@ class Svn_Entry
 	 * @const string
 	 */
 	const UNVERSIONED = 'unversioned';
-	
+
 	/**
 	 * Modified status constant.
 	 *
 	 * @const string
 	 */
 	const MODIFIED = 'modified';
-	
+
 	/**
 	 * Missing status constant.
 	 *
 	 * @const string
 	 */
 	const MISSING = 'missing';
-	
+
 	/**
 	 * SimpleXMLElement representing the file entry.
 	 *
 	 * @var SimpleXMLElement
 	 */
 	protected $_xml;
-	
+
 	/**
 	 * Relative path to the file entry.
 	 *
 	 * @var string
 	 */
 	protected $_path;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -57,7 +57,7 @@ class Svn_Entry
 		$this->_xml = $xml;
 		$this->_path = $path;
 	}
-	
+
 	/**
 	 * Path getter.
 	 *
@@ -67,7 +67,7 @@ class Svn_Entry
 	{
 		return $this->_path;
 	}
-	
+
 	/**
 	 * State getter.
 	 *
@@ -82,14 +82,14 @@ class Svn_Entry
 			self::MODIFIED,
 			self::MISSING,
 		);
-		
+
 		$state = $this->_xml->{'wc-status'};
 		$state = $state['item'];
-		
+
 		if (! in_array($state, $validStates)) {
 			throw new Exception('Invalid state: ' . $state);
 		}
-		
+
 		return $state;
 	}
 }
