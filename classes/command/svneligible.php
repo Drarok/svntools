@@ -6,10 +6,29 @@
 abstract class Command_Svneligible extends Command
 {
 	/**
+	 * Instance of the Svn class.
+	 *
+	 * @var object
+	 */
+	protected $_svn;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param mixed $args Arguments instance, or null.
+	 */
+	public function __construct($args = null)
+	{
+		parent::__construct($args);
+
+		$this->_svn = new Svn(Svn::getRoot('.'));
+	}
+
+	/**
 	 * Filter out any paths specified in the config file for the current command.
-	 * 
+	 *
 	 * @param array &$paths The paths array to filter.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _filter(&$paths)
@@ -33,5 +52,53 @@ abstract class Command_Svneligible extends Command
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the path specified by the user or upstream/alias configuration.
+	 *
+	 * A user may input a path as a manually-typed string, use --stable to use
+	 * the current release branch, or may have configured upstreams/aliases. This
+	 * method will attempt to work out the path requested.
+	 *
+	 * @param int $index Pass an int to specify the argument index, defaults to 1.
+	 *
+	 * @return string
+	 */
+	protected function _getPath($index = 1)
+	{
+		$path = false;
+
+		if ($this->_args->getNamedArgument('stable')) {
+			// The --stable flag means to use against the 'newest' release branch.
+			$releases = Command_Svneligible::factory('releases')->run(false);
+			$path = array_pop($releases);
+		} else {
+			// Get the path from unnamed arguments.
+			$path = $this->_args->getUnnamedArgument($index);
+		}
+
+		if (! $path
+			|| ($path && $path[0] != '^')
+		) {
+			// There's still no path (or it isn't a relative Subversion path). Look for an upstream/alias.
+			if (! $path) {
+				// Use the working copy checked-out path.
+				$upstreamName = $this->_svn->relativePath();
+			} else {
+				// Use the passed-in name, and unset $path.
+				$upstreamName = $path;
+				$path = false;
+			}
+
+			$upstream = new Upstream('.');
+			$path = $upstream->getUpstream($upstreamName);
+		}
+
+		if (! $path) {
+			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
+		}
+
+		return $path;
 	}
 }

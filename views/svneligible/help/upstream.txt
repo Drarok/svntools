@@ -1,15 +1,20 @@
-svneligible upstream [<upstream>|--remove] [--path=<path>]
+svneligible upstream [set|remove] [<upstream>] [<alias|path>]
 	Shows or changes the upstream configuration. Upstream branches are those used automatically by the
 	'show', 'diff', 'merge', and 'reintegrate' commands when no <path> option is specified.
 
-	Running 'upstream' with no parameters will output all currently-configured upstream branches.
+	Running 'upstream' with no parameters will output all currently-configured upstreams.
 
 	By default, the currently-checked out path is used for the setting (for example, when on a branch,
-	you can run 'svneligible upstream ^/trunk', and the upstream command will infer the current branch
-	from your working copy). Passing '--path=<path>' will instead use that path, allowing you to set up
-	branches that are not currently checked out. For example, if you currently have ^/trunk checked out,
-	you can set the upstream for a branch using the command
-	'svneligible upstream ^/trunk --path=^/branches/feature'.
+	you can run 'svneligible upstream set ^/trunk', and the upstream command will infer the current branch
+	from your working copy). Passing '<alias|path>' will instead use that path (or alias), allowing you
+	to set up branches that are not currently checked out. For example, if you currently have ^/trunk
+	checked out, you can set the upstream for a branch using the command
+	'svneligible upstream set ^/trunk ^/branches/feature'.
 
-	The --remove option will remove any upstream setting for the currently checked-out branch (or you may
-	specify a different branch using the --path option).
+	You may also create arbitrary aliases in the same way, for example
+	'svneligible upstream set ^/releases/RB-1.1 oldstable' allows you to compare against an older
+	release branch easily by issuing 'svneligible show oldstable' in the working copy.
+
+	The 'remove' subcommand only accepts (optionally) the alias or path:
+	'svneligible upstream remove oldstable' will remove the upstream alias 'oldstable', whereas
+	'svneligible upstream remove' will delete the upstream for the currently-checked out branch.

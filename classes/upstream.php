@@ -18,7 +18,7 @@ class Upstream
 
 	/**
 	 * Full path to the upstreams file.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_path;
@@ -35,37 +35,37 @@ class Upstream
 
 	/**
 	 * Add an 'upstream' entry for the given path.
-	 * 
-	 * @param string $path     Path to add the upstream entry for.
+	 *
+	 * @param string $alias     Path to add the upstream entry for.
 	 * @param string $upstream Upstream path to store.
-	 * 
+	 *
 	 * @return void
 	 */
-	public function addUpstream($path, $upstream)
+	public function addUpstream($alias, $upstream)
 	{
 		$upstreams = $this->getAllUpstreams();
-		$upstreams[$path] = $upstream;
+		$upstreams[$alias] = $upstream;
 		$this->_saveUpstreams($upstreams);
 	}
 
 	/**
-	 * Get the upstream (if any) for the given path.
-	 * 
-	 * @param string $path Path to fetch the upstream setting for.
-	 * 
+	 * Get the upstream (if any) for the given alias.
+	 *
+	 * @param string $alias Path to fetch the upstream setting for.
+	 *
 	 * @return mixed
 	 */
-	public function getUpstream($path)
+	public function getUpstream($alias)
 	{
 		$upstreams = $this->getAllUpstreams();
-		return array_key_exists($path, $upstreams)
-			? $upstreams[$path]
+		return array_key_exists($alias, $upstreams)
+			? $upstreams[$alias]
 			: null;
 	}
 
 	/**
 	 * Get all upstream configurations.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getAllUpstreams()
@@ -90,24 +90,24 @@ class Upstream
 	}
 
 	/**
-	 * Remove the upstream setting for the given path.
-	 * 
-	 * @param string $path Path to remove the upstream config for.
-	 * 
+	 * Remove the upstream setting for the given alias.
+	 *
+	 * @param string $alias Path to remove the upstream config for.
+	 *
 	 * @return void
 	 */
-	public function removeUpstream($path)
+	public function removeUpstream($alias)
 	{
 		$upstreams = $this->getAllUpstreams();
-		unset($upstreams[$path]);
+		unset($upstreams[$alias]);
 		$this->_saveUpstreams($upstreams);
 	}
 
 	/**
 	 * Store the passed-in config to disk.
-	 * 
+	 *
 	 * @param array $upstreams Current config to save.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _saveUpstreams($upstreams)
@@ -120,9 +120,9 @@ class Upstream
 
 	/**
 	 * Calculate and store the full path to the upstreams file.
-	 * 
+	 *
 	 * @param string $path Path to a directory within the working copy.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _setPath($path)
@@ -133,7 +133,7 @@ class Upstream
 
 	/**
 	 * Ensure the directory and file exist.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _setupPath()

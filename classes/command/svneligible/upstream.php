@@ -6,48 +6,55 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 {
 	/**
 	 * This is the main entrypoint to the command.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()
 	{
-		 // Don't forget that argument 0 is the command).
-		$upstreamPath = $this->_args->getUnnamedArgument(1);
-		$path = $this->_args->getNamedArgument('path');
+		// Don't forget that argument 0 is the command).
+		$subCommand = $this->_args->getUnnamedArgument(1);
 
-		$upstream = new Upstream('.');
-
-		if (! $path
-			&& ! $upstreamPath
-			&& ! $this->_args->getNamedArgument('remove')
-		) {
-			// No options passed in, show current config.
-			foreach ($upstream->getAllUpstreams() as $path => $upstreamPath) {
-				echo $path, ' => ', $upstreamPath, PHP_EOL;
-			}
+		$validSubCommands = array('', 'set', 'remove');
+		if (! in_array($subCommand, $validSubCommands)) {
+			echo 'Error: Unknown subcommand \'', $subCommand, '\'.', PHP_EOL;
 			return;
 		}
 
-		if (! (bool) $path) {
-			// No path was passed in, so work out the current one.
+		$upstream = new Upstream('.');
+
+		if (! $subCommand) {
+			// No options passed in, show current config.
+			foreach ($upstream->getAllUpstreams() as $alias => $upstreamPath) {
+				echo $alias, ' => ', $upstreamPath, PHP_EOL;
+			}
+
+			return;
+		}
+
+		if ($subCommand == 'set') {
+			$upstreamPath = $this->_args->getUnnamedArgument(2);
+			$pathOrAlias = $this->_args->getUnnamedArgument(3);
+		} elseif ($subCommand == 'remove') {
+			// The 'remove' command only needs the path/alias, so there is no upstreamPath.
+			$pathOrAlias = $this->_args->getUnnamedArgument(2);
+		}
+
+		if (! (bool) $pathOrAlias) {
+			// No path/alias was passed in, so use the current path.
 			$svn = new Svn(Svn::getRoot('.'));
-			$path = $svn->relativePath();
+			$pathOrAlias = $svn->relativePath();
 		}
 
-		if (! strlen($path) || $path[0] != '^') {
-			throw new Exception('Please specify a valid repo-relative path (' . $path . ').');
-		}
+		$previousValue = $upstream->getUpstream($pathOrAlias);
 
-		if ($this->_args->getNamedArgument('remove')) {
-			$previousValue = $upstream->getUpstream($path);
-
+		if ($subCommand == 'remove') {
 			if ($previousValue === NULL) {
-				echo 'Nothing to do, no upstream set for ', $path, PHP_EOL;
+				echo 'Nothing to do, no upstream set for \'', $pathOrAlias, '\'.', PHP_EOL;
 				return;
 			}
 
-			echo 'Removing upstream for path ', $path, ' (was ', $previousValue, ')', PHP_EOL;
-			$upstream->removeUpstream($path);
+			echo 'Removing upstream for \'', $pathOrAlias, '\' (was ', $previousValue, ')', PHP_EOL;
+			$upstream->removeUpstream($pathOrAlias);
 			return;
 		}
 
@@ -56,7 +63,18 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 			throw new Exception('Please specify a valid repo-relative upstream path.');
 		}
 
-		echo 'Setting upstream to ', $upstreamPath, ' for path ', $path, PHP_EOL;
-		$upstream->addUpstream($path, $upstreamPath);
+		if ($previousValue == $upstreamPath) {
+			echo 'Nothing to do, upstream is already set to \'', $upstreamPath,
+				'\' for \'', $pathOrAlias, '\'.', PHP_EOL;
+			return;
+		}
+
+		echo 'Setting upstream to \'', $upstreamPath, '\' for \'', $pathOrAlias, '\'';
+		if ($previousValue) {
+			echo ' (was ', $previousValue, ')';
+		}
+		echo '.', PHP_EOL;
+
+		$upstream->addUpstream($pathOrAlias, $upstreamPath);
 	}
 }
