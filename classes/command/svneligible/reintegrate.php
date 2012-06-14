@@ -6,7 +6,7 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 {
 	/**
 	 * This is the main entrypoint into the command.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()
@@ -47,7 +47,8 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 			$word = $eligibleCount == 1
 				? 'is'
 				: 'are';
-			throw new Exception('There ' . $word . ' ' . $eligibleCount . ' eligible revisions still to merge. Aborting.');
+			throw new Exception('There ' . $word . ' ' . $eligibleCount
+				. ' eligible revisions still to merge. Aborting.');
 		}
 
 		echo 'Reintegrating into ', $upstreamPath, PHP_EOL;
@@ -55,21 +56,21 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 		$svn->switchTo($upstreamPath);
 		$svn->merge($relativePath, null, null, true);
 
-		if ((bool) $commit = $this->_args->getNamedArgument('commit')) {
+		if (! (bool) $this->_args->getNamedArgument('no-commit')) {
 			echo 'Committing...', PHP_EOL;
 
-			if ($commit !== true) {
-				$svn->commit($commit);
+			if ((bool) $commitMessage = $this->_args->getNamedArgument('commit')) {
+				$svn->commit($commitMessage);
 			} else {
 				$svn->commit();
 			}
 
-			if ((bool) $remove = $this->_args->getNamedArgument('remove')) {
-				// The 'remove' option was passed, so delete the now-reintegrated branch.
+			if (! (bool) $this->_args->getNamedArgument('no-remove')) {
+				// Delete the now-reintegrated branch.
 				echo 'Automatically removing the reintegrated branch.', PHP_EOL;
 				$svn->rm($relativePath, 'Removing now-reintegrated branch');
 
-				// Also remove any upstream entries.
+				// Also remove any upstream entries for the now-deleted branch.
 				$upstream = new Upstream('.');
 				if ((bool) $upstreamPath = $upstream->getUpstream($relativePath)) {
 					echo 'Removing upstream for path ', $relativePath, ' (was ', $upstreamPath, ')', PHP_EOL;
