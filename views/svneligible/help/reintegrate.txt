@@ -1,15 +1,19 @@
-svneligible reintegrate [<path>] [--commit[=<message>] [--remove]]
-	Perform a reintegration merge by switching the working copy, merging, optionally committing,
-	and optionally automatically removing the now-integrated branch.
+svneligible reintegrate [<path>] [--no-commit|--commit[=<message>] [--no-remove]]
+	Perform a reintegration merge by switching the working copy, merging, committing,
+	and automatically removing the now-integrated branch.
 
 	You may either pass a branch in directly, use the --stable option to automatically
 	look up the latest release branch (the bottom one returned from the 'releases' command),
 	or finally you may use the 'upstreams' feature to set a default branch. If none of these
 	options are found, an error occurs.
 
-	Passing '--commit' will show your editor, allowing you to enter a commit message,
-	or you can specify it directly on the command line using the format '--commit=<message>'.
-	Note that you will need to wrap your commit message in quotes.
+	You may pass the '--no-commit' option to stop the process once a merge has occurred, but
+	prior to a commit. This allows you to manually inspect the merge result before committing.
 
-	If you pass '--remove' in addition to '--commit[=<message>]', then the reintegrated branch
-	will automatically be removed. The --remove option has no effect if --commit is not passed.
+	Your editor will be shown for a commit message to be entered, or you can specify a commit
+	message on the command line by passing '--commit=<message>'.
+	Note that you will need to wrap your commit message in quotes if you use the command line.
+
+	If the commit is successful, then the branch will be automatically removed, unless you
+	specify the '--no-remove' option. If the commit isn't attempted due to '--no-commit', then
+	the branch is not removed.
