@@ -6,12 +6,12 @@ AVAILABLE COMMANDS
 	svneligible releases
 	svneligible tags
 	svneligible upstream [set|remove] [<upstream>] [<alias|path>]
-	svneligible branch <existing_path> <new_path> [--no-switch] [--commit=<message>]
+	svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--commit=<message>]
 	svneligible switch [<path>|--stable]
 	svneligible diff [<path>|--stable] [-r|--reverse]
 	svneligible show [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
-	svneligible reintegrate [<path>|--stable] [--commit[=<message>] [--remove]]
+	svneligible reintegrate [<path>|--stable] [--no-commit|--commit[=<message>] [--no-remove]
 	svneligible help [<command>]
 
 	Note: all commands also accept the [-v|--verbose] option, which causes all Subversion commands
