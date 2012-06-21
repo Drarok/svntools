@@ -17,13 +17,13 @@ One of the primary differences of svneligible is that Subversion interprets -r4:
 ### Setting up a branch.
 
 <pre style="background: black; color: lightgreen">
-	➜  projectname svn:(trunk) svneligible branch ^/trunk ^/branches/drarok/feature
+	➜  projectname svn:(trunk) svneligible branch ^/branches/drarok/feature
 	<span style="color: silver;">[editor opens for the commit message]</span>
 	Setting upstream to ^/trunk for path ^/branches/drarok/feature
 	Switching working copy to ^/branches/drarok/feature
 </pre>
 
-### Updating your branch the 'upstream' branch has changes.
+### Updating your branch when the 'upstream' branch has changes.
 
 <pre style="background: black; color: lightgreen">
 	➜  projectname svn:(branches/drarok/feature) svneligible show <span style="color: silver;"># Show eligible revisions from the upstream branch.</span>
@@ -33,22 +33,23 @@ One of the primary differences of svneligible is that Subversion interprets -r4:
 	        Changes to 'xyz' feature merged to trunk.
 	➜  projectname svn:(branches/drarok/feature) svneligible merge
 	^/trunk
-	➜  projectname svn:(branches/drarok/feature) ✘ svn ci -m 'Merging trunk changes to my branch to keep up updated.'
+	➜  projectname svn:(branches/drarok/feature) ✘ svn ci -m 'Merging trunk changes to my branch to keep it updated.'
 	Committed revision 5.
 </pre>
 
 ### Performing a 'reintegrate' merge when finished with your branch.
 
 <pre style="background: black; color: lightgreen">
-	➜  projectname svn:(branches/drarok/feature) svneligible reintegrate --commit='Reintegrating my awesome feature branch.' --remove
+	➜  projectname svn:(branches/drarok/feature) svneligible reintegrate
 	Reintegrating into ^/trunk
 	Committing...
+	<span style="color: silver;">[editor opens for the commit message]</span>
 	Automatically removing the reintegrated branch.
 	Removing upstream for path ^/branches/drarok/feature (was ^/trunk)
 	➜  projectname svn:(trunk)
 </pre>
 
-Note that the working copy is automatically switched to the upstream branch. Check the help for further explanation of the options. For example, the --commit option can be specified without a message, and your editor will show as normal, allowing a long commit message to be entered easily. The branch will *not* be removed if the commit doesn't occur.
+Note that the working copy is automatically switched to the upstream branch. Check the help for further explanation of the options. For example, you can pass --no-commit, and the process will stop after the merge. The branch will *not* be removed if the commit doesn't occur.
 
 Please be aware that sometimes this tool assumes you have roughly the same repository layout as me:
 
