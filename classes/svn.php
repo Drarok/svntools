@@ -13,18 +13,18 @@ class Svn
 {
 	/**
 	 * Instances will use this value in their constructor to set their own _verbose property.
-	 * 
+	 *
 	 * @var bool
 	 */
 	static protected $_defaultVerbose = false;
 
 	/**
 	 * Attempt to traverse up the filesystem, looking for the working copy root.
-	 * 
+	 *
 	 * @param string $path Path to start looking at.
-	 * 
+	 *
 	 * @return string
-	 * 
+	 *
 	 * @throws Exception Failing to find a .svn directory with throw.
 	 */
 	static public function getRoot($path)
@@ -33,31 +33,31 @@ class Svn
 		// This isn't 100% reliable, though.
 		$parent = '';
 		$grandparent = realpath($path);
-		
+
 		while (is_dir($grandparent . DS . '.svn')) {
 			$parent = $grandparent;
 			$grandparent = dirname($parent);
 		}
-		
+
 		if (! is_dir($parent . DS . '.svn')) {
 			throw new Exception('Failed to find a subversion working copy.');
 		}
-		
+
 		return $parent;
 	}
 
 	/**
 	 * Setter for the static $_defaultVerbose property.
-	 * 
+	 *
 	 * @param bool $verbose Pass true to enable verbose mode by default.
-	 * 
+	 *
 	 * @return void
 	 */
 	static public function setDefaultVerbose($verbose)
 	{
 		static::$_defaultVerbose = (bool) $verbose;
 	}
-	
+
 	/**
 	 * Stores the path to the working copy we're working on.
 	 *
@@ -67,11 +67,11 @@ class Svn
 
 	/**
 	 * Output verbose information when running or not.
-	 * 
+	 *
 	 * @var bool
 	 */
 	protected $_verbose;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -85,16 +85,16 @@ class Svn
 
 	/**
 	 * Setter for the _verbose property.
-	 * 
+	 *
 	 * @param bool $verbose True to enable verbose mode, or false to disable.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function setVerbose($verbose)
 	{
 		$this->_verbose = (bool) $verbose;
 	}
-	
+
 	/**
 	 * Add a file to the working copy.
 	 *
@@ -110,7 +110,7 @@ class Svn
 
 	/**
 	 * Run and return the output from an svn `diff`.
-	 * 
+	 *
 	 * @param mixed $upstreamPath Path of the upstream branch to diff against, or null to diff the working copy.
 	 * @param mixed $branchPath   Path to compare against the upstream, or null to diff the working copy.
 	 *
@@ -143,7 +143,7 @@ class Svn
 			$this->_runCommand('revert', $path);
 		}
 	}
-	
+
 	/**
 	 * Get the status of the working copy.
 	 *
@@ -152,30 +152,30 @@ class Svn
 	public function status()
 	{
 		$status = implode(PHP_EOL, $this->_runCommand('status', '--xml', $this->_path));
-		
+
 		$xml = simplexml_load_string($status);
-		
+
 		$result = array();
-		
+
 		foreach ($xml->target as $target) {
 			$targetPath = $target['path'];
-			
+
 			if ($targetPath == '.') {
 				$targetPath = '';
 				$offset = 0;
 			} else {
 				$offset = strlen($targetPath) + 1;
 			}
-			
+
 			foreach ($target->entry as $entry) {
 				$path = substr($entry['path'], $offset);
 				$result[] = new Svn_Entry($entry, $path);
 			}
 		}
-		
+
 		return $result;
 	}
-	
+
 	/**
 	 * Get the commit log for the given path.
 	 *
@@ -214,11 +214,11 @@ class Svn
 
 	/**
 	 * List the contents of a working copy (or repo-relative path).
-	 * 
+	 *
 	 * Returns an array of filenames.
-	 * 
+	 *
 	 * @param string $path Path to list, or current directory if nothing passed.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function ls($path = null)
@@ -229,15 +229,25 @@ class Svn
 
 		return $this->_runCommand('list', $path);
 	}
-	
+
+	/**
+	 * Update the working copy.
+	 *
+	 * @return void
+	 */
+	public function update()
+	{
+		$this->_runCommand('update');
+	}
+
 	/**
 	 * Subversion mergeinfo wrapper command.
-	 * 
+	 *
 	 * Returns an array of ints representing the revisions eligble for merging.
-	 * 
+	 *
 	 * @param string $path   Path to use as reference.
 	 * @param string $wcPath Working copy path to check against (defaults to the instance path).
-	 * 
+	 *
 	 * @return array
 	 */
 	public function eligible($path, $wcPath = NULL)
@@ -262,13 +272,13 @@ class Svn
 
 	/**
 	 * Subversion merge wrapper command.
-	 * 
+	 *
 	 * @param string $path        Path to merge from.
 	 * @param mixed  $revs        Array of revision ids to merge, or null for all.
 	 * @param string $wcPath      Working copy path to merge into (defaults to the instance path).
 	 * @param bool   $reintegrate Pass true to perform a 'reintegrate' merge.
 	 * @param bool   $recordOnly  Pass true to perform a 'record only' merge.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function merge($path, $revs = null, $wcPath = null, $reintegrate = false, $recordOnly = false)
@@ -299,7 +309,7 @@ class Svn
 
 	/**
 	 * Get information about the working copy.
-	 * 
+	 *
 	 * @return object
 	 */
 	public function info($path = NULL)
@@ -313,9 +323,9 @@ class Svn
 
 	/**
 	 * Get the current working directory's repo-relative path.
-	 * 
+	 *
 	 * @param string $path Path to get repo-relative path for (defaults to instance path).
-	 * 
+	 *
 	 * @return string
 	 */
 	public function relativePath($path = NULL)
@@ -333,11 +343,11 @@ class Svn
 
 	/**
 	 * Switch the working copy to another URL.
-	 * 
+	 *
 	 * Named switchTo because you can't have a method named 'switch' in PHP.
-	 * 
+	 *
 	 * @param string $url URL to switch to.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function switchTo($url)
@@ -347,9 +357,9 @@ class Svn
 
 	/**
 	 * Perform a Subversion commit.
-	 * 
+	 *
 	 * @param mixed $message A string to use as the commit message, or null to show the editor.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function commit($message = null)
@@ -367,10 +377,10 @@ class Svn
 
 	/**
 	 * Remove a file or directory, optionally with a commit message.
-	 * 
+	 *
 	 * @param string $path    Path to remove.
 	 * @param mixed  $message Commit message to specify.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function rm($path, $message = null)
@@ -388,12 +398,12 @@ class Svn
 
 	/**
 	 * Create a new branch in the repository.
-	 * 
+	 *
 	 * @param string $existingPath  Path in the repository to branch from.
 	 * @param string $newPath       New path in the repository to copy to.
 	 * @param mixed  $commitMessage Optional commit message to set for the branch operation.
 	 * @param mixed  $createParents Optional. Create parent directories if required?
-	 * 
+	 *
 	 * @return void
 	 */
 	public function branch($existingPath, $newPath, $commitMessage = null, $createParents = false)
