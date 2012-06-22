@@ -20,22 +20,6 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	}
 
 	/**
-	 * Check the state of the working copy.
-	 *
-	 * Returns true if there are modified or missing files.
-	 *
-	 * @return boolean
-	 */
-	protected function _isWorkingCopyDirty()
-	{
-
-		$entries = $this->_svn->status()->getEntriesInStates(
-			Svn_Entry::MODIFIED, Svn_Entry::MISSING);
-
-		return (bool) $entries->count();
-	}
-
-	/**
 	 * Show the revisions in $revs.
 	 *
 	 * @param array $revs Filtered revisions to show.
