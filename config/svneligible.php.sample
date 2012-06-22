@@ -15,4 +15,9 @@ return array(
 
 		'tags' => array(),
 	),
+
+	'show' => array(
+		// Automatically run 'svn update' before running the 'show' command?
+		'auto-update' => false,
+	),
 );
