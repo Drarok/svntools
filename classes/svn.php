@@ -147,7 +147,7 @@ class Svn
 	/**
 	 * Get the status of the working copy.
 	 *
-	 * @return array
+	 * @return Svn_Entry_Iterator
 	 */
 	public function status()
 	{
@@ -173,7 +173,7 @@ class Svn
 			}
 		}
 
-		return $result;
+		return new Svn_Entry_Iterator($result);
 	}
 
 	/**
