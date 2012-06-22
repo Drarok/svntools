@@ -33,9 +33,6 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	 */
 	public function run()
 	{
-		// Note that we *always* operate on the root of the working copy.
-		$this->_svn = new Svn(Svn::getRoot('.'));
-
 		// This method will throw if there are invalid parameters.
 		$this->_parseOptions();
 
