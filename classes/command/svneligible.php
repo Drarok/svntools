@@ -21,7 +21,11 @@ abstract class Command_Svneligible extends Command
 	{
 		parent::__construct($args);
 
+		// Note that we *always* operate on the root of the working copy.
 		$this->_svn = new Svn(Svn::getRoot('.'));
+
+		// Allow subclasses to set up any state they need.
+		$this->_setUp();
 	}
 
 	/**
@@ -100,5 +104,14 @@ abstract class Command_Svneligible extends Command
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Default implementation does nothing, but subclasses can use this.
+	 *
+	 * @return void
+	 */
+	protected function _setUp()
+	{
 	}
 }
