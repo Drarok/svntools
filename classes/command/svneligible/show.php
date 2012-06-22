@@ -11,9 +11,35 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	{
 		// Should we run update first?
 		if (Config::get('svneligible.show.auto-update', false)) {
+			if ($this->_isWorkingCopyDirty()) {
+				throw new Exception('Refusing to update due to uncommitted changes.');
+			}
 			echo 'Updating...', PHP_EOL;
 			$this->_svn->update();
 		}
+	}
+
+	/**
+	 * Check the state of the working copy.
+	 *
+	 * Returns true if there are modified or missing files.
+	 *
+	 * @return boolean
+	 */
+	protected function _isWorkingCopyDirty()
+	{
+		$dirtyStates = array(
+			Svn_Entry::MODIFIED,
+			Svn_Entry::MISSING,
+		);
+
+		foreach ($this->_svn->status() as $entry) {
+			if (in_array($entry->getState(), $dirtyStates)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
