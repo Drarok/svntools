@@ -61,13 +61,3 @@ class Svn_Entry_Iterator extends ArrayIterator
 		return new Svn_Entry_Iterator($entries);
 	}
 }
-
-$entries = array(
-	'one',
-	'two',
-	'three',
-);
-$iterator = new Svn_Entry_Iterator($entries);
-foreach ($iterator as $key => $item) {
-	echo $item, PHP_EOL;
-}
