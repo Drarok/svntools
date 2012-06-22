@@ -28,18 +28,11 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	 */
 	protected function _isWorkingCopyDirty()
 	{
-		$dirtyStates = array(
-			Svn_Entry::MODIFIED,
-			Svn_Entry::MISSING,
-		);
 
-		foreach ($this->_svn->status() as $entry) {
-			if (in_array($entry->getState(), $dirtyStates)) {
-				return true;
-			}
-		}
+		$entries = $this->_svn->status()->getEntriesInStates(
+			Svn_Entry::MODIFIED, Svn_Entry::MISSING);
 
-		return false;
+		return (bool) $entries->count();
 	}
 
 	/**

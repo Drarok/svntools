@@ -47,7 +47,7 @@ class Svn_Entry_Iterator extends ArrayIterator
 	 *
 	 * @return Svn_Entry_Iterator
 	 */
-	public function getFilteredIterator($state)
+	public function getEntriesInStates($state)
 	{
 		$states = func_get_args();
 		$entries = array();
