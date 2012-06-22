@@ -15,19 +15,19 @@ abstract class Config
 {
 	/**
 	 * In-memory cache, keyed on the filename.
-	 * 
+	 *
 	 * @var array
 	 */
 	static protected $_configs = array();
 
 	/**
 	 * Getter for config data.
-	 * 
+	 *
 	 * Pass keys in using the format filename.key1.key2 to traverse arrays.
-	 * 
+	 *
 	 * @param string $key     Keypath to the config value.
 	 * @param mixed  $default Default value to return if the keypath isn't found.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	static public function get($key, $default = null)
@@ -61,9 +61,9 @@ abstract class Config
 
 	/**
 	 * Load a config file from disk, or the in-memory cache.
-	 * 
+	 *
 	 * @param string $file File name without extension.
-	 * 
+	 *
 	 * @return array
 	 */
 	static protected function _load($file)
@@ -85,11 +85,11 @@ abstract class Config
 
 	/**
 	 * Array traversing helper method.
-	 * 
+	 *
 	 * @param array  $arr     Array to operate on.
 	 * @param string $key     Keypath to use.
 	 * @param mixed  $default Default value to return if the keypath isn't found.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	static protected function _traverse($arr, $key, $default = null)
