@@ -475,15 +475,13 @@ class Stash
 		
 		$result = array();
 		
-		foreach ($svn->status() as $item) {
+		foreach ($svn->status()->getEntriesInStates(Svn_Entry::UNVERSIONED) as $item) {
 			if ($item->getPath() == '.svnstash') {
 				// Don't include our own stash directory.
 				continue;
 			}
 			
-			if ($item->getState() == Svn_Entry::UNVERSIONED) {
-				$result[] = $item->getPath();
-			}
+			$result[] = $item->getPath();
 		}
 		
 		return $result;
