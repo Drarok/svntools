@@ -35,10 +35,12 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 		}
 
 		// Ensure there are no uncommitted changes.
-		foreach ($svn->status() as $item) {
-			if ($item->getState() == Svn_Entry::MODIFIED) {
-				throw new Exception('You have uncommitted changes. Aborting.');
-			}
+		$workingCopyIsDirty = (bool) $svn->status()
+			->getEntriesInStates(Svn_Entry::MODIFIED, Svn_Entry::MISSING)
+			->count();
+
+		if ($workingCopyIsDirty) {
+			throw new Exception('You have uncommitted changes. Aborting.');
 		}
 
 		// Check that there are no eligible revisions.
