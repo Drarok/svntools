@@ -1,4 +1,5 @@
-svneligible upstream [set|remove] [<upstream>] [<alias|path>]
+svneligible upstream set <upstream> [<alias|path>]
+svneligible upstream remove [<alias|path>]
 	Shows or changes the upstream configuration. Upstream branches are those used automatically by the
 	'show', 'diff', 'merge', and 'reintegrate' commands when no <path> option is specified.
 
