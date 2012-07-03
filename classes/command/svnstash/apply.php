@@ -35,9 +35,15 @@ class Command_Svnstash_Apply extends Command
 
 		echo 'Applying changes from stash \'' . $name . '\'.', PHP_EOL;
 
-		$cmd = escapeshellcmd('patch') . ' 2>&1';
-		$cmd .= ' ' . escapeshellarg('-p0');
-		$cmd .= ' < ' . escapeshellarg($path);
+		$cmd = escapeshellcmd('patch') . ' 2>&1 ';
+		$args = array(
+			'-p0', // No filename stripping.
+			'-l',  // Ignore whitespace changes (thanks, Subversion!).
+			'-u',  // Unified diffs.
+			'-i',  // Input file coming next.
+			$path, // Input file.
+		);
+		$cmd .= implode(' ', array_map('escapeshellarg', $args));
 
 		$output = array();
 		$exitCode = null;
