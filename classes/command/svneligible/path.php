@@ -12,6 +12,14 @@ class Command_Svneligible_Path extends Command_Svneligible
 	 */
 	public function run()
 	{
-		echo $this->_svn->relativePath(), PHP_EOL;
+		if ($this->_args->getNamedArgument('stable')) {
+			// The --stable flag means to fetch the 'newest' release branch.
+			$releases = Command_Svneligible::factory('releases')->run(false);
+			$path = array_pop($releases);
+		} else {
+			$path = $this->_svn->relativePath();
+		}
+
+		echo $path, PHP_EOL;
 	}
 }
