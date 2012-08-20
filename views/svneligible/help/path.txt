@@ -1,0 +1,6 @@
+svneligible path [--stable]
+	Display the relative path of a working copy or stable release.
+
+	With no options this command will output the relative path of the working copy.
+
+	Passing the --stable option will output the relative path of the latest release branch.
