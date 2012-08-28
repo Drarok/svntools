@@ -6,8 +6,15 @@
 class Command_Svneligible_Help extends Command_Svneligible
 {
 	/**
+	 * True if this command requires a Subversion working copy to run.
+	 *
+	 * @var boolean
+	 */
+	protected $_requiresWorkingCopy = false;
+
+	/**
 	 * Help command for svneligible.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()

@@ -6,6 +6,13 @@
 abstract class Command_Svneligible extends Command
 {
 	/**
+	 * True if this command requires a Subversion working copy to run.
+	 *
+	 * @var boolean
+	 */
+	protected $_requiresWorkingCopy = true;
+
+	/**
 	 * Instance of the Svn class.
 	 *
 	 * @var object
@@ -22,7 +29,13 @@ abstract class Command_Svneligible extends Command
 		parent::__construct($args);
 
 		// Note that we *always* operate on the root of the working copy.
-		$this->_svn = new Svn(Svn::getRoot('.'));
+		try {
+			$this->_svn = new Svn(Svn::getRoot('.'));
+		} catch (Exception $e) {
+			if ($this->_requiresWorkingCopy) {
+				throw $e;
+			}
+		}
 
 		// Allow subclasses to set up any state they need.
 		$this->_setUp();
