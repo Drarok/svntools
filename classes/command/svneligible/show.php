@@ -7,10 +7,17 @@
  */
 class Command_Svneligible_Show extends Command_Svneligible_Filter
 {
+	/**
+	 * Automatically update the working copy, if configured to do so.
+	 *
+	 * @return void
+	 */
 	protected function _setUp()
 	{
 		// Should we run update first?
-		if (Config::get('svneligible.show.auto-update', false)) {
+		if (Config::get('svneligible.show.auto-update', false)
+			&& ! $this->_args->getNamedArgument('no-update')
+		) {
 			if ($this->_isWorkingCopyDirty()) {
 				throw new Exception('Refusing to update due to uncommitted changes.');
 			}
