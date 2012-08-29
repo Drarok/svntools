@@ -17,7 +17,7 @@ abstract class Command
 	 * Factory method for command subclass instances.
 	 *
 	 * @param string $name Name of the command to instantiate.
-	 * @param mixed $args Arguments instance, or null.
+	 * @param mixed  $args Arguments instance, or null.
 	 *
 	 * @return object
 	 */
@@ -30,14 +30,14 @@ abstract class Command
 
 	/**
 	 * Command arguments as an instance of Arguments.
-	 * 
+	 *
 	 * @var object
 	 */
 	protected $_args;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param mixed $args Arguments instance, or null.
 	 */
 	public function __construct($args = null)
@@ -52,7 +52,7 @@ abstract class Command
 
 	/**
 	 * Get the display name of the current instance.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getName()
