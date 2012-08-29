@@ -8,11 +8,13 @@ Stash the changes in an svn working copy away for later - based on git's stash c
 
 ## svneligible
 
-This tool aims to ease the pain caused by Subversion's braindead merge command syntax. It now sports a whole suite of useful tools for making branching and merging slightly more tolerable in Subversion. Using svneligible, you can create a branch and have it set up to easily check if there are revisions eligible to merge up from its parent branch. You can merge in those eligible revisions, optionally filtering out certain revisions that you don't want/need, then automatically reintegrate that branch back to its parent branch later. There are also commands to easily list common branch locations.
+This tool aims to ease the pain caused by Subversion's braindead merge command syntax. It now sports a whole suite of useful tools for making branching and merging slightly more tolerable in Subversion. Using svneligible, you can create a branch and have it automatically set up to easily check if there are revisions eligible to merge from the parent branch. You can merge in those eligible revisions, optionally filtering out certain revisions that you don't want/need, then automatically reintegrate that branch back to its parent branch later. There are also commands to easily list common branch locations.
 
 The filtering does *not* mark revisions as merged using the "record-only merge" feature of Subversion, instead it is designed primarily to allow you to merge in your own work while omitting colleagues. We tend to "own" our own work, so if a hotfix revision hasn't been merged back into trunk it's down to the author to merge (and resolve conflicts).
 
 One of the primary differences of svneligible is that Subversion interprets -r4:10 to mean "merge changes that occurred *after* revision 4, and up to (and including) revision 10", whereas all ranges in svneligible are inclusive. This means that passing '--range=4:10' means "merge changes that happened in revision 4 up to and including 10".
+
+Also of note is the fact that all branching/merging/switching operations occur on the working copy's root, effectively avoiding any problems caused by accidentally operating on subtrees.
 
 ### Setting up a branch.
 
