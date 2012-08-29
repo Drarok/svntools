@@ -7,28 +7,28 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 {
 	/**
 	 * Instance of the Svn class to use for operations.
-	 * 
+	 *
 	 * @var object
 	 */
 	protected $_svn;
 
 	/**
 	 * Parsed options from _parseOptions.
-	 * 
+	 *
 	 * @var object
 	 */
 	protected $_options;
 
 	/**
 	 * Cache of eligible revisions array to avoid calling Subversion more than once.
-	 * 
+	 *
 	 * @var mixed
 	 */
 	protected $_allEligibleRevisions;
 
 	/**
 	 * This method sets up the object ready for the _run method in the concrete class to do the work.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()
@@ -51,13 +51,13 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 	/**
 	 * Parse the command arguments, storing them in $this->_options.
-	 * 
+	 *
 	 * The object generated is guaranteed to have the following properties:
 	 *     - path
 	 *     - author
 	 *     - initial
 	 *     - final
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _parseOptions()
@@ -104,7 +104,7 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 	/**
 	 * Returns an array of integers representing all eligible revisions.
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function _getAllEligibleRevisions()
@@ -118,7 +118,7 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 	/**
 	 * Fetch all eligible revisions for the given path, filter them and return.
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function _getFilteredEligibleRevisions()
@@ -145,12 +145,12 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 	/**
 	 * Remove revisions based on the author.
-	 * 
+	 *
 	 * Using a prefix of '!' will invert the standard filtering behaviour.
-	 * 
+	 *
 	 * @param array $revs   Revisions to filter.
 	 * @param mixed $author Username to filter on, or false to not filter.
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function _filterAuthor($revs, $author)
@@ -191,11 +191,11 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 	/**
 	 * Remove revisions outside of the specified range.
-	 * 
+	 *
 	 * @param array $revs    Revisions to filter.
 	 * @param mixed $initial Pass an int to filter out revs prior to this, or false to not filter.
 	 * @param mixed $final   Pass an int to filter out revs after this, or false to not filter.
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function _filterRange($revs, $initial, $final)
@@ -240,9 +240,9 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 
 	/**
 	 * Abstract method that the concrete class must implement.
-	 * 
+	 *
 	 * @param array $revs Revisions that have passed all filters.
-	 * 
+	 *
 	 * @return void
 	 */
 	abstract protected function _run($revs);
