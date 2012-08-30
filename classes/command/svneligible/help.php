@@ -23,28 +23,31 @@ class Command_Svneligible_Help extends Command_Svneligible
 		$verbose = $this->_args->getNamedArgument('verbose');
 		$command = $this->_args->getUnnamedArgument(1);
 
-		// Output the general help first if in verbose mode or no command.
+		// This is the order we want to show commands in.
+		$commands = array(
+			'branches',
+			'releases',
+			'tags',
+			'path',
+			'upstream',
+			'branch',
+			'switch',
+			'diff',
+			'show',
+			'merge',
+			'reintegrate',
+			'help',
+		);
+
+		// Output the general help if in verbose mode or no specific command.
 		if ($verbose || ! $command) {
 			View::factory('svneligible/help')
 				->set('verbose', $verbose)
+				->set('commands', $commands)
 				->render();
 		}
 
 		if ($verbose && ! $command) {
-			// This is the order we want to show commands in verbose mode.
-			$commands = array(
-				'branches',
-				'releases',
-				'tags',
-				'upstream',
-				'branch',
-				'switch',
-				'diff',
-				'show',
-				'merge',
-				'reintegrate',
-				'help',
-			);
 		} elseif ($command) {
 			// Just show a single command's help.
 			$commands = array($command);
@@ -54,6 +57,11 @@ class Command_Svneligible_Help extends Command_Svneligible
 		}
 
 		foreach ($commands as $command) {
+			if ($command == 'help') {
+				// There's no additional help for the help command.
+				continue;
+			}
+
 			View::factory('svneligible/help/' . $command, 'txt')->render();
 			echo PHP_EOL, PHP_EOL;
 		}
