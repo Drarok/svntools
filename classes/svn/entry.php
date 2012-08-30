@@ -40,6 +40,20 @@ class Svn_Entry
 	const EXTERNAL = 'external';
 
 	/**
+	 * Normal status constant.
+	 *
+	 * @const string
+	 */
+	const NORMAL = 'normal';
+
+	/**
+	 * None status constant.
+	 *
+	 * @const string
+	 */
+	const NONE = 'none';
+
+	/**
 	 * SimpleXMLElement representing the file entry.
 	 *
 	 * @var SimpleXMLElement
@@ -76,23 +90,46 @@ class Svn_Entry
 	}
 
 	/**
-	 * State getter.
+	 * Get the file state.
 	 *
 	 * @return string
 	 *
-	 * @throws Exception When state is unknown.
+	 * @throws Exception When state is unrecognised.
 	 */
-	public function getState()
+	public function getFileState()
 	{
 		static $validStates = array(
 			self::UNVERSIONED,
 			self::MODIFIED,
 			self::MISSING,
 			self::EXTERNAL,
+			self::NORMAL,
 		);
 
-		$state = $this->_xml->{'wc-status'};
-		$state = $state['item'];
+		$state = $this->_xml->{'wc-status'}['item'];
+
+		if (! in_array($state, $validStates)) {
+			throw new Exception('Invalid state: ' . $state);
+		}
+
+		return $state;
+	}
+
+	/**
+	 * Get the property state.
+	 *
+	 * @return string
+	 *
+	 * @throws Exception When state is unrecognised.
+	 */
+	public function getPropertyState()
+	{
+		static $validStates = array(
+			self::MODIFIED,
+			self::NONE,
+		);
+
+		$state = $this->_xml->{'wc-status'}['props'];
 
 		if (! in_array($state, $validStates)) {
 			throw new Exception('Invalid state: ' . $state);
