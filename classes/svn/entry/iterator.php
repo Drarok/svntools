@@ -53,7 +53,9 @@ class Svn_Entry_Iterator extends ArrayIterator
 		$entries = array();
 
 		foreach ($this as $entry) {
-			if (in_array($entry->getState(), $states)) {
+			if (in_array($entry->getFileState(), $states)
+				|| in_array($entry->getPropertyState(), $states)
+			) {
 				$entries[] = $entry;
 			}
 		}
