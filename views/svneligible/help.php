@@ -10,8 +10,8 @@ AVAILABLE COMMANDS
 	svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--commit=<message>]
 	svneligible switch [<path>|--stable]
 	svneligible diff [<path>|--stable] [-r|--reverse]
-	svneligible show [<path>|--stable] [--no-update] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
-	svneligible merge [<path>|--stable] [--dry-run] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
+	svneligible show [<path>|--stable] [--no-update] [--paths] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
+	svneligible merge [<path>|--stable] [--record-only] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
 	svneligible reintegrate [<path>|--stable] [--no-commit|--commit[=<message>] [--no-remove]
 	svneligible help [<command>]
 
