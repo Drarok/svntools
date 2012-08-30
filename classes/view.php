@@ -27,28 +27,28 @@ class View
 	{
 		return new View($filename, $ext);
 	}
-	
+
 	/**
 	 * View filename to render.
 	 *
 	 * @var string $_filename
 	 */
 	protected $_filename;
-	
+
 	/**
 	 * Variable storage for use when rendering.
 	 *
 	 * @var array $_variables
 	 */
 	protected $_variables = array();
-	
+
 	/**
 	 * Output when rendering (used internally).
 	 *
 	 * @var bool $_output
 	 */
 	protected $_output;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -60,7 +60,7 @@ class View
 		$this->setFilename(
 			SVNTOOLS_ROOT . 'views' . DS . $filename . '.' . $ext);
 	}
-	
+
 	/**
 	 * Magic toString method - render and return.
 	 *
@@ -70,7 +70,7 @@ class View
 	{
 		return $this->render(false);
 	}
-	
+
 	/**
 	 * Magic setter, passes to ->set().
 	 *
@@ -83,7 +83,7 @@ class View
 	{
 		$this->set($key, $value);
 	}
-	
+
 	/**
 	 * Filename setter.
 	 *
@@ -96,10 +96,10 @@ class View
 		if (! file_exists($filename)) {
 			throw new Exception('No such file: ' . $filename);
 		}
-		
+
 		$this->_filename = $filename;
 	}
-	
+
 	/**
 	 * Script adding helper method.
 	 *
@@ -113,17 +113,17 @@ class View
 		$scripts = array_key_exists('scripts', $this->_variables)
 			? $this->_variables['scripts']
 			: array();
-		
+
 		// Add the new script.
 		$scripts[] = $script;
-		
+
 		// Store it for later.
 		$this->set('scripts', $scripts);
-		
+
 		// Chainable method.
 		return $this;
 	}
-	
+
 	/**
 	 * Variable setter for substitution when rendering.
 	 *
@@ -142,10 +142,10 @@ class View
 		} else {
 			$this->_variables[$key] = $value;
 		}
-		
+
 		return $this;
 	}
-	
+
 	/**
 	 * Render the view file with variable substitution.
 	 *
@@ -159,7 +159,7 @@ class View
 		$this->_output = $output;
 		return $this->_render();
 	}
-	
+
 	/**
 	 * Actual rendering method, using no in-scope variables.
 	 *
@@ -168,13 +168,13 @@ class View
 	protected function _render()
 	{
 		extract($this->_variables, EXTR_OVERWRITE);
-		
+
 		if (! $this->_output) {
 			ob_start();
 		}
-		
+
 		include $this->_filename;
-		
+
 		if (! $this->_output) {
 			return ob_get_clean();
 		}
