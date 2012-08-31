@@ -11,10 +11,8 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 	 */
 	public function run()
 	{
-		$svn = new Svn(Svn::getRoot('.'));
-
 		// Grab the relative path, as we need it in various places.
-		$relativePath = $svn->relativePath();
+		$relativePath = $this->_svn->relativePath();
 
 		if ($this->_args->getNamedArgument('stable')) {
 			$releases = Command_Svneligible::factory('releases')->run(false);
@@ -35,16 +33,12 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 		}
 
 		// Ensure there are no uncommitted changes.
-		$workingCopyIsDirty = (bool) $svn->status()
-			->getEntriesInStates(Svn_Entry::MODIFIED, Svn_Entry::MISSING)
-			->count();
-
-		if ($workingCopyIsDirty) {
+		if ($this->_svn->isDirty()) {
 			throw new Exception('You have uncommitted changes. Aborting.');
 		}
 
 		// Check that there are no eligible revisions.
-		if ((bool) $eligible = $svn->eligible($upstreamPath)) {
+		if ((bool) $eligible = $this->_svn->eligible($upstreamPath)) {
 			$eligibleCount = count($eligible);
 			$word = $eligibleCount == 1
 				? 'is'
@@ -55,22 +49,22 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 
 		echo 'Reintegrating into ', $upstreamPath, PHP_EOL;
 
-		$svn->switchTo($upstreamPath);
-		$svn->merge($relativePath, null, null, true);
+		$this->_svn->switchTo($upstreamPath);
+		$this->_svn->merge($relativePath, null, null, true);
 
 		if (! (bool) $this->_args->getNamedArgument('no-commit')) {
 			echo 'Committing...', PHP_EOL;
 
 			if ((bool) $commitMessage = $this->_args->getNamedArgument('commit')) {
-				$svn->commit($commitMessage);
+				$this->_svn->commit($commitMessage);
 			} else {
-				$svn->commit();
+				$this->_svn->commit();
 			}
 
 			if (! (bool) $this->_args->getNamedArgument('no-remove')) {
 				// Delete the now-reintegrated branch.
 				echo 'Automatically removing the reintegrated branch.', PHP_EOL;
-				$svn->rm($relativePath, 'Removing now-reintegrated branch');
+				$this->_svn->rm($relativePath, 'Removing now-reintegrated branch');
 
 				// Also remove any upstream entries for the now-deleted branch.
 				$upstream = new Upstream('.');

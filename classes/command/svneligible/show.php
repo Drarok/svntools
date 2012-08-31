@@ -18,7 +18,7 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 		if (Config::get('svneligible.show.auto-update', false)
 			&& ! $this->_args->getNamedArgument('no-update')
 		) {
-			if ($this->_isWorkingCopyDirty()) {
+			if ($this->_svn->isDirty()) {
 				throw new Exception('Refusing to update due to uncommitted changes.');
 			}
 			echo 'Updating...', PHP_EOL;

@@ -225,20 +225,6 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	}
 
 	/**
-	 * Check the state of the working copy.
-	 *
-	 * Returns true if there are modified or missing files.
-	 *
-	 * @return boolean
-	 */
-	protected function _isWorkingCopyDirty()
-	{
-		return (bool) $this->_svn->status()
-			->getEntriesInStates(Svn_Entry::MODIFIED, Svn_Entry::MISSING)
-			->count();
-	}
-
-	/**
 	 * Abstract method that the concrete class must implement.
 	 *
 	 * @param array $revs Revisions that have passed all filters.
