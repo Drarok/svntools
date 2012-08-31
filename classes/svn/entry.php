@@ -19,6 +19,13 @@ class Svn_Entry
 	const UNVERSIONED = 'unversioned';
 
 	/**
+	 * Added status constant.
+	 *
+	 * @const string
+	 */
+	const ADDED = 'added';
+
+	/**
 	 * Modified status constant.
 	 *
 	 * @const string
@@ -100,6 +107,7 @@ class Svn_Entry
 	{
 		static $validStates = array(
 			self::UNVERSIONED,
+			self::ADDED,
 			self::MODIFIED,
 			self::MISSING,
 			self::EXTERNAL,
