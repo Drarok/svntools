@@ -424,6 +424,18 @@ class Svn
 	}
 
 	/**
+	 * Return true if the working copy is "dirty" - that is, it has uncommitted changes.
+	 *
+	 * @return boolean
+	 */
+	public function isDirty()
+	{
+		return $this->status()
+			->getEntriesInStates(Svn_Entry::ADDED, Svn_Entry::MODIFIED, Svn_Entry::MISSING)
+			->count() !== 0;
+	}
+
+	/**
 	 * Run a subversion command, and return the result as an array of strings.
 	 *
 	 * @param string $args Variable number of arguments to pass to subversion.
