@@ -20,4 +20,12 @@ return array(
 		// Automatically run 'svn update' before running the 'show' command?
 		'auto-update' => false,
 	),
+
+	'diff' => array(
+		// Additional parameters to pass to the 'diff' command.
+		'additional_parameters' => array(
+			'-x', // Extra options coming up.
+			'-w', // Ignore all whitespace.
+		),
+	),
 );
