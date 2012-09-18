@@ -1,7 +1,10 @@
-svneligible merge [<path>|--stable] [--record-only] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>]
+svneligible merge [<path>|--stable] [--record-only] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [--force]
 	Merge all the eligible revs from another branch into the currently checked-out branch.
 
 	Note: to view the revisions before performing the actual merge, use the 'show' command.
+
+	This command will refuse to perform a merge if the working copy has uncommitted changes,
+	unless you pass in the '--force' option.
 
 	The operation of the --author, --initial, --final, and --range options, are identical
 	to that of the 'show' command.

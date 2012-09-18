@@ -10,7 +10,9 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 	protected function _setUp()
 	{
 		// Only merge if the working copy is clean.
-		if ($this->_svn->isDirty()) {
+		if ($this->_svn->isDirty() &&
+			! $this->_args->getNamedArgument('force')
+		) {
 			throw new Exception('Refusing to merge due to uncommitted changes.');
 		}
 	}
