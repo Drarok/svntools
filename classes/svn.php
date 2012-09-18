@@ -113,17 +113,19 @@ class Svn
 	 *
 	 * @param mixed $upstreamPath Path of the upstream branch to diff against, or null to diff the working copy.
 	 * @param mixed $branchPath   Path to compare against the upstream, or null to diff the working copy.
+	 * @param array $params       Extra parameters to pass to the diff command.
 	 *
 	 * @return string
 	 */
-	public function diff($upstreamPath = null, $branchPath = null)
+	public function diff($upstreamPath = null, $branchPath = null, $params = array())
 	{
 		if ($upstreamPath === null && $branchPath === null) {
 			return implode(PHP_EOL, $this->_runCommand('diff'));
 		} elseif ($upstreamPath === null || $branchPath === null) {
 			throw new Exception('You must path both the upstream and branch you want to diff.');
 		} else {
-			return implode(PHP_EOL, $this->_runCommand('diff', $upstreamPath, $branchPath));
+			$args = array('diff', $upstreamPath, $branchPath);
+			return implode(PHP_EOL, call_user_func_array(array($this, '_runCommand'), array_merge($args, $params)));
 		}
 	}
 
