@@ -22,12 +22,12 @@ class Command_Svnstash_List extends Command
 		$stash = new Stash($path);
 		$path = $stash->getPath();
 		$stashes = $stash->getStashes();
-		
+
 		if (! $stashes) {
 			echo 'There are no stashed changes in ', $path, PHP_EOL;
 			exit(1);
 		}
-		
+
 		foreach ($stashes as $key => $stashName) {
 			echo $key, ': ', $stashName, PHP_EOL;
 		}
