@@ -66,6 +66,13 @@ class Stash
 	protected $_path;
 
 	/**
+	 * Cached stashes, to avoid hitting the filesystem every time.
+	 *
+	 * @var array
+	 */
+	protected $_stashes;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $path Path to a directory within the working copy.
@@ -98,10 +105,17 @@ class Stash
 	/**
 	 * Get the name of every stashed change, in the order they were stashed.
 	 *
+	 * @param bool $useCache Allow the use of cached results, defaults to true.
+	 *
 	 * @return array
 	 */
-	public function getStashes()
+	public function getStashes($useCache = true)
 	{
+		if ($useCache && is_array($this->_stashes)) {
+			// Simply returned the cached info, if allowed.
+			return $this->_stashes;
+		}
+
 		// Make sure everything is set up.
 		$this->_setupPath();
 
@@ -120,7 +134,7 @@ class Stash
 
 		fclose($file);
 
-		return $result;
+		return $this->_stashes = $result;
 	}
 
 	/**
