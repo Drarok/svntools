@@ -29,7 +29,8 @@ class Command_Svnstash_List extends Command
 		}
 
 		foreach ($stashes as $key => $stashName) {
-			echo $key, ': ', $stashName, PHP_EOL;
+			$time = filemtime($stash->getStashPath($stashName));
+			echo sprintf('%d: [%s] %s', $key, date('Y-m-d H:i:s', $time), $stashName), PHP_EOL;
 		}
 	}
 }
