@@ -29,7 +29,7 @@ class Command_Svneligible_Log extends Command_Svneligible
 		// Set up the view.
 		$viewName = $this->_args->getNamedArgument('format', 'default');
 		$view = View::factory('svneligible/log/' . $viewName);
-		$view->showPaths = false;
+		$view->showPaths = $showPaths;
 
 		// Output each revision.
 		foreach ($logs as $rev => $log) {
