@@ -1,0 +1,15 @@
+svneligible log [<path>] [--paths] [--format=<format>] [--range=<start>:<stop>]
+
+	The optional <path> parameter refers to the subversion repository path to fetch the 
+	log messages for. When omitted, the currently checkout-out branch will be used.
+
+	Use of the --paths option will list the paths affected by each commit.
+
+	Passing --format=<format> allows a different display format to be used when showing
+	eligible revisions. Currently, there are only two styles: default, and short.
+
+	Finally, there is a --range=<start>:<stop> option, which allows an inclusive range to be specified
+	in a short-hand notation.
+
+	Note: Subversion's standard commands expect you to make up the first revision, whereas svneligible accepts
+	non-braindead arguments.
