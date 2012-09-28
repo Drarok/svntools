@@ -185,12 +185,12 @@ class Svn
 	 * revision id (and sorted, too).
 	 *
 	 * @param string $path    Path to get the commit log for, or current directory if nothing passed.
-	 * @param array  $revs    Only fetch the log for specific revisions if this is passed.
+	 * @param mixed  $revs    Only fetch the log for specific revisions if this is passed, pass an array of ints, or a valid string.
 	 * @param bool   $verbose Pass the --verbose flag to Subversion.
 	 *
 	 * @return array
 	 */
-	public function log($path = null, array $revs = array(), $verbose = false)
+	public function log($path = null, $revs = null, $verbose = false)
 	{
 		$args = array('log', '--xml');
 
@@ -204,7 +204,7 @@ class Svn
 
 		$args[] = $path;
 
-		foreach ($revs as $rev) {
+		foreach ((array) $revs as $rev) {
 			$args[] = '-r' . $rev;
 		}
 
