@@ -43,7 +43,8 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 
 		ksort($logs);
 
-		$view = View::factory('svneligible/log/default');
+		$viewName = $this->_args->getNamedArgument('format', 'default');
+		$view = View::factory('svneligible/log/' . $viewName);
 		$view->showPaths = $showPaths;
 
 		foreach ($logs as $rev => $log) {
