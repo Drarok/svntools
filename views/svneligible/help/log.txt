@@ -1,7 +1,7 @@
 svneligible log [<path>] [--paths] [--format=<format>] [--range=<start>:<stop>]
 
-	The optional <path> parameter refers to the subversion repository path to fetch the 
-	log messages for. When omitted, the currently checkout-out branch will be used.
+	The optional <path> parameter refers to the subversion repository path to fetch the
+	log messages for. When omitted, the currently checked-out branch will be used.
 
 	Use of the --paths option will list the paths affected by each commit.
 
