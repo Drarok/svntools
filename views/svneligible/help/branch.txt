@@ -8,6 +8,10 @@ svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--com
 
 	Passing the --parents option will tell Subversion to create the parent directories automatically.
 
+	Also note that there is a "quick branch" feature. If you don't pass a branch name beginning with
+	"^/", then your configured quick branch prefix is prepended to the <new_path> option, and --parents
+	is implied.
+
 	This command will automatically switch your working copy unless you pass --no-switch.
 
 	You may also specify a commit message on the command line instead of using your editor,
