@@ -6,7 +6,7 @@ class Command_Svneligible_Branch extends Command_Svneligible
 {
 	/**
 	 * Run the branch command.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()
@@ -25,6 +25,20 @@ class Command_Svneligible_Branch extends Command_Svneligible
 			// No second path, so the first is the destination, not source.
 			$existingPath = $svn->relativePath();
 			$newPath = $firstPath;
+		}
+
+		if (Config::get('svneligible.branch.quick-branch.enabled')
+			&& substr($newPath, 0, 2) != '^/'
+		) {
+			// Look like a 'quick' branch.
+			$prefix = Config::get('svneligible.branch.quick-branch.prefix');
+			if (! (bool) $prefix || substr($prefix, 0, 2) != '^/') {
+				throw new Exception('Invalid quick branch configuration.');
+			}
+			// Make sure there's a trailing slash.
+			$prefix = rtrim($prefix, '/') . '/';
+
+			$newPath = $prefix . $newPath;
 		}
 
 		$commitMessage = $this->_args->getNamedArgument('commit');
