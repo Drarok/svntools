@@ -27,24 +27,27 @@ class Command_Svneligible_Branch extends Command_Svneligible
 			$newPath = $firstPath;
 		}
 
+		// Process the remaining options.
+		$commitMessage = $this->_args->getNamedArgument('commit');
+		$createParents = $this->_args->getNamedArgument('parents');
+		$switch = ! $this->_args->getNamedArgument('no-switch', false);
+
 		if (Config::get('svneligible.branch.quick-branch.enabled')
 			&& substr($newPath, 0, 2) != '^/'
 		) {
-			// Look like a 'quick' branch.
+			// Looks like a 'quick' branch.
 			$prefix = Config::get('svneligible.branch.quick-branch.prefix');
 			if (! (bool) $prefix || substr($prefix, 0, 2) != '^/') {
 				throw new Exception('Invalid quick branch configuration.');
 			}
+
 			// Make sure there's a trailing slash.
 			$prefix = rtrim($prefix, '/') . '/';
-
 			$newPath = $prefix . $newPath;
+
+			// Quick branching implies --parents.
+			$createParents = true;
 		}
-
-		$commitMessage = $this->_args->getNamedArgument('commit');
-		$createParents = $this->_args->getNamedArgument('parents');
-
-		$switch = ! $this->_args->getNamedArgument('no-switch', false);
 
 		$svn->branch($existingPath, $newPath, $commitMessage, $createParents);
 
