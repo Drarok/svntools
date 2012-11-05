@@ -28,4 +28,14 @@ return array(
 			'-w', // Ignore all whitespace.
 		),
 	),
+
+	'branch' => array(
+		'quick-branch' => array(
+			// "Quick" branching isn't enabled by default, as it's still in its infancy.
+			'enabled' => FALSE,
+
+			// The prefix *must* be a repo-relative path, starting with "^/".
+			'prefix' => '^/branches/USERNAME/',
+		),
+	),
 );
