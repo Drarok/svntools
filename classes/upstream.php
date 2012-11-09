@@ -36,7 +36,7 @@ class Upstream
 	/**
 	 * Add an 'upstream' entry for the given path.
 	 *
-	 * @param string $alias     Path to add the upstream entry for.
+	 * @param string $alias    Path to add the upstream entry for.
 	 * @param string $upstream Upstream path to store.
 	 *
 	 * @return void
@@ -101,6 +101,16 @@ class Upstream
 		$upstreams = $this->getAllUpstreams();
 		unset($upstreams[$alias]);
 		$this->_saveUpstreams($upstreams);
+	}
+
+	/**
+	 * Remove all the currently-configured upstreams.
+	 *
+	 * @return void
+	 */
+	public function removeAllUpstreams()
+	{
+		$this->_saveUpstreams(array());
 	}
 
 	/**
