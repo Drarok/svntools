@@ -64,6 +64,47 @@ class Stack
 	}
 
 	/**
+	 * Get the contents of the stack.
+	 *
+	 * @return array
+	 */
+	public function getAll()
+	{
+		return $this->_stack;
+	}
+
+	/**
+	 * Remove a single value from anywhere in the stack, and return it.
+	 *
+	 * Returns null if the id doesn't exist.
+	 *
+	 * @param int $id the id of the value to remove.
+	 *
+	 * @return mixed
+	 */
+	public function remove($id)
+	{
+		$value = NULL;
+		if (array_key_exists($id, $this->_stack)) {
+			$value = $this->_stack[$id];
+			unset($this->_stack[$id]);
+			$this->_saveStack();
+		}
+		return $value;
+	}
+
+	/**
+	 * Remove all values from the stack.
+	 *
+	 * @return void
+	 */
+	public function clear()
+	{
+		$this->_stack = array();
+		$this->_saveStack();
+	}
+
+	/**
 	 * Calculate and store the full path to the stack file.
 	 *
 	 * @param string $path Path to a directory within the working copy.
