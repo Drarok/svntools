@@ -1,5 +1,6 @@
+svneligible upstream
 svneligible upstream set <upstream> [<alias|path>]
-svneligible upstream remove [<alias|path>]
+svneligible upstream remove [<alias|path>] [--all]
 	Shows or changes the upstream configuration. Upstream branches are those used automatically by the
 	'show', 'diff', 'merge', and 'reintegrate' commands when no <path> option is specified.
 
@@ -19,3 +20,6 @@ svneligible upstream remove [<alias|path>]
 	The 'remove' subcommand only accepts (optionally) the alias or path:
 	'svneligible upstream remove oldstable' will remove the upstream alias 'oldstable', whereas
 	'svneligible upstream remove' will delete the upstream for the currently-checked out branch.
+
+	You may also pass the --all option to the remove subcommand, which will remove all
+	upstreams in the current working copy.
