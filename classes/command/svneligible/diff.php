@@ -13,9 +13,7 @@ class Command_Svneligible_Diff extends Command_Svneligible
 	 */
 	public function run()
 	{
-		$svn = new Svn(Svn::getRoot('.'));
-
-		$branchPath = $svn->relativePath();
+		$branchPath = $this->_svn->relativePath();
 
 		if ($this->_args->getNamedArgument('stable')) {
 			$releases = Command_Svneligible::factory('releases')->run(false);
@@ -38,9 +36,9 @@ class Command_Svneligible_Diff extends Command_Svneligible
 		$params = Config::get('svneligible.diff.additional_parameters', array());
 
 		if ($this->_args->getNamedArgument('reverse')) {
-			echo $svn->diff($branchPath, $upstreamPath, $params);
+			echo $this->_svn->diff($branchPath, $upstreamPath, $params);
 		} else {
-			echo $svn->diff($upstreamPath, $branchPath, $params);
+			echo $this->_svn->diff($upstreamPath, $branchPath, $params);
 		}
 	}
 }

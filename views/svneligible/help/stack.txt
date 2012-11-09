@@ -1,0 +1,11 @@
+svneligible stack [<list|remove|clear>] [<id>]
+	The stack command allows you to modify the branch stack, as used by the
+	'branch' and 'switch' commands.
+
+	Running stack with no parameters (or the 'list' subcommand) simply lists the
+	contents of the branch stack.
+
+	The 'remove' subcommand takes a single parameter: the id of the stack item
+	to remove, as shown in the output from the 'list' subcommand.
+
+	The 'clear' subcommand simply empties the branch stack.

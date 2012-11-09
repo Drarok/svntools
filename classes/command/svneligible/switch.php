@@ -9,8 +9,11 @@ class Command_Svneligible_Switch extends Command_Svneligible
 {
 	public function run()
 	{
-		// Get the path to switch to.
+		// Initialise the path var.
 		$path = false;
+
+		// Create a stack instance.
+		$stack = new Stack(Svn::getRoot('.'), 'branches.stack');
 
 		if ($this->_args->getNamedArgument('stable')) {
 			// The --stable flag means to check against the 'newest' release branch.
@@ -20,6 +23,13 @@ class Command_Svneligible_Switch extends Command_Svneligible
 		} else {
 			// Don't forget that argument 0 is the command.
 			$path = $this->_args->getUnnamedArgument(1);
+		}
+
+		if (! $path && $this->_args->getNamedArgument('pop', false)) {
+			// There's still no path, but we've been asked to pop from the stack.
+			if ($path = $stack->pop()) {
+				echo 'Popped ', $path, ' off the branch stack.', PHP_EOL;
+			}
 		}
 
 		if (! $path) {
@@ -32,11 +42,17 @@ class Command_Svneligible_Switch extends Command_Svneligible
 			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
 		}
 
+		// Push the current branch onto the stack?
+		if ($this->_args->getNamedArgument('push')) {
+			$currentBranch = $this->_svn->relativePath();
+			$stack->push($currentBranch);
+			echo 'Pushed ', $currentBranch, ' onto the branch stack.', PHP_EOL;
+		}
+
 		// All the other commands show the branch, so this one will, too.
 		echo $path, PHP_EOL;
 
 		// Note that we *always* operate on the root of the working copy.
-		$svn = new Svn(Svn::getRoot('.'));
-		$svn->switchTo($path);
+		$this->_svn->switchTo($path);
 	}
 }
