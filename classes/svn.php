@@ -235,11 +235,14 @@ class Svn
 	/**
 	 * Update the working copy.
 	 *
+	 * @param array $params Extra parameters to pass to svn.
+	 *
 	 * @return void
 	 */
-	public function update()
+	public function update($params = array())
 	{
-		$this->_runCommand('update');
+		array_unshift($params, 'update');
+		call_user_func_array(array($this, '_runCommand'), $params);
 	}
 
 	/**
