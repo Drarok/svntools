@@ -32,11 +32,16 @@ class Command_Svneligible_Switch extends Command_Svneligible
 			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
 		}
 
+		// Push the current branch onto the stack?
+		if ($this->_args->getNamedArgument('push')) {
+			$stack = new BranchStack(Svn::getRoot('.'));
+			$this->_svn->relativePath();
+		}
+
 		// All the other commands show the branch, so this one will, too.
 		echo $path, PHP_EOL;
 
 		// Note that we *always* operate on the root of the working copy.
-		$svn = new Svn(Svn::getRoot('.'));
-		$svn->switchTo($path);
+		$this->_svn->switchTo($path);
 	}
 }
