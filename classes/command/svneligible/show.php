@@ -15,14 +15,12 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	protected function _setUp()
 	{
 		// Should we run update first?
-		if (Config::get('svneligible.show.auto-update', false)
-			&& ! $this->_args->getNamedArgument('no-update')
-		) {
+		if (! $this->_args->getNamedArgument('no-update')) {
 			if ($this->_svn->isDirty()) {
 				throw new Exception('Refusing to update due to uncommitted changes.');
 			}
 			echo 'Updating...', PHP_EOL;
-			$this->_svn->update();
+			$this->_svn->update(Config::get('svneligible.show.update-parameters', array()));
 		}
 	}
 

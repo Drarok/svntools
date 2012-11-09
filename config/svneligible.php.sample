@@ -4,6 +4,24 @@
  */
 
 return array(
+	'branch' => array(
+		'quick-branch' => array(
+			// "Quick" branching isn't enabled by default, as it's still in its infancy.
+			'enabled' => FALSE,
+
+			// The prefix *must* be a repo-relative path, starting with "^/".
+			'prefix' => '^/branches/USERNAME/',
+		),
+	),
+
+	'diff' => array(
+		// Additional parameters to pass to the 'diff' command.
+		'additional_parameters' => array(
+			'-x', // Extra options coming up.
+			'-w', // Ignore all whitespace.
+		),
+	),
+
 	// Regular expressions to exclude from the paths.
 	'exclude' => array(
 		'branches' => array(),
@@ -17,25 +35,9 @@ return array(
 	),
 
 	'show' => array(
-		// Automatically run 'svn update' before running the 'show' command?
-		'auto-update' => false,
-	),
-
-	'diff' => array(
-		// Additional parameters to pass to the 'diff' command.
-		'additional_parameters' => array(
-			'-x', // Extra options coming up.
-			'-w', // Ignore all whitespace.
-		),
-	),
-
-	'branch' => array(
-		'quick-branch' => array(
-			// "Quick" branching isn't enabled by default, as it's still in its infancy.
-			'enabled' => FALSE,
-
-			// The prefix *must* be a repo-relative path, starting with "^/".
-			'prefix' => '^/branches/USERNAME/',
+		// Parameters to pass to svn when updating.
+		'update-parameters' => array(
+			// '--ignore-externals',
 		),
 	),
 );
