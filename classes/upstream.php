@@ -24,6 +24,13 @@ class Upstream
 	protected $_path;
 
 	/**
+	 * Cache of the configured upstreams.
+	 *
+	 * @var array
+	 */
+	protected $_upstreams = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $path Path to a directory within the working copy.
@@ -31,6 +38,7 @@ class Upstream
 	public function __construct($path)
 	{
 		$this->_setPath($path);
+		$this->_loadUpstreams();
 	}
 
 	/**
@@ -43,9 +51,8 @@ class Upstream
 	 */
 	public function addUpstream($alias, $upstream)
 	{
-		$upstreams = $this->getAllUpstreams();
-		$upstreams[$alias] = $upstream;
-		$this->_saveUpstreams($upstreams);
+		$this->_upstreams[$alias] = $upstream;
+		$this->_saveUpstreams();
 	}
 
 	/**
@@ -57,9 +64,8 @@ class Upstream
 	 */
 	public function getUpstream($alias)
 	{
-		$upstreams = $this->getAllUpstreams();
-		return array_key_exists($alias, $upstreams)
-			? $upstreams[$alias]
+		return array_key_exists($alias, $this->_upstreams)
+			? $this->_upstreams[$alias]
 			: null;
 	}
 
@@ -70,23 +76,7 @@ class Upstream
 	 */
 	public function getAllUpstreams()
 	{
-		if (! file_exists($this->_path)) {
-			return array();
-		}
-
-		$contents = file_get_contents($this->_path);
-
-		if (! $contents) {
-			return array();
-		}
-
-		$array = unserialize($contents);
-
-		if (! is_array($array)) {
-			return array();
-		}
-
-		return $array;
+		return $this->_upstreams;
 	}
 
 	/**
@@ -98,9 +88,8 @@ class Upstream
 	 */
 	public function removeUpstream($alias)
 	{
-		$upstreams = $this->getAllUpstreams();
-		unset($upstreams[$alias]);
-		$this->_saveUpstreams($upstreams);
+		unset($this->_upstreams[$alias]);
+		$this->_saveUpstreams();
 	}
 
 	/**
@@ -110,22 +99,54 @@ class Upstream
 	 */
 	public function removeAllUpstreams()
 	{
-		$this->_saveUpstreams(array());
+		$this->_upstreams = array();
+		$this->_saveUpstreams();
 	}
 
 	/**
-	 * Store the passed-in config to disk.
-	 *
-	 * @param array $upstreams Current config to save.
+	 * Store the current upstreams config to disk.
 	 *
 	 * @return void
 	 */
-	protected function _saveUpstreams($upstreams)
+	protected function _saveUpstreams()
 	{
 		// Ensure all the files exist.
 		$this->_setupPath();
 
-		file_put_contents($this->_path, serialize($upstreams));
+		file_put_contents($this->_path, serialize($this->_upstreams));
+	}
+
+	/**
+	 * Load the on-disk upstreams into the cache.
+	 *
+	 * @return void
+	 */
+	protected function _loadUpstreams()
+	{
+		// Set to an empty array to start with.
+		$this->_upstreams = array();
+
+		if (! file_exists($this->_path)) {
+			// No file? Bail.
+			return;
+		}
+
+		$contents = file_get_contents($this->_path);
+
+		if (! $contents) {
+			// Nothing in it? Bail.
+			return;
+		}
+
+		$array = unserialize($contents);
+
+		if (! is_array($array)) {
+			// Invalid contents? Bail.
+			return;
+		}
+
+		// Looking good, let's cache that.
+		$this->_upstreams = $array;
 	}
 
 	/**
