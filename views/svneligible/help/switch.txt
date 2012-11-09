@@ -1,4 +1,4 @@
-svneligible switch [<path>|--stable]
+svneligible switch [<path>|--stable] [--push|--pop]
 	Switch the working copy to another branch. Note that this command, even when
 	run in a subdirectory, will switch the *entire* working copy to the new branch.
 
@@ -6,3 +6,9 @@ svneligible switch [<path>|--stable]
 	look up the latest release branch (the bottom one returned from the 'releases' command),
 	or finally you may use the 'upstreams' feature to set a default branch. If none of these
 	options are found, an error occurs.
+
+	If you pass the --push option, the current branch is pushed onto the branch stack, allowing
+	you a quick way to return to the branch you are switching away from.
+
+	Passing the --pop option will take the last branch that was pushed, remove it from the stack,
+	and switch to it.

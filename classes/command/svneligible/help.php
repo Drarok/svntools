@@ -31,6 +31,7 @@ class Command_Svneligible_Help extends Command_Svneligible
 			'path',
 			'upstream',
 			'branch',
+			'stack',
 			'switch',
 			'diff',
 			'show',

@@ -1,4 +1,4 @@
-svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--commit=<message>]
+svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--commit=<message>] [--push]
 	Create a new branch in the repository, and configure the upstream automatically.
 
 	Given two paths, the first is the path to branch from, and the second is that path
@@ -16,3 +16,6 @@ svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--com
 
 	You may also specify a commit message on the command line instead of using your editor,
 	using '--commit=<message>'. You will need to surround your commit message with quotes.
+
+	If you pass the --push option when creating and switching to a branch, your current branch will
+	first be added to the branch stack, then normal operation will proceed.

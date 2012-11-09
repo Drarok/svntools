@@ -41,8 +41,7 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 
 		if (! (bool) $pathOrAlias) {
 			// No path/alias was passed in, nor --all, so use the current path.
-			$svn = new Svn(Svn::getRoot('.'));
-			$pathOrAlias = $svn->relativePath();
+			$pathOrAlias = $this->_svn->relativePath();
 		}
 
 		$previousValue = $upstream->getUpstream($pathOrAlias);
