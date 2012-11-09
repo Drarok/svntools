@@ -40,7 +40,7 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		}
 
 		if (! (bool) $pathOrAlias) {
-			// No path/alias was passed in, so use the current path.
+			// No path/alias was passed in, nor --all, so use the current path.
 			$svn = new Svn(Svn::getRoot('.'));
 			$pathOrAlias = $svn->relativePath();
 		}
@@ -48,6 +48,19 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		$previousValue = $upstream->getUpstream($pathOrAlias);
 
 		if ($subCommand == 'remove') {
+			// Are they planning to remove all upstreams?
+			if ($this->_args->getNamedArgument('all', false)) {
+				$previousUpstreams = $upstream->getAllUpstreams();
+				$upstream->removeAllUpstreams();
+
+				echo 'The following upstreams were removed: ', PHP_EOL;
+				foreach ($previousUpstreams as $alias => $upstreamPath) {
+					echo $alias, ' => ', $upstreamPath, PHP_EOL;
+				}
+
+				return;
+			}
+
 			if ($previousValue === NULL) {
 				echo 'Nothing to do, no upstream set for \'', $pathOrAlias, '\'.', PHP_EOL;
 				return;
