@@ -15,15 +15,13 @@ class Command_Svneligible_Branch extends Command_Svneligible
 			throw new Exception('You must specify at least one path.');
 		}
 
-		$svn = new Svn(Svn::getRoot('.'));
-
 		if ((bool) $secondPath = $this->_args->getUnnamedArgument(2)) {
 			// Got a second path, so first is source, second is destination.
 			$existingPath = $firstPath;
 			$newPath = $secondPath;
 		} else {
 			// No second path, so the first is the destination, not source.
-			$existingPath = $svn->relativePath();
+			$existingPath = $this->_svn->relativePath();
 			$newPath = $firstPath;
 		}
 
@@ -49,15 +47,21 @@ class Command_Svneligible_Branch extends Command_Svneligible
 			$createParents = true;
 		}
 
-		$svn->branch($existingPath, $newPath, $commitMessage, $createParents);
+		$this->_svn->branch($existingPath, $newPath, $commitMessage, $createParents);
 
 		echo 'Setting upstream to ', $existingPath, ' for path ', $newPath, PHP_EOL;
 		$upstream = new Upstream('.');
 		$upstream->addUpstream($newPath, $existingPath);
 
 		if ($switch) {
+			if ($this->_args->getNamedArgument('push', false)) {
+				$currentBranch = $this->_svn->relativePath();
+				$stack = new Stack(Svn::getRoot('.'), 'branches.stack');
+				$stack->push($currentBranch);
+				echo 'Pushed ', $currentBranch, ' onto the branch stack.', PHP_EOL;
+			}
 			echo 'Switching working copy to ', $newPath, PHP_EOL;
-			$svn->switchTo($newPath);
+			$this->_svn->switchTo($newPath);
 		} else {
 			echo 'Skipping working copy switch.', PHP_EOL;
 		}
