@@ -35,6 +35,9 @@ if ($args->getNamedArgument('help') || ! $command) {
 	$args = new Arguments($argsArray, $mapping);
 }
 
+// Set debug mode, if requested.
+Handler::setDebug($args->getNamedArgument('debug', false));
+
 // Despatch the command.
 $command = Command_Svneligible::factory(strtolower($command), $args);
 
