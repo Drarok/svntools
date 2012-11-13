@@ -62,6 +62,11 @@ abstract class Command_Svneligible_Filter extends Command_Svneligible
 	 */
 	protected function _parseOptions()
 	{
+		if ((bool) $this->_options) {
+			// No need to parse if we already have.
+			return;
+		}
+
 		// Initialise the defaults.
 		$result = (object) array(
 			'path'    => false,
