@@ -14,7 +14,10 @@ class Command_Svneligible_Show extends Command_Svneligible_Filter
 	 */
 	protected function _setUp()
 	{
-		// Should we run update first?
+		// Parse options immediately.
+		$this->_parseOptions();
+
+		// Should we run update?
 		if (! $this->_args->getNamedArgument('no-update')) {
 			if ($this->_svn->isDirty()) {
 				throw new Exception('Refusing to update due to uncommitted changes.');
