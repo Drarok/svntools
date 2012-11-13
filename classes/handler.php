@@ -14,6 +14,13 @@
 abstract class Handler
 {
 	/**
+	 * Whether we shold output extra debugging info or not.
+	 *
+	 * @var bool
+	 */
+	static protected $_debug = FALSE;
+
+	/**
 	 * Simple exception handler that just outputs the error message.
 	 *
 	 * @param Exception $exception Thrown exception.
@@ -22,6 +29,20 @@ abstract class Handler
 	 */
 	public static function exceptionHandler($exception)
 	{
-		echo 'Error: ', $exception->getMessage(), PHP_EOL;
+		if (! static::$_debug) {
+			echo 'Error: ', $exception->getMessage(), PHP_EOL;
+		} else {
+			echo $exception, PHP_EOL;
+		}
+	}
+
+	/**
+	 * Setter for the debug property.
+	 *
+	 * @param bool $debug Pass true to enable debugging.
+	 */
+	public static function setDebug($debug)
+	{
+		static::$_debug = (bool) $debug;
 	}
 }
