@@ -32,6 +32,7 @@ class Command_Svneligible_Help extends Command_Svneligible
 			'upstream',
 			'branch',
 			'stack',
+			'createrelease',
 			'switch',
 			'diff',
 			'show',
