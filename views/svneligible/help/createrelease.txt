@@ -1,0 +1,8 @@
+svneligible createrelease [--no-commit]
+	Creates a new release branch by attempting to guess the next release number.
+
+	This command will always branch from your currently checked-out path, so if
+	you want your branch to be created from trunk, make sure that's where you're working!
+
+	By default, it will automatically commit using a message like "Creating new release
+	branch ^/releases/RB-1.1", you can disable this by using --no-commit.
