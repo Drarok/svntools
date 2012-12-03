@@ -11,31 +11,16 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 	 */
 	public function run()
 	{
-		// Grab the relative path, as we need it in various places.
-		$relativePath = $this->_svn->relativePath();
-
-		if ($this->_args->getNamedArgument('stable')) {
-			$releases = Command_Svneligible::factory('releases')->run(false);
-			$upstreamPath = array_pop($releases);
-		} else {
-			// Don't forget that argument 0 is the command.
-			$upstreamPath = $this->_args->getUnnamedArgument(1);
-		}
-
-		if (! (bool) $upstreamPath) {
-			// No upstreamPath specified on the command line, is there one stored?
-			$upstream = new Upstream('.');
-			$upstreamPath = $upstream->getUpstream($relativePath);
-		}
-
-		if (! (bool) $upstreamPath) {
-			throw new Exception('You must specify a parent branch to merge into.');
-		}
-
 		// Ensure there are no uncommitted changes.
 		if ($this->_svn->isDirty()) {
 			throw new Exception('You have uncommitted changes. Aborting.');
 		}
+
+		// Grab the relative path, as we need it in various places.
+		$relativePath = $this->_svn->relativePath();
+
+		// Use the parent class method to get the upstream.
+		$upstreamPath = $this->_getPath();
 
 		// Check that there are no eligible revisions.
 		if ((bool) $eligible = $this->_svn->eligible($upstreamPath)) {
