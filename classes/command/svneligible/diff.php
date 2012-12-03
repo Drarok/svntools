@@ -13,25 +13,11 @@ class Command_Svneligible_Diff extends Command_Svneligible
 	 */
 	public function run()
 	{
+		// What are we comparing?
 		$branchPath = $this->_svn->relativePath();
 
-		if ($this->_args->getNamedArgument('stable')) {
-			$releases = Command_Svneligible::factory('releases')->run(false);
-			$upstreamPath = array_pop($releases);
-		} else {
-			// Don't forget that argument 0 is the command.
-			$upstreamPath = $this->_args->getUnnamedArgument(1);
-		}
-
-		if (! (bool) $upstreamPath) {
-			// Still no path. Is there an upstream set?
-			$upstream = new Upstream('.');
-			$upstreamPath = $upstream->getUpstream($branchPath);
-		}
-
-		if (! (bool) $upstreamPath) {
-			throw new Exception('You must specify a branch to compare with.');
-		}
+		// Get the passed-in path, parsing upstreams etc.
+		$upstreamPath = $this->_getPath();
 
 		$params = Config::get('svneligible.diff.additional_parameters', array());
 
