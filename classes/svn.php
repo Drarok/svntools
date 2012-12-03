@@ -124,8 +124,15 @@ class Svn
 		} elseif ($upstreamPath === null || $branchPath === null) {
 			throw new Exception('You must path both the upstream and branch you want to diff.');
 		} else {
-			$args = array('diff', $upstreamPath, $branchPath);
-			return implode(PHP_EOL, call_user_func_array(array($this, '_runCommand'), array_merge($args, $params)));
+			// Prepend the diff command.
+			array_unshift($params, 'diff');
+
+			// Add the branch parts.
+			$params[] = $upstreamPath;
+			$params[] = $branchPath;
+
+			// Run it.
+			return implode(PHP_EOL, call_user_func_array(array($this, '_runCommand'), $params));
 		}
 	}
 
