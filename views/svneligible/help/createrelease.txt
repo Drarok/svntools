@@ -5,4 +5,5 @@ svneligible createrelease [--no-commit]
 	you want your branch to be created from trunk, make sure that's where you're working!
 
 	By default, it will automatically commit using a message like "Creating new release
-	branch ^/releases/RB-1.1", you can disable this by using --no-commit.
+	branch ^/releases/RB-1.1", you can supply your own commit message by using
+	in your editor by passing the --no-commit option.
