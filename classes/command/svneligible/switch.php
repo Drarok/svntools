@@ -15,14 +15,13 @@ class Command_Svneligible_Switch extends Command_Svneligible
 		// Create a stack instance.
 		$stack = new Stack(Svn::getRoot('.'), 'branches.stack');
 
-		if ($this->_args->getNamedArgument('stable')) {
-			// The --stable flag means to check against the 'newest' release branch.
-			$releases = Command_Svneligible::factory('releases')->run(false);
-			$path = array_pop($releases);
-			unset($releases);
-		} else {
-			// Don't forget that argument 0 is the command.
-			$path = $this->_args->getUnnamedArgument(1);
+		// Get the path from command line or upstreams.
+		try {
+			$path = $this->_getPath();
+		} catch (Exception $e) {
+			// Note that for this command, a missing path isn't an immediate failure,
+			// so we ignore the Exception here.
+			$path = false;
 		}
 
 		if (! $path && $this->_args->getNamedArgument('pop', false)) {
@@ -32,12 +31,7 @@ class Command_Svneligible_Switch extends Command_Svneligible
 			}
 		}
 
-		if (! $path) {
-			// There's still no path. Look for an upstream.
-			$upstream = new Upstream('.');
-			$path = $upstream->getUpstream($this->_svn->relativePath());
-		}
-
+		// We've still got no path, so give up.
 		if (! $path) {
 			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
 		}
