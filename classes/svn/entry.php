@@ -33,6 +33,13 @@ class Svn_Entry
 	const MODIFIED = 'modified';
 
 	/**
+	 * Deleted status constant.
+	 *
+	 * @const string
+	 */
+	const DELETED = 'deleted';
+
+	/**
 	 * Missing status constant.
 	 *
 	 * @const string
@@ -109,6 +116,7 @@ class Svn_Entry
 			self::UNVERSIONED,
 			self::ADDED,
 			self::MODIFIED,
+			self::DELETED,
 			self::MISSING,
 			self::EXTERNAL,
 			self::NORMAL,
