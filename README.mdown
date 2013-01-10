@@ -25,7 +25,7 @@ Also of note is the fact that all branching/merging/switching operations occur o
 	Switching working copy to ^/branches/drarok/feature
 </pre>
 
-### Updating your branch when the 'upstream' branch has changes.
+### Checking for eligible revisions / updating your branch when the 'upstream' branch has changes.
 
 <pre style="background: black; color: lightgreen">
 	➜  projectname svn:(branches/drarok/feature) svneligible show <span style="color: silver;"># Show eligible revisions from the upstream branch.</span>
