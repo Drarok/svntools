@@ -2,6 +2,14 @@
 
 This repository was originally for my 'svnstash' tool. Over time, however, I started adding other tools into the same repository to reuse some of the code, so now I think of these as 'svntools'.
 
+## svn
+
+This tool is a simple shim/wrapper around the real 'svn' binary. It allows you to specify default parameters to pass to the real binary (such as --ignore-externals), based on the subcommand (status, update, etc).
+
+To use it, copy the sample config file from `config/svn.php.sample` to `config/svn.php`, edit it, and set up an alias to `svn.php` in your shell. Usually, something like the following in `~/.bashrc` will work:
+
+    alias svn='~/svntools/svn.php'
+
 ## svnstash
 
 Stash the changes in an svn working copy away for later - based on git's stash command. Limited to text files only, as it's using `svn diff` internally.
