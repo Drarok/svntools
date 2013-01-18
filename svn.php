@@ -37,4 +37,4 @@ if ($subcommand) {
 $shellCommand .= implode(' ', $params);
 
 // Let's rock this!
-echo shell_exec($shellCommand), PHP_EOL;
+passthru($shellCommand);
