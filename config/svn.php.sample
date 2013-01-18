@@ -4,4 +4,7 @@ return array(
 	'stat' => array(
 		'--ignore-externals',
 	),
+	'up' => array(
+		'--ignore-externals',
+	),
 );
