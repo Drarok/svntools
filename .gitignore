@@ -1,2 +1,2 @@
 .DS_Store
-config/svneligible.php
+config/*.php

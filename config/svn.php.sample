@@ -1,0 +1,7 @@
+<?php
+
+return array(
+	'stat' => array(
+		'--ignore-externals',
+	),
+);
