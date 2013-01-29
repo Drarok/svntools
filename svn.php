@@ -16,25 +16,28 @@ if ($subcommand) {
 	$params = array_slice($_SERVER['argv'], 2);
 
 	$additionalParams = Config::get('svn.' . $subcommand);
-	if (is_array($additionalParams) && count($additionalParams)) {
-		$params = array_merge($params, $additionalParams);
+
+	if ($additionalParams !== NULL) {
+		// If it's a string, it's a command alias.
+		while (is_string($additionalParams)) {
+			echo 'svn.', $subcommand, ' => svn.' . $additionalParams, PHP_EOL;
+			// Remap to the alias.
+			$subcommand = $additionalParams;
+
+			// Fetch the aliased options.
+			$additionalParams = Config::get('svn.' . $subcommand);
+		}
+
+		if (! is_array($additionalParams)) {
+			throw new Exception('Invalid configuration found: svn.' . $subcommand);
+		} elseif ($additionalParams) {
+			$params = array_merge($params, $additionalParams);
+		}
 	}
 } else {
 	// Grab all the params after our script's file path at 0.
 	$params = array_slice($_SERVER['argv'], 1);
 }
 
-// Wrap each one in quotes for good luck.
-foreach ($params as &$param) {
-	$param = '"' . $param . '"';
-}
-
-// Build up the shell command.
-$shellCommand = 'svn ';
-if ($subcommand) {
-	$shellCommand .= $subcommand . ' ';
-};
-$shellCommand .= implode(' ', $params);
-
-// Let's rock this!
-passthru($shellCommand);
+Svn_Command::factory($subcommand, $params)
+	->run();
