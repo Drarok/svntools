@@ -40,4 +40,11 @@ return array(
 			// '--ignore-externals',
 		),
 	),
+
+	'merge' => array(
+		// Parameters to pass to svn when updating.
+		'update-parameters' => array(
+			// '--ignore-externals',
+		),
+	),
 );
