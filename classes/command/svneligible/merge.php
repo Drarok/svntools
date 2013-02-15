@@ -15,6 +15,12 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 		) {
 			throw new Exception('Refusing to merge due to uncommitted changes.');
 		}
+
+		// Should we run update?
+		if (! $this->_args->getNamedArgument('no-update')) {
+			echo 'Updating...', PHP_EOL;
+			$this->_svn->update(Config::get('svneligible.merge.update-parameters', array()));
+		}
 	}
 
 	/**

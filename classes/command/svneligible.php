@@ -50,12 +50,17 @@ abstract class Command_Svneligible extends Command
 	 */
 	protected function _filter(&$paths)
 	{
+		// Check for old-style configuration.
+		if (Config::get('svneligible.exclude')) {
+			throw new Exception('You need to update your configuration to remove the \'exclude\' section.');
+		}
+
 		// Work out the config key to use based on class name.
 		$class = get_class($this);
-		$key = strtolower(substr($class, strrpos($class, '_') + 1));
+		$subcommand = strtolower(substr($class, strrpos($class, '_') + 1));
 
 		// Grab the configured ignore patterns.
-		$patterns = Config::get('svneligible.exclude.' . $key, null);
+		$patterns = Config::get('svneligible.' . $subcommand . '.exclude', null);
 
 		if (! $patterns) {
 			// Nothing to do if no patterns.

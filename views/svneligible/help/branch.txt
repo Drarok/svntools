@@ -10,7 +10,7 @@ svneligible branch [<existing_path>] <new_path> [--parents] [--no-switch] [--com
 
 	Also note that there is a "quick branch" feature. If you don't pass a branch name beginning with
 	"^/", then your configured quick branch prefix is prepended to the <new_path> option, and --parents
-	is implied.
+	is implied. You must enable this feature in your config file, as it's disabled by default.
 
 	This command will automatically switch your working copy unless you pass --no-switch.
 
