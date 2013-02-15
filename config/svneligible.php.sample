@@ -1,6 +1,9 @@
 <?php
 /**
  * Configuration for the svneligible command.
+ *
+ * Note that all configuration is keyed on the command name. The 'exclude' key
+ * no longer exists.
  */
 
 return array(
@@ -14,6 +17,10 @@ return array(
 		),
 	),
 
+	'branches' => array(
+		'exclude' => array(),
+	),
+
 	'diff' => array(
 		// Additional parameters to pass to the 'diff' command.
 		'additional_parameters' => array(
@@ -22,16 +29,18 @@ return array(
 		),
 	),
 
-	// Regular expressions to exclude from the paths.
-	'exclude' => array(
-		'branches' => array(),
+	'merge' => array(
+		// Parameters to pass to svn when updating.
+		'update-parameters' => array(
+			// '--ignore-externals',
+		),
+	),
 
-		'releases' => array(
+	'releases' => array(
+		'exclude' => array(
 			// Exclude the 'current/' release.
 			'#^current/?$#',
 		),
-
-		'tags' => array(),
 	),
 
 	'show' => array(
@@ -41,10 +50,7 @@ return array(
 		),
 	),
 
-	'merge' => array(
-		// Parameters to pass to svn when updating.
-		'update-parameters' => array(
-			// '--ignore-externals',
-		),
+	'tags' => array(
+		'exclude' => array(),
 	),
 );
