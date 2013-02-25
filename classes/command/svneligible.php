@@ -52,7 +52,7 @@ abstract class Command_Svneligible extends Command
 	{
 		// Check for old-style configuration.
 		if (Config::get('svneligible.exclude')) {
-			throw new Exception('You need to update your configuration to remove the \'exclude\' section.');
+			throw new Exception_InvalidConfig('You need to update your configuration to remove the \'exclude\' section.');
 		}
 
 		// Work out the config key to use based on class name.

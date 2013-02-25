@@ -18,9 +18,12 @@ class Command_Svneligible_Switch extends Command_Svneligible
 		// Get the path from command line or upstreams.
 		try {
 			$path = $this->_getPath();
+		} catch (Exception_InvalidConfig $e) {
+			// These errors need to be reported.
+			throw $e;
 		} catch (Exception $e) {
 			// Note that for this command, a missing path isn't an immediate failure,
-			// so we ignore the Exception here.
+			// so we ignore normal Exceptions here.
 			$path = false;
 		}
 
