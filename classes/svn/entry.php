@@ -33,6 +33,13 @@ class Svn_Entry
 	const MODIFIED = 'modified';
 
 	/**
+	 * Conflicted status constant.
+	 *
+	 * @const string
+	 */
+	const CONFLICTED = 'conflicted';
+
+	/**
 	 * Deleted status constant.
 	 *
 	 * @const string
@@ -116,6 +123,7 @@ class Svn_Entry
 			self::UNVERSIONED,
 			self::ADDED,
 			self::MODIFIED,
+			self::CONFLICTED,
 			self::DELETED,
 			self::MISSING,
 			self::EXTERNAL,
@@ -142,6 +150,7 @@ class Svn_Entry
 	{
 		static $validStates = array(
 			self::MODIFIED,
+			self::CONFLICTED,
 			self::NONE,
 		);
 
