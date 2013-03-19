@@ -42,5 +42,17 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 			// Pass the revisions to only merge those specific ones.
 			$this->_svn->merge($this->_options->path, $revs, null, false, $recordOnly);
 		}
+
+		// Check there are no conflicts. Subversion doesn't report this via exit code.
+		if ($this->_svn->status()->getEntriesInStates(Svn_Entry::CONFLICTED)->count()) {
+			throw new Exception('There are conflicts you must resolve.');
+		}
+
+		// Perform an automatic commit, if requested.
+		if ($this->_args->getNamedArgument('auto', false)) {
+			$commitMessage = sprintf('Automated merge from \'%s\' into \'%s\'.',
+				$this->_getPath(), $this->_svn->relativePath());
+			$this->_svn->commit($commitMessage);
+		}
 	}
 }
