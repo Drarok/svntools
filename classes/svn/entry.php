@@ -133,7 +133,7 @@ class Svn_Entry
 		$state = $this->_xml->{'wc-status'}['item'];
 
 		if (! in_array($state, $validStates)) {
-			throw new Exception('Invalid state: ' . $state);
+			throw new Exception('Invalid file state: ' . $state);
 		}
 
 		return $state;
@@ -151,13 +151,14 @@ class Svn_Entry
 		static $validStates = array(
 			self::MODIFIED,
 			self::CONFLICTED,
+			self::NORMAL,
 			self::NONE,
 		);
 
 		$state = $this->_xml->{'wc-status'}['props'];
 
 		if (! in_array($state, $validStates)) {
-			throw new Exception('Invalid state: ' . $state);
+			throw new Exception('Invalid property state: ' . $state);
 		}
 
 		return $state;
