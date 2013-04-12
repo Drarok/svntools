@@ -163,4 +163,14 @@ class Svn_Entry
 
 		return $state;
 	}
+
+	/**
+	 * Getter to determine if an entry is tree conflicted.
+	 *
+	 * @return bool
+	 */
+	public function isTreeConflicted()
+	{
+		return ($this->_xml->{'wc-status'}['tree-conflicted'] == 'true');
+	}
 }
