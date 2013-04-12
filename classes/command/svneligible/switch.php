@@ -15,18 +15,7 @@ class Command_Svneligible_Switch extends Command_Svneligible
 		// Create a stack instance.
 		$stack = new Stack(Svn::getRoot('.'), 'branches.stack');
 
-		// Get the path from command line or upstreams.
-		try {
-			$path = $this->_getPath();
-		} catch (Exception_InvalidConfig $e) {
-			// These errors need to be reported.
-			throw $e;
-		} catch (Exception $e) {
-			// Note that for this command, a missing path isn't an immediate failure,
-			// so we ignore normal Exceptions here.
-			$path = false;
-		}
-
+		// Check if the user wanted to use the stack first.
 		if (! $path && $this->_args->getNamedArgument('pop', false)) {
 			// There's still no path, but we've been asked to pop from the stack.
 			if ($path = $stack->pop()) {
@@ -34,9 +23,9 @@ class Command_Svneligible_Switch extends Command_Svneligible
 			}
 		}
 
-		// We've still got no path, so give up.
+		// Get the path from command line or upstreams.
 		if (! $path) {
-			throw new Exception('You must specify a path to use the \'' . $this->getName() . '\' command.');
+			$path = $this->_getPath();
 		}
 
 		// Push the current branch onto the stack?
