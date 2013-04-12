@@ -24,8 +24,14 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 
 		if (! $subCommand) {
 			// No options passed in, show current config.
+			$currentPath = $this->_svn->relativePath();
 			foreach ($upstream->getAllUpstreams() as $alias => $upstreamPath) {
-				echo $alias, ' => ', $upstreamPath, PHP_EOL;
+				if ($alias == $currentPath) {
+					$prefix = '* ';
+				} else {
+					$prefix = '  ';
+				}
+				echo $prefix, $alias, ' => ', $upstreamPath, PHP_EOL;
 			}
 
 			return;
