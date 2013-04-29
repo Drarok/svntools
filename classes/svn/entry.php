@@ -33,6 +33,13 @@ class Svn_Entry
 	const MODIFIED = 'modified';
 
 	/**
+	 * Conflicted status constant.
+	 *
+	 * @const string
+	 */
+	const CONFLICTED = 'conflicted';
+
+	/**
 	 * Deleted status constant.
 	 *
 	 * @const string
@@ -116,6 +123,7 @@ class Svn_Entry
 			self::UNVERSIONED,
 			self::ADDED,
 			self::MODIFIED,
+			self::CONFLICTED,
 			self::DELETED,
 			self::MISSING,
 			self::EXTERNAL,
@@ -125,7 +133,7 @@ class Svn_Entry
 		$state = $this->_xml->{'wc-status'}['item'];
 
 		if (! in_array($state, $validStates)) {
-			throw new Exception('Invalid state: ' . $state);
+			throw new Exception('Invalid file state: ' . $state);
 		}
 
 		return $state;
@@ -142,15 +150,27 @@ class Svn_Entry
 	{
 		static $validStates = array(
 			self::MODIFIED,
+			self::CONFLICTED,
+			self::NORMAL,
 			self::NONE,
 		);
 
 		$state = $this->_xml->{'wc-status'}['props'];
 
 		if (! in_array($state, $validStates)) {
-			throw new Exception('Invalid state: ' . $state);
+			throw new Exception('Invalid property state: ' . $state);
 		}
 
 		return $state;
+	}
+
+	/**
+	 * Getter to determine if an entry is tree conflicted.
+	 *
+	 * @return bool
+	 */
+	public function isTreeConflicted()
+	{
+		return ($this->_xml->{'wc-status'}['tree-conflicted'] == 'true');
 	}
 }

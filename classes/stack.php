@@ -88,6 +88,10 @@ class Stack
 		if (array_key_exists($id, $this->_stack)) {
 			$value = $this->_stack[$id];
 			unset($this->_stack[$id]);
+
+			// Re-index the array.
+			$this->_stack = array_values($this->_stack);
+
 			$this->_saveStack();
 		}
 		return $value;

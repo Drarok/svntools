@@ -24,8 +24,9 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 
 		if (! $subCommand) {
 			// No options passed in, show current config.
+			$currentPath = $this->_svn->relativePath();
 			foreach ($upstream->getAllUpstreams() as $alias => $upstreamPath) {
-				echo $alias, ' => ', $upstreamPath, PHP_EOL;
+				$this->_outputUpstream($alias, $upstreamPath, $currentPath);
 			}
 
 			return;
@@ -88,5 +89,35 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		echo '.', PHP_EOL;
 
 		$upstream->addUpstream($pathOrAlias, $upstreamPath);
+	}
+
+	/**
+	 * Output upstream info, colorized on non-Windows systems.
+	 *
+	 * @param string $alias        The alias or change name for the upstream.
+	 * @param string $upstreamPath The actual upstream path.
+	 * @param string $currentPath  The currently-checked-out branch.
+	 *
+	 * @return void
+	 */
+	protected function _outputUpstream($alias, $upstreamPath, $currentPath)
+	{
+		$color = '';
+
+		if ($alias == $currentPath) {
+			// Current branch is always green (and always a branch, no need to check).
+			$prefix = '* ';
+			$color = ANSI::color(ANSI::GREEN);
+		} else {
+			// Work out the type of upstream this is, either a branch or and alias.
+			$prefix = '  ';
+
+			if ($alias && $alias[0] != '^') {
+				// This is an alias upstream, colorize it.
+				$color = ANSI::color(ANSI::RED);
+			}
+		}
+
+		echo $prefix, $color, $alias, ' => ', $upstreamPath, ANSI::reset(), PHP_EOL;
 	}
 }

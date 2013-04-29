@@ -1,4 +1,4 @@
-svneligible merge [<path>|--stable] [--no-update] [--record-only] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [--force]
+svneligible merge [<path>|--stable] [--auto] [--no-update] [--record-only] [--author=<name>] [--initial=<rev>] [--final=<rev>] [--range=<start>:<stop>] [--force]
 	Merge all the eligible revs from another branch into the currently checked-out branch.
 
 	Note: to view the revisions before performing the actual merge, use the 'show' command.
@@ -13,6 +13,8 @@ svneligible merge [<path>|--stable] [--no-update] [--record-only] [--author=<nam
 	look up the latest release branch (the bottom one returned from the 'releases' command),
 	or finally you may use the 'upstreams' feature to set a default branch. If none of these
 	options are found, an error occurs.
+
+	The --auto option will perform the merge and attempt to commit with an automatic commit message.
 
 	Passing --no-update will skip updating the working copy before doing a merge. Note that if your
 	working copy is outdated, you may end up with unnecessary mergeinfo.

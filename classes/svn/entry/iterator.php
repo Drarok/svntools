@@ -55,6 +55,7 @@ class Svn_Entry_Iterator extends ArrayIterator
 		foreach ($this as $entry) {
 			if (in_array($entry->getFileState(), $states)
 				|| in_array($entry->getPropertyState(), $states)
+				|| in_array(Svn_Entry::CONFLICTED, $states) && $entry->isTreeConflicted()
 			) {
 				$entries[] = $entry;
 			}
