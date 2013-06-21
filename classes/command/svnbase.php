@@ -10,24 +10,22 @@ class Command_Svnbase extends Command
 {
 	/**
 	 * Command runner.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function run()
 	{
-		// Store where we are.
-		$userPath = getcwd();
-
-		// Attempt to locate the root of the working copy, and change to it.
-		$root = Svn::getRoot($userPath);
-		chdir($root);
-
+		// Check we have some work to do.
 		$args = array_map('escapeshellarg', array_slice($_SERVER['argv'], 1));
 
 		if (! $args) {
 			echo 'Usage: svnbase.php <svn_arguments>', PHP_EOL;
 			exit(1);
 		}
+
+		// Locate the root of the working copy, and change to it.
+		$svn = new Svn(getcwd());
+		chdir($svn->rootPath());
 
 		array_unshift($args, escapeshellcmd('svn'));
 
