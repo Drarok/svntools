@@ -24,8 +24,7 @@ class Command_Svnbase extends Command
 		}
 
 		// Locate the root of the working copy, and change to it.
-		$svn = new Svn(getcwd());
-		chdir($svn->rootPath());
+		chdir(Svn::getRoot(getcwd()));
 
 		array_unshift($args, escapeshellcmd('svn'));
 

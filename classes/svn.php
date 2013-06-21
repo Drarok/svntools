@@ -19,6 +19,22 @@ class Svn
 	static protected $_defaultVerbose = false;
 
 	/**
+	 * Attempt to traverse up the filesystem, looking for the working copy root.
+	 *
+	 * @param string $path Path to start looking at.
+	 *
+	 * @return string
+	 *
+	 * @throws Exception Failing to find a .svn directory with throw.
+	 */
+	static public function getRoot($path)
+	{
+		$svn = new static($path);
+		return $svn->rootPath();
+	}
+
+
+	/**
 	 * Setter for the static $_defaultVerbose property.
 	 *
 	 * @param bool $verbose Pass true to enable verbose mode by default.
