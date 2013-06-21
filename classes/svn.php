@@ -342,11 +342,7 @@ class Svn
 	 */
 	public function relativePath($path = NULL)
 	{
-		if ($path === NULL) {
-			$path = $this->_path;
-		}
-
-		$info = $this->info();
+		$info = $this->info($path);
 
 		$repoRoot = $info->entry->repository->root;
 		$pathUrl = $info->entry->url;
