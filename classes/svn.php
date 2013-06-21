@@ -19,34 +19,6 @@ class Svn
 	static protected $_defaultVerbose = false;
 
 	/**
-	 * Attempt to traverse up the filesystem, looking for the working copy root.
-	 *
-	 * @param string $path Path to start looking at.
-	 *
-	 * @return string
-	 *
-	 * @throws Exception Failing to find a .svn directory with throw.
-	 */
-	static public function getRoot($path)
-	{
-		// Attempt to find the root of the working copy.
-		// This isn't 100% reliable, though.
-		$parent = '';
-		$grandparent = realpath($path);
-
-		while (is_dir($grandparent . DS . '.svn')) {
-			$parent = $grandparent;
-			$grandparent = dirname($parent);
-		}
-
-		if (! is_dir($parent . DS . '.svn')) {
-			throw new Exception('Failed to find a subversion working copy.');
-		}
-
-		return $parent;
-	}
-
-	/**
 	 * Setter for the static $_defaultVerbose property.
 	 *
 	 * @param bool $verbose Pass true to enable verbose mode by default.
@@ -347,6 +319,19 @@ class Svn
 		$repoRoot = $info->entry->repository->root;
 		$pathUrl = $info->entry->url;
 		return '^' . substr($pathUrl, strlen($repoRoot));
+	}
+
+	/**
+	 * Get the root path of a working copy.
+	 *
+	 * @param string $path Path to a working copy, defaults to instance path.
+	 *
+	 * @return string
+	 */
+	public function rootPath($path = NULL)
+	{
+		$info = $this->info($path);
+		return (string) $info->entry->{'wc-info'}->{'wcroot-abspath'};
 	}
 
 	/**
