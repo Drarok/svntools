@@ -47,6 +47,13 @@ class Svn_Entry
 	const DELETED = 'deleted';
 
 	/**
+	 * Replaced status constant.
+	 *
+	 * @const string
+	 */
+	const REPLACED = 'replaced';
+
+	/**
 	 * Missing status constant.
 	 *
 	 * @const string
@@ -125,6 +132,7 @@ class Svn_Entry
 			self::MODIFIED,
 			self::CONFLICTED,
 			self::DELETED,
+			self::REPLACED,
 			self::MISSING,
 			self::EXTERNAL,
 			self::NORMAL,
