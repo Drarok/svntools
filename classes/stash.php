@@ -196,7 +196,7 @@ class Stash
 		}
 
 		// Create a new subversion wrapper instance.
-		$svn = new Svn($this->_path);
+		$svn = Svn::instance($this->_path);
 
 		if (! $includeUntracked) {
 			$untrackedFiles = array();
@@ -485,7 +485,7 @@ class Stash
 	protected function _getUntrackedFiles()
 	{
 		// Create a new Subversion client.
-		$svn = new Svn($this->_path);
+		$svn = Svn::instance($this->_path);
 
 		$result = array();
 
