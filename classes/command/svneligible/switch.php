@@ -1,6 +1,6 @@
 <?php
 /**
- * Switch implementation, adding support for --stable.
+ * Switch implementation, adding support for --stable, upstreams, branch stack, etc.
  *
  * Switches the working copy to another branch, always from the base of the
  * working copy, never allowing subtree switching.

@@ -1,0 +1,7 @@
+svneligible abandon
+	Delete the current branch, and switch to its upstream.
+
+	Note that this command, even when run in a subdirectory, will switch the *entire*
+	working copy to the upstream branch.
+
+	This command will only work on branches with an upstream set.

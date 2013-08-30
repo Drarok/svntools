@@ -100,21 +100,11 @@ abstract class Command_Svneligible extends Command
 			$path = $this->_args->getUnnamedArgument($index);
 		}
 
+		// If there's still no path (or it isn't a relative Subversion path), look for an upstream/alias.
 		if (! $path
 			|| ($path && $path[0] != '^')
 		) {
-			// There's still no path (or it isn't a relative Subversion path). Look for an upstream/alias.
-			if (! $path) {
-				// Use the working copy checked-out path.
-				$upstreamName = $this->_svn->relativePath();
-			} else {
-				// Use the passed-in name, and unset $path.
-				$upstreamName = $path;
-				$path = false;
-			}
-
-			$upstream = new Upstream('.');
-			$path = $upstream->getUpstream($upstreamName);
+			$path = $this->_getUpstreamPath($path);
 		}
 
 		if (! $path) {
@@ -122,6 +112,23 @@ abstract class Command_Svneligible extends Command
 		}
 
 		return $path;
+	}
+
+	/**
+	 * Get the upstream given a name/alias. Defaults to using the current relative branch name if none passed in.
+	 *
+	 * @param string $name Upstream name/alias, null to use current branch.
+	 *
+	 * @return string
+	 */
+	protected function _getUpstreamPath($name = null)
+	{
+		if (! $name) {
+			$name = $this->_svn->relativePath();
+		}
+
+		$upstream = new Upstream('.');
+		return $upstream->getUpstream($name);
 	}
 
 	/**
