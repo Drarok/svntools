@@ -30,7 +30,7 @@ abstract class Command_Svneligible extends Command
 
 		// Note that we *always* operate on the root of the working copy.
 		try {
-			$this->_svn = new Svn(Svn::getRoot('.'));
+			$this->_svn = Svn::instance(Svn::getRoot('.'));
 		} catch (Exception $e) {
 			if ($this->_requiresWorkingCopy) {
 				throw $e;

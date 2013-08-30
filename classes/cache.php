@@ -13,9 +13,9 @@ class Cache
 {
 	/**
 	 * Helper method to determine if a cache with the given name exists.
-	 * 
+	 *
 	 * @param string $name Name of the cache to look for.
-	 * 
+	 *
 	 * @return bool
 	 */
 	static public function exists($name)
@@ -25,9 +25,9 @@ class Cache
 
 	/**
 	 * Helper method to delete an on-disk cache, if it exists.
-	 * 
+	 *
 	 * @param string $name Name of the cache to delete.
-	 * 
+	 *
 	 * @return void
 	 */
 	static public function delete($name)
@@ -39,42 +39,42 @@ class Cache
 
 	/**
 	 * Name of this cache (its filename).
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_name;
 
 	/**
 	 * Absolute path to the cache file.
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $_path;
 
 	/**
 	 * Timestamp when this data was created.
-	 * 
+	 *
 	 * @var int
 	 */
 	protected $_created;
 
 	/**
 	 * Timestamp when the cache data expires.
-	 * 
+	 *
 	 * @var int
 	 */
 	protected $_expires;
 
 	/**
 	 * In-memory storage of the cached data.
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $_data;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param string $filename Name of the cache.
 	 * @param mixed  $lifetime Seconds to allow the data to live, or null for infinite.
 	 */
@@ -101,10 +101,10 @@ class Cache
 
 	/**
 	 * Getter method to access the key-value pairs.
-	 * 
+	 *
 	 * @param mixed $key     Key to fetch the value for.
 	 * @param mixed $default Value to return if it's not in the storage.
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function get($key, $default = null)
@@ -116,10 +116,10 @@ class Cache
 
 	/**
 	 * Setter for the key-value pairs.
-	 * 
+	 *
 	 * @param mixed $key   Key to store the value under.
 	 * @param mixed $value Value to store.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function set($key, $value)
@@ -129,7 +129,7 @@ class Cache
 
 	/**
 	 * Public method, exposing the internal _save method.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function save() {
@@ -138,9 +138,9 @@ class Cache
 
 	/**
 	 * Internal method to load the data from the cache.
-	 * 
+	 *
 	 * This method checks the lifetime, and loads nothing if the data has expired.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _load()
@@ -162,9 +162,9 @@ class Cache
 
 	/**
 	 * Internal method to save the data to disk.
-	 * 
+	 *
 	 * Note: This method will *not* write to disk if the data has expired.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function _save()

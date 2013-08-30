@@ -19,6 +19,29 @@ class Svn
 	static protected $_defaultVerbose = false;
 
 	/**
+	 * Instances, keyed on their path.
+	 *
+	 * @var array
+	 */
+	static protected $_instances = array();
+
+	/**
+	 * Instance getter.
+	 *
+	 * @param string $path Path to get an instance for.
+	 *
+	 * @return Svn
+	 */
+	static public function instance($path)
+	{
+		if (array_key_exists($path, static::$_instances)) {
+			return static::$_instances[$path];
+		} else {
+			return static::$_instances[$path] = new static($path);
+		}
+	}
+
+	/**
 	 * Attempt to traverse up the filesystem, looking for the working copy root.
 	 *
 	 * @param string $path Path to start looking at.
@@ -29,8 +52,10 @@ class Svn
 	 */
 	static public function getRoot($path)
 	{
-		$svn = new static($path);
-		return $svn->rootPath();
+		if (! (bool) $realPath = realpath($path)) {
+			throw new Exception('Failed to calculate real path for ' . $path);
+		}
+		return static::instance($realPath)->rootPath();
 	}
 
 
@@ -54,6 +79,13 @@ class Svn
 	protected $_path;
 
 	/**
+	 * Cached data.
+	 *
+	 * @var Cache_Memory
+	 */
+	protected $_cache;
+
+	/**
 	 * Output verbose information when running or not.
 	 *
 	 * @var bool
@@ -65,9 +97,10 @@ class Svn
 	 *
 	 * @param string $path Path to the working copy.
 	 */
-	public function __construct($path)
+	protected function __construct($path)
 	{
 		$this->_path = $path;
+		$this->_cache = new Cache_Memory();
 		$this->_verbose = static::$_defaultVerbose;
 	}
 
@@ -455,6 +488,11 @@ class Svn
 	{
 		$args = func_get_args();
 
+		// Attempt to use the cache to get the answer first.
+		if ($cached = $this->_getCached($args)) {
+			return $cached;
+		}
+
 		$cmd = escapeshellcmd('svn');
 
 		foreach ($args as $arg) {
@@ -474,6 +512,57 @@ class Svn
 			throw new Exception('Command "' . $cmd . '" failed with exit code ' . $exitCode . ': ' . $output);
 		}
 
+		// Cache for later?
+		if ((bool) $cacheKey = $this->_getCacheKey($args)) {
+			$this->_cache->set($this->_getCacheKey($args), $output);
+		}
+
 		return $output;
+	}
+
+	/**
+	 * Get a cached response for the given args, or FALSE if there isn't one.
+	 *
+	 * @param array $args Array of arguments.
+	 *
+	 * @return mixed
+	 */
+	protected function _getCached($args)
+	{
+		if (! is_array($args) || ! count($args)) {
+			return FALSE;
+		}
+
+		if (! (bool) $cacheKey = $this->_getCacheKey($args)) {
+			return FALSE;
+		} else {
+			return $this->_cache->get($this->_getCacheKey($args), FALSE);
+		}
+	}
+
+	/**
+	 * Standardised cache key generation, returns a key, or FALSE if the result shouldn't be cached.
+	 *
+	 * @param array $args Array of args to turn into a cache key.
+	 *
+	 * @return mixed
+	 */
+	protected function _getCacheKey($args)
+	{
+		static $cacheableCommands = NULL;
+		if ($cacheableCommands === NULL) {
+			$cacheableCommands = array_fill_keys(array('info', 'list'), true);
+		}
+
+		if (! $args[0] || ! array_key_exists($args[0], $cacheableCommands)) {
+			return FALSE;
+		}
+
+		$cacheKey = '';
+		foreach ($args as $arg) {
+			$cacheKey .= $arg;
+		}
+
+		return hash('sha512', $cacheKey);
 	}
 }
