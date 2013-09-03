@@ -1,5 +1,5 @@
 svneligible tags
 	List the contents of ^/tags, in natural sort order.
 
-	If you have configured any 'releases' exclusions in config/svneligible.php,
+	If you have configured any 'tags' exclusions in config/svneligible.php,
 	then those branches will be pruned from the list before being displayed.
