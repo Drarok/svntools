@@ -5,6 +5,13 @@
 class Command_Svneligible_Upstream extends Command_Svneligible
 {
 	/**
+	 * Upstream object used for operations.
+	 *
+	 * @var Upstream
+	 */
+	protected $_upstream;
+
+	/**
 	 * This is the main entrypoint to the command.
 	 *
 	 * @return void
@@ -14,62 +21,72 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		// Don't forget that argument 0 is the command).
 		$subCommand = $this->_args->getUnnamedArgument(1);
 
-		$validSubCommands = array('', 'set', 'remove');
+		$validSubCommands = array('', 'list', 'set', 'remove', 'cleanup');
 		if (! in_array($subCommand, $validSubCommands)) {
 			echo 'Error: Unknown subcommand \'', $subCommand, '\'.', PHP_EOL;
 			return;
 		}
 
-		$upstream = new Upstream('.');
+		$this->_upstream = new Upstream('.');
 
-		if (! $subCommand) {
-			// No options passed in, show current config.
-			$currentPath = $this->_svn->relativePath();
-			foreach ($upstream->getAllUpstreams() as $alias => $upstreamPath) {
-				$this->_outputUpstream($alias, $upstreamPath, $currentPath);
-			}
+		switch ($subCommand) {
+			case '':
+			case 'list':
+				$this->_listUpstreams();
+				break;
 
-			return;
-		}
+			case 'set':
+				$upstreamPath = $this->_args->getUnnamedArgument(2);
+				$pathOrAlias = $this->_args->getUnnamedArgument(3);
+				$this->_setUpstream($pathOrAlias, $upstreamPath);
+				break;
 
-		if ($subCommand == 'set') {
-			$upstreamPath = $this->_args->getUnnamedArgument(2);
-			$pathOrAlias = $this->_args->getUnnamedArgument(3);
-		} elseif ($subCommand == 'remove') {
-			// The 'remove' command only needs the path/alias, so there is no upstreamPath.
-			$pathOrAlias = $this->_args->getUnnamedArgument(2);
-		}
-
-		if (! (bool) $pathOrAlias) {
-			// No path/alias was passed in, nor --all, so use the current path.
-			$pathOrAlias = $this->_svn->relativePath();
-		}
-
-		$previousValue = $upstream->getUpstream($pathOrAlias);
-
-		if ($subCommand == 'remove') {
-			// Are they planning to remove all upstreams?
-			if ($this->_args->getNamedArgument('all', false)) {
-				$previousUpstreams = $upstream->getAllUpstreams();
-				$upstream->removeAllUpstreams();
-
-				echo 'The following upstreams were removed: ', PHP_EOL;
-				foreach ($previousUpstreams as $alias => $upstreamPath) {
-					echo $alias, ' => ', $upstreamPath, PHP_EOL;
+			case 'remove':
+				if ($this->_args->getNamedArgument('all', false)) {
+					$this->_removeAllUpstreams();
+				} else {
+					if (! $pathOrAlias = $this->_args->getUnnamedArgument(2)) {
+						$pathOrAlias = $this->_svn->relativePath();
+					}
+					$this->_removeUpstream($pathOrAlias);
 				}
+				break;
 
-				return;
-			}
+			case 'cleanup':
+				$this->_cleanup();
+				break;
 
-			if ($previousValue === NULL) {
-				echo 'Nothing to do, no upstream set for \'', $pathOrAlias, '\'.', PHP_EOL;
-				return;
-			}
-
-			echo 'Removing upstream for \'', $pathOrAlias, '\' (was ', $previousValue, ')', PHP_EOL;
-			$upstream->removeUpstream($pathOrAlias);
-			return;
+			default:
+				// We should never reach this label.
+				echo 'Unexpected subcommand: ', $subCommand, PHP_EOL;
+				break;
 		}
+	}
+
+	/**
+	 * List all the upstreams.
+	 *
+	 * @return void
+	 */
+	protected function _listUpstreams()
+	{
+		$currentPath = $this->_svn->relativePath();
+		foreach ($this->_upstream->getAllUpstreams() as $alias => $upstreamPath) {
+			$this->_outputUpstream($alias, $upstreamPath, $currentPath);
+		}
+	}
+
+	/**
+	 * Set an upstream for the given path or alias.
+	 *
+	 * @param string $pathOrAlias  Path or alias.
+	 * @param string $upstreamPath Upstream path.
+	 *
+	 * @return void
+	 */
+	protected function _setUpstream($pathOrAlias, $upstreamPath)
+	{
+		$previousValue = $this->_upstream->getUpstream($pathOrAlias);
 
 		// Validate the new upstream branch.
 		if (! strlen($upstreamPath) || $upstreamPath[0] != '^') {
@@ -88,7 +105,53 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 		}
 		echo '.', PHP_EOL;
 
-		$upstream->addUpstream($pathOrAlias, $upstreamPath);
+		$this->_upstream->addUpstream($pathOrAlias, $upstreamPath);
+	}
+
+	/**
+	 * Removes all upstreams, and outputs the state.
+	 *
+	 * @return void
+	 */
+	protected function _removeAllUpstreams()
+	{
+		$previousUpstreams = $this->_upstream->getAllUpstreams();
+		$this->_upstream->removeAllUpstreams();
+
+		echo 'The following upstreams were removed: ', PHP_EOL;
+		foreach ($previousUpstreams as $alias => $upstreamPath) {
+			echo $alias, ' => ', $upstreamPath, PHP_EOL;
+		}
+	}
+
+	/**
+	 * Remove a single upstream.
+	 *
+	 * @param string $pathOrAlias Path or alias.
+	 *
+	 * @return void
+	 */
+	protected function _removeUpstream($pathOrAlias)
+	{
+		$previousValue = $this->_upstream->getUpstream($pathOrAlias);
+
+		if ($previousValue === NULL) {
+			echo 'Nothing to do, no upstream set for \'', $pathOrAlias, '\'.', PHP_EOL;
+			return;
+		}
+
+		echo 'Removing upstream for \'', $pathOrAlias, '\' (was ', $previousValue, ')', PHP_EOL;
+		$this->_upstream->removeUpstream($pathOrAlias);
+	}
+
+	/**
+	 * Remove any upstreams set on branches that no longer exist.
+	 *
+	 * @return void
+	 */
+	protected function _cleanup()
+	{
+		$previousUpstreams = $this->_upstream->getAllUpstreams();
 	}
 
 	/**
