@@ -151,7 +151,18 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 	 */
 	protected function _cleanup()
 	{
-		$previousUpstreams = $this->_upstream->getAllUpstreams();
+		// Loop over the upstream keys.
+		foreach (array_keys($this->_upstream->getAllUpstreams()) as $pathOrAlias) {
+			// Ignore non-repo-relative paths.
+			if (! $pathOrAlias || $pathOrAlias[0] != '^') {
+				continue;
+			}
+
+			echo 'Listing ', $pathOrAlias, PHP_EOL;
+			$this->_svn->ls($pathOrAlias);
+		}
+
+		var_dump($previousUpstreams);
 	}
 
 	/**
