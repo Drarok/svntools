@@ -1,10 +1,11 @@
-svneligible upstream
+svneligible upstream [list]
 svneligible upstream set <upstream> [<alias|path>]
 svneligible upstream remove [<alias|path>] [--all]
+svneligible upstream cleanup [<alias|path>] [--all]
 	Shows or changes the upstream configuration. Upstream branches are those used automatically by the
 	'show', 'diff', 'merge', and 'reintegrate' commands when no <path> option is specified.
 
-	Running 'upstream' with no parameters will output all currently-configured upstreams.
+	Running 'upstream' with no parameters, or 'list' will output all currently-configured upstreams.
 
 	By default, the currently-checked out path is used for the setting (for example, when on a branch,
 	you can run 'svneligible upstream set ^/trunk', and the upstream command will infer the current branch
@@ -23,3 +24,6 @@ svneligible upstream remove [<alias|path>] [--all]
 
 	You may also pass the --all option to the remove subcommand, which will remove all
 	upstreams in the current working copy.
+
+	Finally, the 'cleanup' subcommand will remove any upstreams that are set on branches that no
+	longer exist in the repository.
