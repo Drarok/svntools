@@ -499,6 +499,9 @@ class Svn
 			$cmd .= ' ' . escapeshellarg($arg);
 		}
 
+		// Capture stderr, too.
+		$cmd .= ' 2>&1';
+
 		if ($this->_verbose) {
 			echo 'Running: ', $cmd, PHP_EOL;
 		}
