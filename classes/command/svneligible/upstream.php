@@ -151,18 +151,27 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 	 */
 	protected function _cleanup()
 	{
-		// Loop over the upstream keys.
-		foreach (array_keys($this->_upstream->getAllUpstreams()) as $pathOrAlias) {
+		foreach ($this->_upstream->getAllUpstreams()as $pathOrAlias => $upstreamPath) {
 			// Ignore non-repo-relative paths.
 			if (! $pathOrAlias || $pathOrAlias[0] != '^') {
 				continue;
 			}
 
-			echo 'Listing ', $pathOrAlias, PHP_EOL;
-			$this->_svn->ls($pathOrAlias);
-		}
+			try {
+				$this->_svn->ls($pathOrAlias);
+			} catch (Exception $e) {
+				if (strpos($e->getMessage(), 'W160013') !== FALSE) {
+					// Path doesn't exist, so remove the upstream.
+					$this->_upstream->removeUpstream($pathOrAlias);
 
-		var_dump($previousUpstreams);
+					// Inform the user what we did.
+					echo sprintf('Removed upstream for \'%s\' (was \'%s\').',
+						$pathOrAlias, $upstreamPath), PHP_EOL;
+				} else {
+					throw $e;
+				}
+			}
+		}
 	}
 
 	/**
