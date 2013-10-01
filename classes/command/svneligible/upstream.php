@@ -37,7 +37,9 @@ class Command_Svneligible_Upstream extends Command_Svneligible
 
 			case 'set':
 				$upstreamPath = $this->_args->getUnnamedArgument(2);
-				$pathOrAlias = $this->_args->getUnnamedArgument(3);
+				if (! $pathOrAlias = $this->_args->getUnnamedArgument(3)) {
+					$pathOrAlias = $this->_svn->relativePath();
+				}
 				$this->_setUpstream($pathOrAlias, $upstreamPath);
 				break;
 
