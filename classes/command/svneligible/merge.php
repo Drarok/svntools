@@ -51,8 +51,22 @@ class Command_Svneligible_Merge extends Command_Svneligible_Filter
 		// Perform an automatic commit, if requested.
 		if ($this->_args->getNamedArgument('auto', false)) {
 			$commitMessage = sprintf('Automated merge from \'%s\' into \'%s\'.',
-				$this->_getPath(), $this->_svn->relativePath());
-			$this->_svn->commit($commitMessage);
+				$this->_getPath(), $this->_svn->relativePath()) . PHP_EOL . PHP_EOL;
+
+			// Include the merged commits messages.
+			$logs = $this->_svn->log($this->_options->path, $revs);
+
+			// Set up the view.
+			$view = View::factory('svneligible/log/default');
+
+			// Add each revision to the commit message.
+			foreach ($logs as $rev => $log) {
+				$view->rev = $rev;
+				$view->log = $log;
+				$commitMessage .= $view->render(false);
+			}
+
+			$this->_svn->commit(trim($commitMessage));
 		}
 	}
 }
