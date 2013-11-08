@@ -1,7 +1,7 @@
 <?php
 /**
  * Subversion log model.
- * 
+ *
  * @category Models
  * @package  Subversion
  */
@@ -13,14 +13,14 @@ class Svn_Log
 {
 	/**
 	 * SimpleXML root node.
-	 * 
+	 *
 	 * @var object
 	 */
 	protected $_xml = null;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param string $xml XML to parse.
 	 */
 	public function __construct($xml)
@@ -30,9 +30,9 @@ class Svn_Log
 
 	/**
 	 * Fetch revisions from the XML as an array of objects.
-	 * 
+	 *
 	 * The revisions are keyed on the revision number, and sorted as such.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function revisions()
