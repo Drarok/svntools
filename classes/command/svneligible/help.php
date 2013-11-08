@@ -38,6 +38,7 @@ class Command_Svneligible_Help extends Command_Svneligible
 			'show',
 			'merge',
 			'reintegrate',
+			'abandon',
 			'log',
 			'help',
 		);

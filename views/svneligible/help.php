@@ -14,7 +14,7 @@ foreach ($commands as $command) {
 
 	if ($command == 'upstream') {
 		// Output special text for the upstream command.
-		echo "\t", 'svneligible upstream [set|remove] [<upstream>] [<alias|path>]', PHP_EOL;
+		echo "\t", 'svneligible upstream [list|set|remove] [<upstream>] [<alias|path>]', PHP_EOL;
 		continue;
 	}
 

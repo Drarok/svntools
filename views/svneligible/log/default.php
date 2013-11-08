@@ -12,7 +12,7 @@ foreach (explode(PHP_EOL, trim($log->msg)) as $line) {
 }
 echo PHP_EOL;
 
-if ($showPaths) {
+if (isset($showPaths) && (bool) $showPaths) {
 	foreach ($log->paths as $path) {
 		echo '        ', $path->action, ' ', $path->path, PHP_EOL;
 	}
