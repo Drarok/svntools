@@ -32,7 +32,7 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 				. ' eligible revisions still to merge. Aborting.');
 		}
 
-		echo 'Reintegrating into ', $upstreamPath, PHP_EOL;
+		echo 'Reintegrating \'', $relativePath, '\', into \'', $upstreamPath, '\'', PHP_EOL;
 
 		$this->_svn->switchTo($upstreamPath);
 		$this->_svn->merge($relativePath, null, null, true);
@@ -41,6 +41,9 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 			echo 'Committing...', PHP_EOL;
 
 			if ((bool) $commitMessage = $this->_args->getNamedArgument('commit')) {
+				$this->_svn->commit($commitMessage);
+			} elseif ($this->_args->getNamedArgument('auto', false)) {
+				$commitMessage = $this->_getCommitMessage();
 				$this->_svn->commit($commitMessage);
 			} else {
 				$this->_svn->commit();
@@ -58,6 +61,25 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 					$upstream->removeUpstream($relativePath);
 				}
 			}
+		}
+	}
+
+	protected function _getCommitMessage()
+	{
+		$commitMessage = sprintf('Automated reintegration of \'%s\' into \'%s\'.',
+			$this->_getPath(), $this->_svn->relativePath()) . PHP_EOL . PHP_EOL;
+
+		// Include the merged commits messages.
+		$logs = $this->_svn->log($this->_options->path, $revs);
+
+		// Set up the view.
+		$view = View::factory('svneligible/log/default');
+
+		// Add each revision to the commit message.
+		foreach ($logs as $rev => $log) {
+			$view->rev = $rev;
+			$view->log = $log;
+			$commitMessage .= $view->render(false);
 		}
 	}
 }
