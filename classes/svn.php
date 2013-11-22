@@ -322,7 +322,8 @@ class Svn
 
 		$args = array('merge');
 
-		if ($reintegrate) {
+		// Subversion 1.8 deprecates the use of --reintegrate, so only pass it on for older clients.
+		if ($reintegrate && version_compare($this->getVersion(), '1.8.0', '<')) {
 			$args[] = '--reintegrate';
 		}
 
@@ -475,6 +476,30 @@ class Svn
 		return $this->status()
 			->getEntriesInStates(Svn_Entry::ADDED, Svn_Entry::MODIFIED, Svn_Entry::MISSING)
 			->count() !== 0;
+	}
+
+	/**
+	 * Get the version number string.
+	 *
+	 * @return string
+	 */
+	public function getVersion()
+	{
+		static $versionString = null;
+		if ($versionString !== null) {
+			return $versionString;
+		}
+
+		$output = $this->_runCommand('--version');
+		if (! isset($output[0])) {
+			throw new Exception('Failed to get Subversion version information.');
+		}
+
+		if (! preg_match('/svn, version ([0-9]+\\.[0-9]+\\.[0-9]+) \\(r[0-9]+\\)/', $output[0], $matches)) {
+			throw new Exception('Unexpected version information format: ' . $output[0]);
+		}
+
+		return $versionString = $matches[1];
 	}
 
 	/**

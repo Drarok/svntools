@@ -1,4 +1,4 @@
-svneligible reintegrate [<path>|--stable] [--no-commit|--commit[=<message>] [--no-remove]
+svneligible reintegrate [<path>|--stable] [--auto|--no-commit|--commit[=<message>] [--no-remove]
 	Perform a reintegration merge by switching the working copy, merging, committing,
 	and automatically removing the now-integrated branch.
 
@@ -13,6 +13,8 @@ svneligible reintegrate [<path>|--stable] [--no-commit|--commit[=<message>] [--n
 	Your editor will be shown for a commit message to be entered, or you can specify a commit
 	message on the command line by passing '--commit=<message>'.
 	Note that you will need to wrap your commit message in quotes if you use the command line.
+
+	The --auto option will perform the merge and attempt to commit with an automatic commit message.
 
 	If the commit is successful, then the branch will be automatically removed, unless you
 	specify the '--no-remove' option. If the commit isn't attempted due to '--no-commit', then

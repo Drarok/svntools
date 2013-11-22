@@ -32,9 +32,24 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 				. ' eligible revisions still to merge. Aborting.');
 		}
 
-		echo 'Reintegrating into ', $upstreamPath, PHP_EOL;
+		// Subversion 1.8 deprecates --reintegrate, so update our messages to match.
+		if (version_compare($this->_svn->getVersion(), '1.8.0', '<')) {
+			$verb = 'Reintegrating';
+		} else {
+			$verb = 'Merging';
+		}
+		echo $verb . ' \'', $relativePath, '\', into \'', $upstreamPath, '\'', PHP_EOL;
 
+		// Switch the working copy.
 		$this->_svn->switchTo($upstreamPath);
+
+		// Grab the commit messages that are eligible from the branch into the upstream.
+		$revsToMerge = false;
+		if ($this->_args->getNamedArgument('auto', false)) {
+			$revsToMerge = $this->_svn->eligible($relativePath);
+		}
+
+		// Merge in the revisions.
 		$this->_svn->merge($relativePath, null, null, true);
 
 		if (! (bool) $this->_args->getNamedArgument('no-commit')) {
@@ -42,14 +57,17 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 
 			if ((bool) $commitMessage = $this->_args->getNamedArgument('commit')) {
 				$this->_svn->commit($commitMessage);
+			} elseif ($this->_args->getNamedArgument('auto', false)) {
+				$commitMessage = $this->_getCommitMessage($relativePath, $upstreamPath, $revsToMerge);
+				$this->_svn->commit($commitMessage);
 			} else {
 				$this->_svn->commit();
 			}
 
 			if (! (bool) $this->_args->getNamedArgument('no-remove')) {
 				// Delete the now-reintegrated branch.
-				echo 'Automatically removing the reintegrated branch.', PHP_EOL;
-				$this->_svn->rm($relativePath, 'Removing now-reintegrated branch');
+				echo 'Automatically removing \'', $relativePath, '\'.', PHP_EOL;
+				$this->_svn->rm($relativePath, 'Removing merged development branch.');
 
 				// Also remove any upstream entries for the now-deleted branch.
 				$upstream = new Upstream('.');
@@ -59,5 +77,41 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the commit message, including all the merged revisions' messages.
+	 *
+	 * @param string $mergedFrom Branch that we merged from.
+	 * @param string $mergedTo   Branch that we merged into.
+	 * @param array  $revisions  Array of revision numbers that were merged.
+	 *
+	 * @return string
+	 */
+	protected function _getCommitMessage($mergedFrom, $mergedTo, $revisions)
+	{
+		// Subversion 1.8 deprecates --reintegrate, so update our messages to match.
+		if (version_compare($this->_svn->getVersion(), '1.8.0', '<')) {
+				$commitMessage = sprintf('Automated reintegration of \'%s\' into \'%s\'.',
+					$mergedFrom, $mergedTo) . PHP_EOL . PHP_EOL;
+		} else {
+				$commitMessage = sprintf('Automated merge of development branch \'%s\' into \'%s\'.',
+					$mergedFrom, $mergedTo) . PHP_EOL . PHP_EOL;
+		}
+
+		// Include the merged commits messages.
+		$logs = $this->_svn->log($mergedFrom, $revisions);
+
+		// Set up the view.
+		$view = View::factory('svneligible/log/default');
+
+		// Add each revision to the commit message.
+		foreach ($logs as $rev => $log) {
+			$view->rev = $rev;
+			$view->log = $log;
+			$commitMessage .= $view->render(false);
+		}
+
+		return $commitMessage;
 	}
 }
