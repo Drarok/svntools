@@ -34,7 +34,16 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 
 		echo 'Reintegrating \'', $relativePath, '\', into \'', $upstreamPath, '\'', PHP_EOL;
 
+		// Switch the working copy.
 		$this->_svn->switchTo($upstreamPath);
+
+		// Grab the commit messages that are eligible from the branch into the upstream.
+		$revsToMerge = false;
+		if ($this->_args->getNamedArgument('auto', false)) {
+			$revsToMerge = $this->_svn->eligible($relativePath);
+		}
+
+		// Merge in the revisions.
 		$this->_svn->merge($relativePath, null, null, true);
 
 		if (! (bool) $this->_args->getNamedArgument('no-commit')) {
@@ -43,7 +52,7 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 			if ((bool) $commitMessage = $this->_args->getNamedArgument('commit')) {
 				$this->_svn->commit($commitMessage);
 			} elseif ($this->_args->getNamedArgument('auto', false)) {
-				$commitMessage = $this->_getCommitMessage();
+				$commitMessage = $this->_getCommitMessage($relativePath, $upstreamPath, $revsToMerge);
 				$this->_svn->commit($commitMessage);
 			} else {
 				$this->_svn->commit();
@@ -64,13 +73,23 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 		}
 	}
 
-	protected function _getCommitMessage()
+	/**
+	 * Get the commit message, including all the merged revisions' messages.
+	 *
+	 * @param string $mergedFrom Branch that we merged from.
+	 * @param string $mergedTo   Branch that we merged into.
+	 * @param array  $revisions  Array of revision numbers that were merged.
+	 *
+	 * @return string
+	 */
+	protected function _getCommitMessage($mergedFrom, $mergedTo, $revisions)
 	{
+		// Start off the commit message.
 		$commitMessage = sprintf('Automated reintegration of \'%s\' into \'%s\'.',
-			$this->_getPath(), $this->_svn->relativePath()) . PHP_EOL . PHP_EOL;
+			$mergedFrom, $mergedTo) . PHP_EOL . PHP_EOL;
 
 		// Include the merged commits messages.
-		$logs = $this->_svn->log($this->_options->path, $revs);
+		$logs = $this->_svn->log($mergedFrom, $revisions);
 
 		// Set up the view.
 		$view = View::factory('svneligible/log/default');
@@ -81,5 +100,7 @@ class Command_Svneligible_Reintegrate extends Command_Svneligible
 			$view->log = $log;
 			$commitMessage .= $view->render(false);
 		}
+
+		return $commitMessage;
 	}
 }
